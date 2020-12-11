@@ -39,7 +39,7 @@
 #include <stdio.h>
 #include "common.h"
 
-int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b){
+int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b, IFLOAT alpha){
 
   BLASLONG i, j;
 
@@ -176,77 +176,77 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b){
 	  ctemp64 = *(aoffset8 + 7);
 	  aoffset8 += 8;
 
-	  *(boffset1 +  0) = ctemp01;
-	  *(boffset1 +  1) = ctemp02;
-	  *(boffset1 +  2) = ctemp03;
-	  *(boffset1 +  3) = ctemp04;
-	  *(boffset1 +  4) = ctemp05;
-	  *(boffset1 +  5) = ctemp06;
-	  *(boffset1 +  6) = ctemp07;
-	  *(boffset1 +  7) = ctemp08;
+	  *(boffset1 +  0) = ctemp01 * alpha;
+	  *(boffset1 +  1) = ctemp02 * alpha;
+	  *(boffset1 +  2) = ctemp03 * alpha;
+	  *(boffset1 +  3) = ctemp04 * alpha;
+	  *(boffset1 +  4) = ctemp05 * alpha;
+	  *(boffset1 +  5) = ctemp06 * alpha;
+	  *(boffset1 +  6) = ctemp07 * alpha;
+	  *(boffset1 +  7) = ctemp08 * alpha;
 
-	  *(boffset1 +  8) = ctemp09;
-	  *(boffset1 +  9) = ctemp10;
-	  *(boffset1 + 10) = ctemp11;
-	  *(boffset1 + 11) = ctemp12;
-	  *(boffset1 + 12) = ctemp13;
-	  *(boffset1 + 13) = ctemp14;
-	  *(boffset1 + 14) = ctemp15;
-	  *(boffset1 + 15) = ctemp16;
+	  *(boffset1 +  8) = ctemp09 * alpha;
+	  *(boffset1 +  9) = ctemp10 * alpha;
+	  *(boffset1 + 10) = ctemp11 * alpha;
+	  *(boffset1 + 11) = ctemp12 * alpha;
+	  *(boffset1 + 12) = ctemp13 * alpha;
+	  *(boffset1 + 13) = ctemp14 * alpha;
+	  *(boffset1 + 14) = ctemp15 * alpha;
+	  *(boffset1 + 15) = ctemp16 * alpha;
 
-	  *(boffset1 + 16) = ctemp17;
-	  *(boffset1 + 17) = ctemp18;
-	  *(boffset1 + 18) = ctemp19;
-	  *(boffset1 + 19) = ctemp20;
-	  *(boffset1 + 20) = ctemp21;
-	  *(boffset1 + 21) = ctemp22;
-	  *(boffset1 + 22) = ctemp23;
-	  *(boffset1 + 23) = ctemp24;
+	  *(boffset1 + 16) = ctemp17 * alpha;
+	  *(boffset1 + 17) = ctemp18 * alpha;
+	  *(boffset1 + 18) = ctemp19 * alpha;
+	  *(boffset1 + 19) = ctemp20 * alpha;
+	  *(boffset1 + 20) = ctemp21 * alpha;
+	  *(boffset1 + 21) = ctemp22 * alpha;
+	  *(boffset1 + 22) = ctemp23 * alpha;
+	  *(boffset1 + 23) = ctemp24 * alpha;
 
-	  *(boffset1 + 24) = ctemp25;
-	  *(boffset1 + 25) = ctemp26;
-	  *(boffset1 + 26) = ctemp27;
-	  *(boffset1 + 27) = ctemp28;
-	  *(boffset1 + 28) = ctemp29;
-	  *(boffset1 + 29) = ctemp30;
-	  *(boffset1 + 30) = ctemp31;
-	  *(boffset1 + 31) = ctemp32;
+	  *(boffset1 + 24) = ctemp25 * alpha;
+	  *(boffset1 + 25) = ctemp26 * alpha;
+	  *(boffset1 + 26) = ctemp27 * alpha;
+	  *(boffset1 + 27) = ctemp28 * alpha;
+	  *(boffset1 + 28) = ctemp29 * alpha;
+	  *(boffset1 + 29) = ctemp30 * alpha;
+	  *(boffset1 + 30) = ctemp31 * alpha;
+	  *(boffset1 + 31) = ctemp32 * alpha;
 
-	  *(boffset1 + 32) = ctemp33;
-	  *(boffset1 + 33) = ctemp34;
-	  *(boffset1 + 34) = ctemp35;
-	  *(boffset1 + 35) = ctemp36;
-	  *(boffset1 + 36) = ctemp37;
-	  *(boffset1 + 37) = ctemp38;
-	  *(boffset1 + 38) = ctemp39;
-	  *(boffset1 + 39) = ctemp40;
+	  *(boffset1 + 32) = ctemp33 * alpha;
+	  *(boffset1 + 33) = ctemp34 * alpha;
+	  *(boffset1 + 34) = ctemp35 * alpha;
+	  *(boffset1 + 35) = ctemp36 * alpha;
+	  *(boffset1 + 36) = ctemp37 * alpha;
+	  *(boffset1 + 37) = ctemp38 * alpha;
+	  *(boffset1 + 38) = ctemp39 * alpha;
+	  *(boffset1 + 39) = ctemp40 * alpha;
 
-	  *(boffset1 + 40) = ctemp41;
-	  *(boffset1 + 41) = ctemp42;
-	  *(boffset1 + 42) = ctemp43;
-	  *(boffset1 + 43) = ctemp44;
-	  *(boffset1 + 44) = ctemp45;
-	  *(boffset1 + 45) = ctemp46;
-	  *(boffset1 + 46) = ctemp47;
-	  *(boffset1 + 47) = ctemp48;
+	  *(boffset1 + 40) = ctemp41 * alpha;
+	  *(boffset1 + 41) = ctemp42 * alpha;
+	  *(boffset1 + 42) = ctemp43 * alpha;
+	  *(boffset1 + 43) = ctemp44 * alpha;
+	  *(boffset1 + 44) = ctemp45 * alpha;
+	  *(boffset1 + 45) = ctemp46 * alpha;
+	  *(boffset1 + 46) = ctemp47 * alpha;
+	  *(boffset1 + 47) = ctemp48 * alpha;
 
-	  *(boffset1 + 48) = ctemp49;
-	  *(boffset1 + 49) = ctemp50;
-	  *(boffset1 + 50) = ctemp51;
-	  *(boffset1 + 51) = ctemp52;
-	  *(boffset1 + 52) = ctemp53;
-	  *(boffset1 + 53) = ctemp54;
-	  *(boffset1 + 54) = ctemp55;
-	  *(boffset1 + 55) = ctemp56;
+	  *(boffset1 + 48) = ctemp49 * alpha;
+	  *(boffset1 + 49) = ctemp50 * alpha;
+	  *(boffset1 + 50) = ctemp51 * alpha;
+	  *(boffset1 + 51) = ctemp52 * alpha;
+	  *(boffset1 + 52) = ctemp53 * alpha;
+	  *(boffset1 + 53) = ctemp54 * alpha;
+	  *(boffset1 + 54) = ctemp55 * alpha;
+	  *(boffset1 + 55) = ctemp56 * alpha;
 
-	  *(boffset1 + 56) = ctemp57;
-	  *(boffset1 + 57) = ctemp58;
-	  *(boffset1 + 58) = ctemp59;
-	  *(boffset1 + 59) = ctemp60;
-	  *(boffset1 + 60) = ctemp61;
-	  *(boffset1 + 61) = ctemp62;
-	  *(boffset1 + 62) = ctemp63;
-	  *(boffset1 + 63) = ctemp64;
+	  *(boffset1 + 56) = ctemp57 * alpha;
+	  *(boffset1 + 57) = ctemp58 * alpha;
+	  *(boffset1 + 58) = ctemp59 * alpha;
+	  *(boffset1 + 59) = ctemp60 * alpha;
+	  *(boffset1 + 60) = ctemp61 * alpha;
+	  *(boffset1 + 61) = ctemp62 * alpha;
+	  *(boffset1 + 62) = ctemp63 * alpha;
+	  *(boffset1 + 63) = ctemp64 * alpha;
 
 	  boffset1 += m * 8;
 	  i --;
@@ -302,39 +302,39 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b){
 	ctemp32 = *(aoffset8 + 3);
 	aoffset8 += 4;
 
-	*(boffset2 +  0) = ctemp01;
-	*(boffset2 +  1) = ctemp02;
-	*(boffset2 +  2) = ctemp03;
-	*(boffset2 +  3) = ctemp04;
-	*(boffset2 +  4) = ctemp05;
-	*(boffset2 +  5) = ctemp06;
-	*(boffset2 +  6) = ctemp07;
-	*(boffset2 +  7) = ctemp08;
-	*(boffset2 +  8) = ctemp09;
-	*(boffset2 +  9) = ctemp10;
-	*(boffset2 + 10) = ctemp11;
-	*(boffset2 + 11) = ctemp12;
-	*(boffset2 + 12) = ctemp13;
-	*(boffset2 + 13) = ctemp14;
-	*(boffset2 + 14) = ctemp15;
-	*(boffset2 + 15) = ctemp16;
+	*(boffset2 +  0) = ctemp01 * alpha;
+	*(boffset2 +  1) = ctemp02 * alpha;
+	*(boffset2 +  2) = ctemp03 * alpha;
+	*(boffset2 +  3) = ctemp04 * alpha;
+	*(boffset2 +  4) = ctemp05 * alpha;
+	*(boffset2 +  5) = ctemp06 * alpha;
+	*(boffset2 +  6) = ctemp07 * alpha;
+	*(boffset2 +  7) = ctemp08 * alpha;
+	*(boffset2 +  8) = ctemp09 * alpha;
+	*(boffset2 +  9) = ctemp10 * alpha;
+	*(boffset2 + 10) = ctemp11 * alpha;
+	*(boffset2 + 11) = ctemp12 * alpha;
+	*(boffset2 + 12) = ctemp13 * alpha;
+	*(boffset2 + 13) = ctemp14 * alpha;
+	*(boffset2 + 14) = ctemp15 * alpha;
+	*(boffset2 + 15) = ctemp16 * alpha;
 
-	*(boffset2 + 16) = ctemp17;
-	*(boffset2 + 17) = ctemp18;
-	*(boffset2 + 18) = ctemp19;
-	*(boffset2 + 19) = ctemp20;
-	*(boffset2 + 20) = ctemp21;
-	*(boffset2 + 21) = ctemp22;
-	*(boffset2 + 22) = ctemp23;
-	*(boffset2 + 23) = ctemp24;
-	*(boffset2 + 24) = ctemp25;
-	*(boffset2 + 25) = ctemp26;
-	*(boffset2 + 26) = ctemp27;
-	*(boffset2 + 27) = ctemp28;
-	*(boffset2 + 28) = ctemp29;
-	*(boffset2 + 29) = ctemp30;
-	*(boffset2 + 30) = ctemp31;
-	*(boffset2 + 31) = ctemp32;
+	*(boffset2 + 16) = ctemp17 * alpha;
+	*(boffset2 + 17) = ctemp18 * alpha;
+	*(boffset2 + 18) = ctemp19 * alpha;
+	*(boffset2 + 19) = ctemp20 * alpha;
+	*(boffset2 + 20) = ctemp21 * alpha;
+	*(boffset2 + 21) = ctemp22 * alpha;
+	*(boffset2 + 22) = ctemp23 * alpha;
+	*(boffset2 + 23) = ctemp24 * alpha;
+	*(boffset2 + 24) = ctemp25 * alpha;
+	*(boffset2 + 25) = ctemp26 * alpha;
+	*(boffset2 + 26) = ctemp27 * alpha;
+	*(boffset2 + 27) = ctemp28 * alpha;
+	*(boffset2 + 28) = ctemp29 * alpha;
+	*(boffset2 + 29) = ctemp30 * alpha;
+	*(boffset2 + 30) = ctemp31 * alpha;
+	*(boffset2 + 31) = ctemp32 * alpha;
 
 	boffset2 += 32;
       }
@@ -372,22 +372,22 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b){
 	ctemp16 = *(aoffset8 + 1);
 	aoffset8 += 2;
 
-	*(boffset3 +  0) = ctemp01;
-	*(boffset3 +  1) = ctemp02;
-	*(boffset3 +  2) = ctemp03;
-	*(boffset3 +  3) = ctemp04;
-	*(boffset3 +  4) = ctemp05;
-	*(boffset3 +  5) = ctemp06;
-	*(boffset3 +  6) = ctemp07;
-	*(boffset3 +  7) = ctemp08;
-	*(boffset3 +  8) = ctemp09;
-	*(boffset3 +  9) = ctemp10;
-	*(boffset3 + 10) = ctemp11;
-	*(boffset3 + 11) = ctemp12;
-	*(boffset3 + 12) = ctemp13;
-	*(boffset3 + 13) = ctemp14;
-	*(boffset3 + 14) = ctemp15;
-	*(boffset3 + 15) = ctemp16;
+	*(boffset3 +  0) = ctemp01 * alpha;
+	*(boffset3 +  1) = ctemp02 * alpha;
+	*(boffset3 +  2) = ctemp03 * alpha;
+	*(boffset3 +  3) = ctemp04 * alpha;
+	*(boffset3 +  4) = ctemp05 * alpha;
+	*(boffset3 +  5) = ctemp06 * alpha;
+	*(boffset3 +  6) = ctemp07 * alpha;
+	*(boffset3 +  7) = ctemp08 * alpha;
+	*(boffset3 +  8) = ctemp09 * alpha;
+	*(boffset3 +  9) = ctemp10 * alpha;
+	*(boffset3 + 10) = ctemp11 * alpha;
+	*(boffset3 + 11) = ctemp12 * alpha;
+	*(boffset3 + 12) = ctemp13 * alpha;
+	*(boffset3 + 13) = ctemp14 * alpha;
+	*(boffset3 + 14) = ctemp15 * alpha;
+	*(boffset3 + 15) = ctemp16 * alpha;
 	boffset3 += 16;
       }
 
@@ -409,14 +409,14 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b){
 	ctemp08 = *(aoffset8 + 0);
 	aoffset8 ++;
 
-	*(boffset4 +  0) = ctemp01;
-	*(boffset4 +  1) = ctemp02;
-	*(boffset4 +  2) = ctemp03;
-	*(boffset4 +  3) = ctemp04;
-	*(boffset4 +  4) = ctemp05;
-	*(boffset4 +  5) = ctemp06;
-	*(boffset4 +  6) = ctemp07;
-	*(boffset4 +  7) = ctemp08;
+	*(boffset4 +  0) = ctemp01 * alpha;
+	*(boffset4 +  1) = ctemp02 * alpha;
+	*(boffset4 +  2) = ctemp03 * alpha;
+	*(boffset4 +  3) = ctemp04 * alpha;
+	*(boffset4 +  4) = ctemp05 * alpha;
+	*(boffset4 +  5) = ctemp06 * alpha;
+	*(boffset4 +  6) = ctemp07 * alpha;
+	*(boffset4 +  7) = ctemp08 * alpha;
 	boffset4 += 8;
       }
 
@@ -479,41 +479,41 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b){
 	ctemp32 = *(aoffset4 + 7);
 	aoffset4 += 8;
 
-	*(boffset1 +  0) = ctemp01;
-	*(boffset1 +  1) = ctemp02;
-	*(boffset1 +  2) = ctemp03;
-	*(boffset1 +  3) = ctemp04;
-	*(boffset1 +  4) = ctemp05;
-	*(boffset1 +  5) = ctemp06;
-	*(boffset1 +  6) = ctemp07;
-	*(boffset1 +  7) = ctemp08;
+	*(boffset1 +  0) = ctemp01 * alpha;
+	*(boffset1 +  1) = ctemp02 * alpha;
+	*(boffset1 +  2) = ctemp03 * alpha;
+	*(boffset1 +  3) = ctemp04 * alpha;
+	*(boffset1 +  4) = ctemp05 * alpha;
+	*(boffset1 +  5) = ctemp06 * alpha;
+	*(boffset1 +  6) = ctemp07 * alpha;
+	*(boffset1 +  7) = ctemp08 * alpha;
 
-	*(boffset1 +  8) = ctemp09;
-	*(boffset1 +  9) = ctemp10;
-	*(boffset1 + 10) = ctemp11;
-	*(boffset1 + 11) = ctemp12;
-	*(boffset1 + 12) = ctemp13;
-	*(boffset1 + 13) = ctemp14;
-	*(boffset1 + 14) = ctemp15;
-	*(boffset1 + 15) = ctemp16;
+	*(boffset1 +  8) = ctemp09 * alpha;
+	*(boffset1 +  9) = ctemp10 * alpha;
+	*(boffset1 + 10) = ctemp11 * alpha;
+	*(boffset1 + 11) = ctemp12 * alpha;
+	*(boffset1 + 12) = ctemp13 * alpha;
+	*(boffset1 + 13) = ctemp14 * alpha;
+	*(boffset1 + 14) = ctemp15 * alpha;
+	*(boffset1 + 15) = ctemp16 * alpha;
 
-	*(boffset1 + 16) = ctemp17;
-	*(boffset1 + 17) = ctemp18;
-	*(boffset1 + 18) = ctemp19;
-	*(boffset1 + 19) = ctemp20;
-	*(boffset1 + 20) = ctemp21;
-	*(boffset1 + 21) = ctemp22;
-	*(boffset1 + 22) = ctemp23;
-	*(boffset1 + 23) = ctemp24;
+	*(boffset1 + 16) = ctemp17 * alpha;
+	*(boffset1 + 17) = ctemp18 * alpha;
+	*(boffset1 + 18) = ctemp19 * alpha;
+	*(boffset1 + 19) = ctemp20 * alpha;
+	*(boffset1 + 20) = ctemp21 * alpha;
+	*(boffset1 + 21) = ctemp22 * alpha;
+	*(boffset1 + 22) = ctemp23 * alpha;
+	*(boffset1 + 23) = ctemp24 * alpha;
 
-	*(boffset1 + 24) = ctemp25;
-	*(boffset1 + 25) = ctemp26;
-	*(boffset1 + 26) = ctemp27;
-	*(boffset1 + 27) = ctemp28;
-	*(boffset1 + 28) = ctemp29;
-	*(boffset1 + 29) = ctemp30;
-	*(boffset1 + 30) = ctemp31;
-	*(boffset1 + 31) = ctemp32;
+	*(boffset1 + 24) = ctemp25 * alpha;
+	*(boffset1 + 25) = ctemp26 * alpha;
+	*(boffset1 + 26) = ctemp27 * alpha;
+	*(boffset1 + 27) = ctemp28 * alpha;
+	*(boffset1 + 28) = ctemp29 * alpha;
+	*(boffset1 + 29) = ctemp30 * alpha;
+	*(boffset1 + 30) = ctemp31 * alpha;
+	*(boffset1 + 31) = ctemp32 * alpha;
 
 	boffset1 += 8 * m;
 	i --;
@@ -545,23 +545,23 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b){
       ctemp16 = *(aoffset4 + 3);
       aoffset4 += 4;
 
-      *(boffset2 +  0) = ctemp01;
-      *(boffset2 +  1) = ctemp02;
-      *(boffset2 +  2) = ctemp03;
-      *(boffset2 +  3) = ctemp04;
-      *(boffset2 +  4) = ctemp05;
-      *(boffset2 +  5) = ctemp06;
-      *(boffset2 +  6) = ctemp07;
-      *(boffset2 +  7) = ctemp08;
+      *(boffset2 +  0) = ctemp01 * alpha;
+      *(boffset2 +  1) = ctemp02 * alpha;
+      *(boffset2 +  2) = ctemp03 * alpha;
+      *(boffset2 +  3) = ctemp04 * alpha;
+      *(boffset2 +  4) = ctemp05 * alpha;
+      *(boffset2 +  5) = ctemp06 * alpha;
+      *(boffset2 +  6) = ctemp07 * alpha;
+      *(boffset2 +  7) = ctemp08 * alpha;
 
-      *(boffset2 +  8) = ctemp09;
-      *(boffset2 +  9) = ctemp10;
-      *(boffset2 + 10) = ctemp11;
-      *(boffset2 + 11) = ctemp12;
-      *(boffset2 + 12) = ctemp13;
-      *(boffset2 + 13) = ctemp14;
-      *(boffset2 + 14) = ctemp15;
-      *(boffset2 + 15) = ctemp16;
+      *(boffset2 +  8) = ctemp09 * alpha;
+      *(boffset2 +  9) = ctemp10 * alpha;
+      *(boffset2 + 10) = ctemp11 * alpha;
+      *(boffset2 + 11) = ctemp12 * alpha;
+      *(boffset2 + 12) = ctemp13 * alpha;
+      *(boffset2 + 13) = ctemp14 * alpha;
+      *(boffset2 + 14) = ctemp15 * alpha;
+      *(boffset2 + 15) = ctemp16 * alpha;
       boffset2 += 16;
     }
 
@@ -582,14 +582,14 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b){
       ctemp08 = *(aoffset4 + 1);
       aoffset4 += 2;
 
-      *(boffset3 +  0) = ctemp01;
-      *(boffset3 +  1) = ctemp02;
-      *(boffset3 +  2) = ctemp03;
-      *(boffset3 +  3) = ctemp04;
-      *(boffset3 +  4) = ctemp05;
-      *(boffset3 +  5) = ctemp06;
-      *(boffset3 +  6) = ctemp07;
-      *(boffset3 +  7) = ctemp08;
+      *(boffset3 +  0) = ctemp01 * alpha;
+      *(boffset3 +  1) = ctemp02 * alpha;
+      *(boffset3 +  2) = ctemp03 * alpha;
+      *(boffset3 +  3) = ctemp04 * alpha;
+      *(boffset3 +  4) = ctemp05 * alpha;
+      *(boffset3 +  5) = ctemp06 * alpha;
+      *(boffset3 +  6) = ctemp07 * alpha;
+      *(boffset3 +  7) = ctemp08 * alpha;
       boffset3 += 8;
     }
 
@@ -603,10 +603,10 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b){
       ctemp04 = *(aoffset4 + 0);
       aoffset4 ++;
 
-      *(boffset4 +  0) = ctemp01;
-      *(boffset4 +  1) = ctemp02;
-      *(boffset4 +  2) = ctemp03;
-      *(boffset4 +  3) = ctemp04;
+      *(boffset4 +  0) = ctemp01 * alpha;
+      *(boffset4 +  1) = ctemp02 * alpha;
+      *(boffset4 +  2) = ctemp03 * alpha;
+      *(boffset4 +  3) = ctemp04 * alpha;
       boffset4 += 4;
     }
   }
@@ -642,23 +642,23 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b){
 	ctemp16 = *(aoffset2 + 7);
 	aoffset2 += 8;
 
-	*(boffset1 +  0) = ctemp01;
-	*(boffset1 +  1) = ctemp02;
-	*(boffset1 +  2) = ctemp03;
-	*(boffset1 +  3) = ctemp04;
-	*(boffset1 +  4) = ctemp05;
-	*(boffset1 +  5) = ctemp06;
-	*(boffset1 +  6) = ctemp07;
-	*(boffset1 +  7) = ctemp08;
+	*(boffset1 +  0) = ctemp01 * alpha;
+	*(boffset1 +  1) = ctemp02 * alpha;
+	*(boffset1 +  2) = ctemp03 * alpha;
+	*(boffset1 +  3) = ctemp04 * alpha;
+	*(boffset1 +  4) = ctemp05 * alpha;
+	*(boffset1 +  5) = ctemp06 * alpha;
+	*(boffset1 +  6) = ctemp07 * alpha;
+	*(boffset1 +  7) = ctemp08 * alpha;
 
-	*(boffset1 +  8) = ctemp09;
-	*(boffset1 +  9) = ctemp10;
-	*(boffset1 + 10) = ctemp11;
-	*(boffset1 + 11) = ctemp12;
-	*(boffset1 + 12) = ctemp13;
-	*(boffset1 + 13) = ctemp14;
-	*(boffset1 + 14) = ctemp15;
-	*(boffset1 + 15) = ctemp16;
+	*(boffset1 +  8) = ctemp09 * alpha;
+	*(boffset1 +  9) = ctemp10 * alpha;
+	*(boffset1 + 10) = ctemp11 * alpha;
+	*(boffset1 + 11) = ctemp12 * alpha;
+	*(boffset1 + 12) = ctemp13 * alpha;
+	*(boffset1 + 13) = ctemp14 * alpha;
+	*(boffset1 + 14) = ctemp15 * alpha;
+	*(boffset1 + 15) = ctemp16 * alpha;
 
 	boffset1 += 8 * m;
 	i --;
@@ -678,14 +678,14 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b){
       ctemp08 = *(aoffset2 + 3);
       aoffset2 += 4;
 
-      *(boffset2 +  0) = ctemp01;
-      *(boffset2 +  1) = ctemp02;
-      *(boffset2 +  2) = ctemp03;
-      *(boffset2 +  3) = ctemp04;
-      *(boffset2 +  4) = ctemp05;
-      *(boffset2 +  5) = ctemp06;
-      *(boffset2 +  6) = ctemp07;
-      *(boffset2 +  7) = ctemp08;
+      *(boffset2 +  0) = ctemp01 * alpha;
+      *(boffset2 +  1) = ctemp02 * alpha;
+      *(boffset2 +  2) = ctemp03 * alpha;
+      *(boffset2 +  3) = ctemp04 * alpha;
+      *(boffset2 +  4) = ctemp05 * alpha;
+      *(boffset2 +  5) = ctemp06 * alpha;
+      *(boffset2 +  6) = ctemp07 * alpha;
+      *(boffset2 +  7) = ctemp08 * alpha;
       boffset2 += 8;
     }
 
@@ -698,10 +698,10 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b){
       ctemp04 = *(aoffset2 + 1);
       aoffset2 += 2;
 
-      *(boffset3 +  0) = ctemp01;
-      *(boffset3 +  1) = ctemp02;
-      *(boffset3 +  2) = ctemp03;
-      *(boffset3 +  3) = ctemp04;
+      *(boffset3 +  0) = ctemp01 * alpha;
+      *(boffset3 +  1) = ctemp02 * alpha;
+      *(boffset3 +  2) = ctemp03 * alpha;
+      *(boffset3 +  3) = ctemp04 * alpha;
       boffset3 += 4;
     }
 
@@ -711,8 +711,8 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b){
       ctemp02 = *(aoffset2 + 0);
       aoffset2 ++;
 
-      *(boffset4 +  0) = ctemp01;
-      *(boffset4 +  1) = ctemp02;
+      *(boffset4 +  0) = ctemp01 * alpha;
+      *(boffset4 +  1) = ctemp02 * alpha;
       boffset4 += 2;
     }
   }
@@ -737,14 +737,14 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b){
 	ctemp08 = *(aoffset1 + 7);
 	aoffset1 += 8;
 
-	*(boffset1 +  0) = ctemp01;
-	*(boffset1 +  1) = ctemp02;
-	*(boffset1 +  2) = ctemp03;
-	*(boffset1 +  3) = ctemp04;
-	*(boffset1 +  4) = ctemp05;
-	*(boffset1 +  5) = ctemp06;
-	*(boffset1 +  6) = ctemp07;
-	*(boffset1 +  7) = ctemp08;
+	*(boffset1 +  0) = ctemp01 * alpha;
+	*(boffset1 +  1) = ctemp02 * alpha;
+	*(boffset1 +  2) = ctemp03 * alpha;
+	*(boffset1 +  3) = ctemp04 * alpha;
+	*(boffset1 +  4) = ctemp05 * alpha;
+	*(boffset1 +  5) = ctemp06 * alpha;
+	*(boffset1 +  6) = ctemp07 * alpha;
+	*(boffset1 +  7) = ctemp08 * alpha;
 
 	boffset1 += 8 * m;
 	 i --;
@@ -758,10 +758,10 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b){
        ctemp04 = *(aoffset1 + 3);
        aoffset1 += 4;
 
-       *(boffset2 +  0) = ctemp01;
-       *(boffset2 +  1) = ctemp02;
-       *(boffset2 +  2) = ctemp03;
-       *(boffset2 +  3) = ctemp04;
+       *(boffset2 +  0) = ctemp01 * alpha;
+       *(boffset2 +  1) = ctemp02 * alpha;
+       *(boffset2 +  2) = ctemp03 * alpha;
+       *(boffset2 +  3) = ctemp04 * alpha;
        // boffset2 += 4;
      }
 
@@ -770,15 +770,15 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b){
        ctemp02 = *(aoffset1 + 1);
        aoffset1 += 2;
 
-       *(boffset3 +  0) = ctemp01;
-       *(boffset3 +  1) = ctemp02;
+       *(boffset3 +  0) = ctemp01 * alpha;
+       *(boffset3 +  1) = ctemp02 * alpha;
        // boffset3 += 2;
      }
 
      if (n & 1){
        ctemp01 = *(aoffset1 + 0);
        aoffset1 ++;
-      *(boffset4 +  0) = ctemp01;
+      *(boffset4 +  0) = ctemp01 * alpha;
       boffset4 ++;
     }
   }

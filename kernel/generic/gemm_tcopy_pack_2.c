@@ -39,7 +39,7 @@
 #include <stdio.h>
 #include "common.h"
 
-int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b){
+int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b, IFLOAT alpha){
   BLASLONG i, j;
 
   IFLOAT *a_offset, *a_offset1, *a_offset2;
@@ -63,10 +63,10 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b){
       j = (n >> 1);
       if (j > 0){
 	do {
-	  *(b_offset1 + 0) = *(a_offset1 + 0);
-	  *(b_offset1 + 1) = *(a_offset1 + 1);
-	  *(b_offset1 + 2) = *(a_offset2 + 0);
-	  *(b_offset1 + 3) = *(a_offset2 + 1);
+	  *(b_offset1 + 0) = *(a_offset1 + 0) * alpha;
+	  *(b_offset1 + 1) = *(a_offset1 + 1) * alpha;
+	  *(b_offset1 + 2) = *(a_offset2 + 0) * alpha;
+	  *(b_offset1 + 3) = *(a_offset2 + 1) * alpha;
 	  a_offset1 += 2;
 	  a_offset2 += 2;
 	  b_offset1 += m * 2;
@@ -75,8 +75,8 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b){
       }
 
       if (n & 1){
-	  *(b_offset2 + 0) = *(a_offset1 + 0);
-	  *(b_offset2 + 1) = *(a_offset2 + 0);
+	  *(b_offset2 + 0) = *(a_offset1 + 0) * alpha;
+	  *(b_offset2 + 1) = *(a_offset2 + 0) * alpha;
 	  b_offset2 += 2;
       }
       i --;
@@ -87,8 +87,8 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b){
     j = (n >> 1);
     if (j > 0){
       do {
-	*(b_offset + 0) = *(a_offset + 0);
-	*(b_offset + 1) = *(a_offset + 1);
+	*(b_offset + 0) = *(a_offset + 0) * alpha;
+	*(b_offset + 1) = *(a_offset + 1) * alpha;
 	a_offset += 2;
 	b_offset += m * 2;
 	j--;
@@ -96,7 +96,7 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b){
     }
 
     if (n & 1){
-      *(b_offset2 + 0) = *(a_offset + 0);
+      *(b_offset2 + 0) = *(a_offset + 0) * alpha;
       }
   }
 
