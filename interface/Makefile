@@ -1870,12 +1870,24 @@ cblas_zhemv.$(SUFFIX) cblas_zhemv.$(PSUFFIX) : zhemv.c
 cblas_sgemm.$(SUFFIX) cblas_sgemm.$(PSUFFIX) : gemm.c ../param.h
 	$(CC) -DCBLAS -c $(CFLAGS) $< -o $(@F)
 
+cblas_sgemm_pack.$(SUFFIX) : pack.c
+	$(CC) -DCBLAS -c $(CFLAGS) $< -o $(@F)
+
+cblas_sgemm_compute.$(SUFFIX) : compute.c
+	$(CC) -DCBLAS -c $(CFLAGS) $< -o $(@F)
+
 ifeq ($(BUILD_BFLOAT16),1)
 cblas_sbgemm.$(SUFFIX) cblas_sbgemm.$(PSUFFIX) : gemm.c ../param.h
 	$(CC) -DCBLAS -c $(CFLAGS) $< -o $(@F)
 endif
 
 cblas_dgemm.$(SUFFIX) cblas_dgemm.$(PSUFFIX) : gemm.c ../param.h
+	$(CC) -DCBLAS -c $(CFLAGS) $< -o $(@F)
+
+cblas_dgemm_pack.$(SUFFIX) : pack.c
+	$(CC) -DCBLAS -c $(CFLAGS) $< -o $(@F)
+
+cblas_dgemm_compute.$(SUFFIX) : compute.c
 	$(CC) -DCBLAS -c $(CFLAGS) $< -o $(@F)
 
 cblas_cgemm.$(SUFFIX) cblas_cgemm.$(PSUFFIX) : gemm.c ../param.h

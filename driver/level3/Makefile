@@ -37,7 +37,10 @@ SBLASOBJS	+= \
 	ssyrk_UN.$(SUFFIX) ssyrk_UT.$(SUFFIX) ssyrk_LN.$(SUFFIX) ssyrk_LT.$(SUFFIX) \
 	ssyr2k_UN.$(SUFFIX) ssyr2k_UT.$(SUFFIX) ssyr2k_LN.$(SUFFIX) ssyr2k_LT.$(SUFFIX) \
 	ssyrk_kernel_U.$(SUFFIX)  ssyrk_kernel_L.$(SUFFIX) \
-	ssyr2k_kernel_U.$(SUFFIX) ssyr2k_kernel_L.$(SUFFIX)
+	ssyr2k_kernel_U.$(SUFFIX) ssyr2k_kernel_L.$(SUFFIX) \
+	sgemm_an_pack.o sgemm_at_pack.o sgemm_bn_pack.o sgemm_bt_pack.o \
+	sgemm_compute_nn.o sgemm_compute_nt.o sgemm_compute_tn.o sgemm_compute_tt.o sgemm_compute_pn.o \
+        sgemm_compute_pt.o sgemm_compute_np.o sgemm_compute_tp.o sgemm_compute_pp.o
 
 DBLASOBJS	+= \
 	dgemm_nn.$(SUFFIX) dgemm_nt.$(SUFFIX) dgemm_tn.$(SUFFIX) dgemm_tt.$(SUFFIX) \
@@ -53,7 +56,10 @@ DBLASOBJS	+= \
 	dsyrk_UN.$(SUFFIX) dsyrk_UT.$(SUFFIX) dsyrk_LN.$(SUFFIX) dsyrk_LT.$(SUFFIX) \
 	dsyr2k_UN.$(SUFFIX) dsyr2k_UT.$(SUFFIX) dsyr2k_LN.$(SUFFIX) dsyr2k_LT.$(SUFFIX) \
 	dsyrk_kernel_U.$(SUFFIX)  dsyrk_kernel_L.$(SUFFIX) \
-	dsyr2k_kernel_U.$(SUFFIX) dsyr2k_kernel_L.$(SUFFIX)
+	dsyr2k_kernel_U.$(SUFFIX) dsyr2k_kernel_L.$(SUFFIX) \
+	dgemm_an_pack.o dgemm_at_pack.o dgemm_bn_pack.o dgemm_bt_pack.o \
+	dgemm_compute_nn.o dgemm_compute_nt.o dgemm_compute_tn.o dgemm_compute_tt.o dgemm_compute_pn.o \
+        dgemm_compute_pt.o dgemm_compute_np.o dgemm_compute_tp.o dgemm_compute_pp.o
 
 QBLASOBJS	+= \
 	qgemm_nn.$(SUFFIX) qgemm_nt.$(SUFFIX) qgemm_tn.$(SUFFIX) qgemm_tt.$(SUFFIX) \
@@ -211,7 +217,23 @@ ifeq ($(BUILD_BFLOAT16),1)
 SBBLASOBJS    += sbgemm_thread_nn.$(SUFFIX) sbgemm_thread_nt.$(SUFFIX) sbgemm_thread_tn.$(SUFFIX) sbgemm_thread_tt.$(SUFFIX)
 endif
 SBLASOBJS    += sgemm_thread_nn.$(SUFFIX) sgemm_thread_nt.$(SUFFIX) sgemm_thread_tn.$(SUFFIX) sgemm_thread_tt.$(SUFFIX)
+SBLASOBJS    += sgemm_thread_an_pack.$(SUFFIX) sgemm_thread_at_pack.$(SUFFIX) sgemm_thread_bn_pack.$(SUFFIX) sgemm_thread_bt_pack.$(SUFFIX)
+SBLASOBJS    += sgemm_thread_compute_nn.$(SUFFIX) sgemm_thread_compute_nt.$(SUFFIX) sgemm_thread_compute_tn.$(SUFFIX) sgemm_thread_compute_tt.$(SUFFIX)
+SBLASOBJS    += sgemm_thread_compute_np.$(SUFFIX) sgemm_thread_compute_tp.$(SUFFIX) sgemm_thread_compute_pp.$(SUFFIX) sgemm_thread_compute_pn.$(SUFFIX) sgemm_thread_compute_pt.$(SUFFIX)
+SBLASOBJS    += sgemm_thread_an_pack.$(SUFFIX) sgemm_thread_at_pack.$(SUFFIX) sgemm_thread_bn_pack.$(SUFFIX) sgemm_thread_bt_pack.$(SUFFIX)
 DBLASOBJS    += dgemm_thread_nn.$(SUFFIX) dgemm_thread_nt.$(SUFFIX) dgemm_thread_tn.$(SUFFIX) dgemm_thread_tt.$(SUFFIX)
+DBLASOBJS    += dgemm_thread_an_pack.$(SUFFIX) dgemm_thread_at_pack.$(SUFFIX) dgemm_thread_bn_pack.$(SUFFIX) dgemm_thread_bt_pack.$(SUFFIX)
+DBLASOBJS    += dgemm_thread_compute_nn.$(SUFFIX) dgemm_thread_compute_nt.$(SUFFIX) dgemm_thread_compute_tn.$(SUFFIX) dgemm_thread_compute_tt.$(SUFFIX)
+DBLASOBJS    += dgemm_thread_compute_np.$(SUFFIX) dgemm_thread_compute_tp.$(SUFFIX) dgemm_thread_compute_pp.$(SUFFIX) dgemm_thread_compute_pn.$(SUFFIX) dgemm_thread_compute_pt.$(SUFFIX)
+QBLASOBJS    += qgemm_thread_nn.$(SUFFIX) qgemm_thread_nt.$(SUFFIX) qgemm_thread_tn.$(SUFFIX) qgemm_thread_tt.$(SUFFIX)
+CBLASOBJS    += cgemm_thread_nn.$(SUFFIX) cgemm_thread_nt.$(SUFFIX) cgemm_thread_nr.$(SUFFIX) cgemm_thread_nc.$(SUFFIX)
+CBLASOBJS    += cgemm_thread_tn.$(SUFFIX) cgemm_thread_tt.$(SUFFIX) cgemm_thread_tr.$(SUFFIX) cgemm_thread_tc.$(SUFFIX)
+CBLASOBJS    += cgemm_thread_rn.$(SUFFIX) cgemm_thread_rt.$(SUFFIX) cgemm_thread_rr.$(SUFFIX) cgemm_thread_rc.$(SUFFIX)
+CBLASOBJS    += cgemm_thread_cn.$(SUFFIX) cgemm_thread_ct.$(SUFFIX) cgemm_thread_cr.$(SUFFIX) cgemm_thread_cc.$(SUFFIX)
+ZBLASOBJS    += zgemm_thread_nn.$(SUFFIX) zgemm_thread_nt.$(SUFFIX) zgemm_thread_nr.$(SUFFIX) zgemm_thread_nc.$(SUFFIX)
+ZBLASOBJS    += zgemm_thread_tn.$(SUFFIX) zgemm_thread_tt.$(SUFFIX) zgemm_thread_tr.$(SUFFIX) zgemm_thread_tc.$(SUFFIX)
+DBLASOBJS    += dgemm_thread_nn.$(SUFFIX) dgemm_thread_nt.$(SUFFIX) dgemm_thread_tn.$(SUFFIX) dgemm_thread_tt.$(SUFFIX)
+DBLASOBJS    += dgemm_thread_an_pack.$(SUFFIX) dgemm_thread_at_pack.$(SUFFIX) dgemm_thread_bn_pack.$(SUFFIX) dgemm_thread_bt_pack.$(SUFFIX)
 QBLASOBJS    += qgemm_thread_nn.$(SUFFIX) qgemm_thread_nt.$(SUFFIX) qgemm_thread_tn.$(SUFFIX) qgemm_thread_tt.$(SUFFIX)
 CBLASOBJS    += cgemm_thread_nn.$(SUFFIX) cgemm_thread_nt.$(SUFFIX) cgemm_thread_nr.$(SUFFIX) cgemm_thread_nc.$(SUFFIX)
 CBLASOBJS    += cgemm_thread_tn.$(SUFFIX) cgemm_thread_tt.$(SUFFIX) cgemm_thread_tr.$(SUFFIX) cgemm_thread_tc.$(SUFFIX)
@@ -367,6 +389,18 @@ sgemm_tn.$(SUFFIX) : gemm.c level3.c ../../param.h
 sgemm_tt.$(SUFFIX) : gemm.c level3.c ../../param.h
 	$(CC) $(CFLAGS) $(BLOCKS) -c -UDOUBLE -UCOMPLEX -DTT $< -o $(@F)
 
+sgemm_an_pack.$(SUFFIX) : gemm_pack.c level3_pack.c ../../param.h
+	$(CC) $(CFLAGS) $(BLOCKS) -c -UDOUBLE -DAN $< -o $(@F)
+
+sgemm_at_pack.$(SUFFIX) : gemm_pack.c level3_pack.c ../../param.h
+	$(CC) $(CFLAGS) $(BLOCKS) -c -UDOUBLE -DAT $< -o $(@F)
+
+sgemm_bn_pack.$(SUFFIX) : gemm_pack.c level3_pack.c ../../param.h
+	$(CC) $(CFLAGS) $(BLOCKS) -c -UDOUBLE -DBN $< -o $(@F)
+
+sgemm_bt_pack.$(SUFFIX) : gemm_pack.c level3_pack.c ../../param.h
+	$(CC) $(CFLAGS) $(BLOCKS) -c -UDOUBLE -DBT $< -o $(@F)
+
 dgemm_nn.$(SUFFIX) : gemm.c level3.c ../../param.h
 	$(CC) $(CFLAGS) $(BLOCKS) -c -DDOUBLE -UCOMPLEX -DNN $< -o $(@F)
 
@@ -378,6 +412,18 @@ dgemm_tn.$(SUFFIX) : gemm.c level3.c ../../param.h
 
 dgemm_tt.$(SUFFIX) : gemm.c level3.c ../../param.h
 	$(CC) $(CFLAGS) $(BLOCKS) -c -DDOUBLE -UCOMPLEX -DTT $< -o $(@F)
+
+dgemm_an_pack.$(SUFFIX) : gemm_pack.c level3_pack.c ../../param.h
+	$(CC) $(CFLAGS) $(BLOCKS) -c -DDOUBLE -DAN $< -o $(@F)
+
+dgemm_at_pack.$(SUFFIX) : gemm_pack.c level3_pack.c ../../param.h
+	$(CC) $(CFLAGS) $(BLOCKS) -c -DDOUBLE -DAT $< -o $(@F)
+
+dgemm_bn_pack.$(SUFFIX) : gemm_pack.c level3_pack.c ../../param.h
+	$(CC) $(CFLAGS) $(BLOCKS) -c -DDOUBLE -DBN $< -o $(@F)
+
+dgemm_bt_pack.$(SUFFIX) : gemm_pack.c level3_pack.c ../../param.h
+	$(CC) $(CFLAGS) $(BLOCKS) -c -DDOUBLE -DBT $< -o $(@F)
 
 qgemm_nn.$(SUFFIX) : gemm.c level3.c ../../param.h
 	$(CC) $(CFLAGS) $(BLOCKS) -c -DXDOUBLE -UCOMPLEX -DNN $< -o $(@F)
@@ -574,6 +620,18 @@ sgemm_thread_tn.$(SUFFIX) : gemm.c level3_thread.c ../../param.h
 sgemm_thread_tt.$(SUFFIX) : gemm.c level3_thread.c ../../param.h
 	$(CC) $(CFLAGS) $(BLOCKS) -c -DTHREADED_LEVEL3 -UDOUBLE -UCOMPLEX -DTT $< -o $(@F)
 
+sgemm_thread_an_pack.$(SUFFIX) : gemm_pack.c level3_thread_pack.c ../../param.h
+	$(CC) $(CFLAGS) $(BLOCKS) -c -DTHREADED_LEVEL3 -UDOUBLE  -DAN $< -o $(@F)
+
+sgemm_thread_at_pack.$(SUFFIX) : gemm_pack.c level3_thread_pack.c ../../param.h
+	$(CC) $(CFLAGS) $(BLOCKS) -c -DTHREADED_LEVEL3 -UDOUBLE  -DAT $< -o $(@F)
+
+sgemm_thread_bn_pack.$(SUFFIX) : gemm_pack.c level3_thread_pack.c ../../param.h
+	$(CC) $(CFLAGS) $(BLOCKS) -c -DTHREADED_LEVEL3 -UDOUBLE  -DBN $< -o $(@F)
+
+sgemm_thread_bt_pack.$(SUFFIX) : gemm_pack.c level3_thread_pack.c ../../param.h
+	$(CC) $(CFLAGS) $(BLOCKS) -c -DTHREADED_LEVEL3 -UDOUBLE  -DBT $< -o $(@F)
+
 dgemm_thread_nn.$(SUFFIX) : gemm.c level3_thread.c ../../param.h
 	$(CC) $(CFLAGS) $(BLOCKS) -c -DTHREADED_LEVEL3 -DDOUBLE -UCOMPLEX -DNN $< -o $(@F)
 
@@ -585,6 +643,18 @@ dgemm_thread_tn.$(SUFFIX) : gemm.c level3_thread.c ../../param.h
 
 dgemm_thread_tt.$(SUFFIX) : gemm.c level3_thread.c ../../param.h
 	$(CC) $(CFLAGS) $(BLOCKS) -c -DTHREADED_LEVEL3 -DDOUBLE -UCOMPLEX -DTT $< -o $(@F)
+
+dgemm_thread_an_pack.$(SUFFIX) : gemm_pack.c level3_thread_pack.c ../../param.h
+	$(CC) $(CFLAGS) $(BLOCKS) -c -DTHREADED_LEVEL3 -DDOUBLE  -DAN $< -o $(@F)
+
+dgemm_thread_at_pack.$(SUFFIX) : gemm_pack.c level3_thread_pack.c ../../param.h
+	$(CC) $(CFLAGS) $(BLOCKS) -c -DTHREADED_LEVEL3 -DDOUBLE  -DAT $< -o $(@F)
+
+dgemm_thread_bn_pack.$(SUFFIX) : gemm_pack.c level3_thread_pack.c ../../param.h
+	$(CC) $(CFLAGS) $(BLOCKS) -c -DTHREADED_LEVEL3 -DDOUBLE  -DBN $< -o $(@F)
+
+dgemm_thread_bt_pack.$(SUFFIX) : gemm_pack.c level3_thread_pack.c ../../param.h
+	$(CC) $(CFLAGS) $(BLOCKS) -c -DTHREADED_LEVEL3 -DDOUBLE  -DBT $< -o $(@F)
 
 qgemm_thread_nn.$(SUFFIX) : gemm.c level3_thread.c ../../param.h
 	$(CC) $(CFLAGS) $(BLOCKS) -c -DTHREADED_LEVEL3 -DXDOUBLE -UCOMPLEX -DNN $< -o $(@F)
