@@ -99,6 +99,24 @@ int zgemm_itcopy(BLASLONG m, BLASLONG n, double *a, BLASLONG lda, double *b);
 int zgemm_oncopy(BLASLONG m, BLASLONG n, double *a, BLASLONG lda, double *b);
 int zgemm_otcopy(BLASLONG m, BLASLONG n, double *a, BLASLONG lda, double *b);
 
+
+int sgemm_incopy_pack(BLASLONG m, BLASLONG n, float *a, BLASLONG lda, float *b, float *alpha);
+int sgemm_itcopy_pack(BLASLONG m, BLASLONG n, float *a, BLASLONG lda, float *b, float *alpha);
+int sgemm_oncopy_pack(BLASLONG m, BLASLONG n, float *a, BLASLONG lda, float *b, float *alpha);
+int sgemm_otcopy_pack(BLASLONG m, BLASLONG n, float *a, BLASLONG lda, float *b, float *alpha);
+int dgemm_incopy_pack(BLASLONG m, BLASLONG n, double *a, BLASLONG lda, double *b, double *alpha);
+int dgemm_itcopy_pack(BLASLONG m, BLASLONG n, double *a, BLASLONG lda, double *b, double *alpha);
+int dgemm_oncopy_pack(BLASLONG m, BLASLONG n, double *a, BLASLONG lda, double *b, double *alpha);
+int dgemm_otcopy_pack(BLASLONG m, BLASLONG n, double *a, BLASLONG lda, double *b, double *alpha);
+int cgemm_incopy_pack(BLASLONG m, BLASLONG n, float *a, BLASLONG lda, float *b, float *alpha);
+int cgemm_itcopy_pack(BLASLONG m, BLASLONG n, float *a, BLASLONG lda, float *b, float *alpha);
+int cgemm_oncopy_pack(BLASLONG m, BLASLONG n, float *a, BLASLONG lda, float *b, float *alpha);
+int cgemm_otcopy_pack(BLASLONG m, BLASLONG n, float *a, BLASLONG lda, float *b, float *alpha);
+int zgemm_incopy_pack(BLASLONG m, BLASLONG n, double *a, BLASLONG lda, double *b, double *alpha);
+int zgemm_itcopy_pack(BLASLONG m, BLASLONG n, double *a, BLASLONG lda, double *b, double *alpha);
+int zgemm_oncopy_pack(BLASLONG m, BLASLONG n, double *a, BLASLONG lda, double *b, double *alpha);
+int zgemm_otcopy_pack(BLASLONG m, BLASLONG n, double *a, BLASLONG lda, double *b, double *alpha);
+
 #ifdef QUAD_PRECISION
 int qgemm_incopy(BLASLONG m, BLASLONG n, xdouble *a, BLASLONG lda, xidouble *b);
 int qgemm_itcopy(BLASLONG m, BLASLONG n, xdouble *a, BLASLONG lda, xidouble *b);
