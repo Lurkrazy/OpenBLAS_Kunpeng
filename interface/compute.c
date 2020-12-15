@@ -80,13 +80,15 @@
 //interface for A & B gemm_compute
 //N or T or Packed
 static int (*gemmcompute[])(blas_arg_t *, BLASLONG *, BLASLONG *, IFLOAT *, IFLOAT *, BLASLONG) = {
-  GEMM_AN_BN, GEMM_AT_BN, GEMM_AP_BN,
-  GEMM_AN_BT, GEMM_AT_BT, GEMM_AP_BT,
-  GEMM_AN_BP, GEMM_AT_BP, GEMM_AP_BP,
+  GEMM_AN_BN, GEMM_AT_BN, GEMM_AP_BN, NULL,
+  GEMM_AN_BT, GEMM_AT_BT, GEMM_AP_BT, NULL,
+  GEMM_AN_BP, GEMM_AT_BP, GEMM_AP_BP, NULL,
+  NULL, NULL, NULL, NULL,
 #if defined(SMP) && !defined(USE_SIMPLE_THREADED_LEVEL3)
-  GEMM_THREAD_AN_BN, GEMM_THREAD_AT_BN, GEMM_THREAD_AP_BN,
-  GEMM_THREAD_AN_BT, GEMM_THREAD_AT_BT, GEMM_THREAD_AP_BT,
-  GEMM_THREAD_AN_BP, GEMM_THREAD_AT_BP, GEMM_THREAD_AP_BP,
+  GEMM_THREAD_AN_BN, GEMM_THREAD_AT_BN, GEMM_THREAD_AP_BN, NULL,
+  GEMM_THREAD_AN_BT, GEMM_THREAD_AT_BT, GEMM_THREAD_AP_BT, NULL,
+  GEMM_THREAD_AN_BP, GEMM_THREAD_AT_BP, GEMM_THREAD_AP_BP, NULL,
+  NULL, NULL, NULL, NULL,
 #endif
 };
 
@@ -98,7 +100,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
 	   FLOAT *c, blasint ldc) {
 
   blas_arg_t args;
-  int transa, transb, metaA, metaB;
+  int transa, transb;
   blasint nrowa, nrowb, info;
 
   XFLOAT *buffer;
@@ -147,8 +149,6 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
 #else
   args.beta  = (void *)beta;
 #endif
-  metaA = -1;
-  metaB = -1;
   transa = -1;
   transb = -1;
   info   =  0;
@@ -168,11 +168,11 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
 
     if (TransA == CblasNoTrans)     transa = 0;
     if (TransA == CblasTrans)       transa = 1;
-    if (TransA == CblasPacked)      transa = 3;
+    if (TransA == CblasPacked)      transa = 2;
     
     if (TransB == CblasNoTrans)     transb = 0;
     if (TransB == CblasTrans)       transb = 1;
-    if (TransB == CblasPacked)      transb = 3;
+    if (TransB == CblasPacked)      transb = 2;
 
     nrowa = args.m;
     if (transa & 1) nrowa = args.k;
@@ -206,11 +206,11 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
 
     if (TransB == CblasNoTrans)     transa = 0;
     if (TransB == CblasTrans)       transa = 1;
-    if (TransB == CblasPacked)      transb = 3;
+    if (TransB == CblasPacked)      transb = 2;
     
     if (TransA == CblasNoTrans)     transb = 0;
     if (TransA == CblasTrans)       transb = 1;
-    if (TransA == CblasPacked)      transa = 3;
+    if (TransA == CblasPacked)      transa = 2;
 
     nrowa = args.m;
     if (transa & 1) nrowa = args.k;
@@ -242,7 +242,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
   IDEBUG_START;
 
   FUNCTION_PROFILE_START();
-//??needed?
+  
   buffer = (XFLOAT *)blas_memory_alloc(0);
 
   sa = (XFLOAT *)((BLASLONG)buffer +GEMM_OFFSET_A);
@@ -262,7 +262,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
  if (args.nthreads == 1) {
 #endif
 
-    (gemmcompute[transA | 3 * transB])(&args, NULL, NULL, sa, sb, 0);
+    (gemmcompute[transA | transB << 2])(&args, NULL, NULL, sa, sb, 0);
 
 #ifdef SMP
 
@@ -282,11 +282,11 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
       } else {
 #endif
 
-	(gemmcompute[9 + (transA | 3 * transB)])(&args, NULL, NULL, sa, sb, 0);
+	(gemmcompute[16 | transA | transB << 2])(&args, NULL, NULL, sa, sb, 0);
 
 #else
 
-	GEMM_THREAD(mode, &args, NULL, NULL, gemm[(transb << 2) | transa], sa, sb, args.nthreads);
+	GEMM_THREAD(mode, &args, NULL, NULL, gemmcompute[16 | transA | transB << 2], sa, sb, args.nthreads);
 
 #endif
 
