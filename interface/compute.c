@@ -79,7 +79,7 @@
 
 //interface for A & B gemm_compute
 //N or T or Packed
-static int (*gemm[])(blas_arg_t *, BLASLONG *, BLASLONG *, IFLOAT *, IFLOAT *, BLASLONG) = {
+static int (*gemmcompute[])(blas_arg_t *, BLASLONG *, BLASLONG *, IFLOAT *, IFLOAT *, BLASLONG) = {
   GEMM_AN_BN, GEMM_AT_BN, GEMM_AP_BN,
   GEMM_AN_BT, GEMM_AT_BT, GEMM_AP_BT,
   GEMM_AN_BP, GEMM_AT_BP, GEMM_AP_BP,
@@ -98,7 +98,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
 	   FLOAT *c, blasint ldc) {
 
   blas_arg_t args;
-  int transa, transb;
+  int transa, transb, metaA, metaB;
   blasint nrowa, nrowb, info;
 
   XFLOAT *buffer;
@@ -143,13 +143,12 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
 #endif
 
 #ifndef COMPLEX
-  args.alpha = (void *)&alpha;
   args.beta  = (void *)&beta;
 #else
-  args.alpha = (void *)alpha;
   args.beta  = (void *)beta;
 #endif
-
+  metaA = -1;
+  metaB = -1;
   transa = -1;
   transb = -1;
   info   =  0;
@@ -169,22 +168,11 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
 
     if (TransA == CblasNoTrans)     transa = 0;
     if (TransA == CblasTrans)       transa = 1;
-#ifndef COMPLEX
-    if (TransA == CblasConjNoTrans) transa = 0;
-    if (TransA == CblasConjTrans)   transa = 1;
-#else
-    if (TransA == CblasConjNoTrans) transa = 2;
-    if (TransA == CblasConjTrans)   transa = 3;
-#endif
+    if (TransA == CblasPacked)      transa = 3;
+    
     if (TransB == CblasNoTrans)     transb = 0;
     if (TransB == CblasTrans)       transb = 1;
-#ifndef COMPLEX
-    if (TransB == CblasConjNoTrans) transb = 0;
-    if (TransB == CblasConjTrans)   transb = 1;
-#else
-    if (TransB == CblasConjNoTrans) transb = 2;
-    if (TransB == CblasConjTrans)   transb = 3;
-#endif
+    if (TransB == CblasPacked)      transb = 3;
 
     nrowa = args.m;
     if (transa & 1) nrowa = args.k;
@@ -218,22 +206,11 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
 
     if (TransB == CblasNoTrans)     transa = 0;
     if (TransB == CblasTrans)       transa = 1;
-#ifndef COMPLEX
-    if (TransB == CblasConjNoTrans) transa = 0;
-    if (TransB == CblasConjTrans)   transa = 1;
-#else
-    if (TransB == CblasConjNoTrans) transa = 2;
-    if (TransB == CblasConjTrans)   transa = 3;
-#endif
+    if (TransB == CblasPacked)      transb = 3;
+    
     if (TransA == CblasNoTrans)     transb = 0;
     if (TransA == CblasTrans)       transb = 1;
-#ifndef COMPLEX
-    if (TransA == CblasConjNoTrans) transb = 0;
-    if (TransA == CblasConjTrans)   transb = 1;
-#else
-    if (TransA == CblasConjNoTrans) transb = 2;
-    if (TransA == CblasConjTrans)   transb = 3;
-#endif
+    if (TransA == CblasPacked)      transa = 3;
 
     nrowa = args.m;
     if (transa & 1) nrowa = args.k;
@@ -262,15 +239,10 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
 
   if ((args.m == 0) || (args.n == 0)) return;
 
-#if 0
-  fprintf(stderr, "m = %4d  n = %d  k = %d  lda = %4d  ldb = %4d  ldc = %4d\n",
-	 args.m, args.n, args.k, args.lda, args.ldb, args.ldc);
-#endif
-
   IDEBUG_START;
 
   FUNCTION_PROFILE_START();
-
+//??needed?
   buffer = (XFLOAT *)blas_memory_alloc(0);
 
   sa = (XFLOAT *)((BLASLONG)buffer +GEMM_OFFSET_A);
@@ -290,7 +262,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
  if (args.nthreads == 1) {
 #endif
 
-    (gemm[(transb << 2) | transa])(&args, NULL, NULL, sa, sb, 0);
+    (gemmcompute[transA | 3 * transB])(&args, NULL, NULL, sa, sb, 0);
 
 #ifdef SMP
 
@@ -310,7 +282,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
       } else {
 #endif
 
-	(gemm[16 | (transb << 2) | transa])(&args, NULL, NULL, sa, sb, 0);
+	(gemmcompute[9 + (transA | 3 * transB)])(&args, NULL, NULL, sa, sb, 0);
 
 #else
 
