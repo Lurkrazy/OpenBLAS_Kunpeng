@@ -48,18 +48,18 @@
 #ifndef ICOPY_OPERATION
 #if defined(NN) || defined(NT) || defined(NC) || defined(NR) || \
     defined(RN) || defined(RT) || defined(RC) || defined(RR)
-#define ICOPY_OPERATION(M, N, A, LDA, X, Y, BUFFER) GEMM_ITCOPY(M, N, (IFLOAT *)(A) + ((Y) + (X) * (LDA)) * COMPSIZE, LDA, BUFFER);
+#define ICOPY_OPERATION(M, N, A, LDA, X, Y, BUFFER, ALPHA) GEMM_ITCOPY_PACK(M, N, (IFLOAT *)(A) + ((Y) + (X) * (LDA)) * COMPSIZE, LDA, BUFFER, ALPHA);
 #else
-#define ICOPY_OPERATION(M, N, A, LDA, X, Y, BUFFER) GEMM_INCOPY(M, N, (IFLOAT *)(A) + ((X) + (Y) * (LDA)) * COMPSIZE, LDA, BUFFER);
+#define ICOPY_OPERATION(M, N, A, LDA, X, Y, BUFFER, ALPHA) GEMM_INCOPY_PACK(M, N, (IFLOAT *)(A) + ((X) + (Y) * (LDA)) * COMPSIZE, LDA, BUFFER, ALPHA);
 #endif
 #endif
 
 #ifndef OCOPY_OPERATION
 #if defined(NN) || defined(TN) || defined(CN) || defined(RN) || \
     defined(NR) || defined(TR) || defined(CR) || defined(RR)
-#define OCOPY_OPERATION(M, N, A, LDA, X, Y, BUFFER) GEMM_ONCOPY(M, N, (IFLOAT *)(A) + ((X) + (Y) * (LDA)) * COMPSIZE, LDA, BUFFER);
+#define OCOPY_OPERATION(M, N, A, LDA, X, Y, BUFFER, ALPHA) GEMM_ONCOPY_PACK(M, N, (IFLOAT *)(A) + ((X) + (Y) * (LDA)) * COMPSIZE, LDA, BUFFER, ALPHA);
 #else
-#define OCOPY_OPERATION(M, N, A, LDA, X, Y, BUFFER) GEMM_OTCOPY(M, N, (IFLOAT *)(A) + ((Y) + (X) * (LDA)) * COMPSIZE, LDA, BUFFER);
+#define OCOPY_OPERATION(M, N, A, LDA, X, Y, BUFFER, ALPHA) GEMM_OTCOPY_PACK(M, N, (IFLOAT *)(A) + ((Y) + (X) * (LDA)) * COMPSIZE, LDA, BUFFER, ALPHA);
 #endif
 #endif
 
@@ -85,19 +85,6 @@
 #else
 #define KERNEL_OPERATION(M, N, K, ALPHA, SA, SB, C, LDC, X, Y) \
 	KERNEL_FUNC(M, N, K, ALPHA, SA, SB, (FLOAT *)(C) + ((X) + (Y) * LDC) * COMPSIZE, LDC)
-#endif
-#endif
-
-#ifndef FUSED_KERNEL_OPERATION
-#if defined(NN) || defined(TN) || defined(CN) || defined(RN) || \
-    defined(NR) || defined(TR) || defined(CR) || defined(RR)
-#define FUSED_KERNEL_OPERATION(M, N, K, ALPHA, SA, SB, B, LDB, C, LDC, I, J, L) \
-	FUSED_GEMM_KERNEL_N(M, N, K, ALPHA[0], SA, SB, \
-	(FLOAT *)(B) + ((L) + (J) * LDB) * COMPSIZE, LDB, (FLOAT *)(C) + ((I) + (J) * LDC) * COMPSIZE, LDC)
-#else
-#define FUSED_KERNEL_OPERATION(M, N, K, ALPHA, SA, SB, B, LDB, C, LDC, I, J, L) \
-	FUSED_GEMM_KERNEL_T(M, N, K, ALPHA[0], SA, SB, \
-	(FLOAT *)(B) + ((J) + (L) * LDB) * COMPSIZE, LDB, (FLOAT *)(C) + ((I) + (J) * LDC) * COMPSIZE, LDC)
 #endif
 #endif
 
@@ -130,7 +117,8 @@
 #endif
 
 int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
-		  XFLOAT *sa, XFLOAT *sb, BLASLONG dummy){
+		  //XFLOAT *sa, XFLOAT *sb, blasint transa, blasint transb, BLASLONG dummy){
+		  void *sa, void *sb, blasint transa, blasint transb, BLASLONG dummy){
   BLASLONG k, lda, ldb, ldc;
   FLOAT *beta;
   IFLOAT *a, *b;
@@ -151,7 +139,17 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
   lda = LDA;
   ldb = LDB;
   ldc = LDC;
+#define IFPACKED(TRAN) (TRAN == 2)
 
+#if IFPACKED(transa)
+#define AP
+#endif
+
+#if IFPACKED(transb)
+#define BP
+#endif
+
+  alpha = (FLOAT *)args -> alpha;
   beta  = (FLOAT *)args -> beta;
 
   m_from = 0;
@@ -179,9 +177,19 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 
   l2size = GEMM_P * GEMM_Q;
 
+#if defined(AP) || defined(BP)
+  unsigned long desta, destb;
+  //init desta and destb
+  desta = *sa;
+  destb = *sb;
+#endif
+
+
   for(js = n_from; js < n_to; js += GEMM_R){
     min_j = n_to - js;
     if (min_j > GEMM_R) min_j = GEMM_R;
+    //reset desta
+    desta = *sa;
 
     for(ls = 0; ls < k; ls += min_l){
 
@@ -211,36 +219,49 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 	  l1stride = 0;
 	}
       }
-
-      ICOPY_OPERATION(min_l, min_i, a, lda, ls, m_from, sa);
-
-#if defined(FUSED_GEMM) && !defined(TIMING)
-      FUSED_KERNEL_OPERATION(min_i, min_j, min_l, alpha,
-			     sa, sb, b, ldb, c, ldc, m_from, js, ls);
+#if defined(AP)
+      //a packed
+      desta = *(sa++);
 #else
-      for(jjs = js; jjs < js + min_j; jjs += min_jj){
-	min_jj = min_j + js - jjs;
-#if defined(SKYLAKEX) || defined(COOPERLAKE)
-	/* the current AVX512 s/d/c/z GEMM kernel requires n>=6*GEMM_UNROLL_N to achieve best performance */
-	if (min_jj >= 6*GEMM_UNROLL_N) min_jj = 6*GEMM_UNROLL_N;
+      //ICOPY_OPERATION(min_l, min_i, a, lda, ls, m_from, sa);
+      ICOPY_OPERATION(min_l, min_i, a, lda, ls, m_from, desta);
+#endif
+      
+#if defined(BP)
+      destb = *(sb++);
 #else
-        if (min_jj >= 3*GEMM_UNROLL_N) min_jj = 3*GEMM_UNROLL_N;
-        else
-/*
-		if (min_jj >= 2*GEMM_UNROLL_N) min_jj = 2*GEMM_UNROLL_N;
-        	else
-*/
-          		if (min_jj > GEMM_UNROLL_N) min_jj = GEMM_UNROLL_N;
+      OCOPY_OPERATION(min_l, min_j, b, ldb, ls, js, destb);
+#endif
+      
+#if defined(AP)
+      KERNEL_OPERATION(min_i, min_j, min_l, 1, desta, destb, c, ldc, m_from, js);
+#else 
+      KERNEL_OPERATION(min_i, min_j, min_l, alpha, desta, destb, c, ldc, m_from, js);
 #endif
 
-	OCOPY_OPERATION(min_l, min_jj, b, ldb, ls, jjs,
-			sb + min_l * (jjs - js) * COMPSIZE * l1stride);
 
-	KERNEL_OPERATION(min_i, min_jj, min_l, alpha,
-			 sa, sb + min_l * (jjs - js)  * COMPSIZE * l1stride, c, ldc, m_from, jjs);
-
-      }
-#endif
+//      for(jjs = js; jjs < js + min_j; jjs += min_jj){
+//	min_jj = min_j + js - jjs;
+//#if defined(SKYLAKEX) || defined(COOPERLAKE)
+//	/* the current AVX512 s/d/c/z GEMM kernel requires n>=6*GEMM_UNROLL_N to achieve best performance */
+//	if (min_jj >= 6*GEMM_UNROLL_N) min_jj = 6*GEMM_UNROLL_N;
+//#else
+//        if (min_jj >= 3*GEMM_UNROLL_N) min_jj = 3*GEMM_UNROLL_N;
+//        else
+///*
+//		if (min_jj >= 2*GEMM_UNROLL_N) min_jj = 2*GEMM_UNROLL_N;
+//        	else
+//*/
+//          		if (min_jj > GEMM_UNROLL_N) min_jj = GEMM_UNROLL_N;
+//#endif
+//
+//	OCOPY_OPERATION(min_l, min_jj, b, ldb, ls, jjs,
+//			sb + min_l * (jjs - js) * COMPSIZE * l1stride);
+//
+//	KERNEL_OPERATION(min_i, min_jj, min_l, alpha,
+//			 sa, sb + min_l * (jjs - js)  * COMPSIZE * l1stride, c, ldc, m_from, jjs);
+//
+//      }
 
       for(is = m_from + min_i; is < m_to; is += min_i){
 	min_i = m_to - is;
@@ -251,10 +272,17 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 	  if (min_i > GEMM_P) {
 	    min_i = ((min_i / 2 + GEMM_UNROLL_M - 1)/GEMM_UNROLL_M) * GEMM_UNROLL_M;
 	  }
+#if defined(AP)
+    desta = *(a++);
+#else
+	ICOPY_OPERATION(min_l, min_i, a, lda, ls, is, desta);
+#endif
 
-	ICOPY_OPERATION(min_l, min_i, a, lda, ls, is, sa);
-
-	KERNEL_OPERATION(min_i, min_j, min_l, alpha, sa, sb, c, ldc, is, js);
+#if defined(AP)
+	KERNEL_OPERATION(min_i, min_j, min_l, 1, desta, destb, c, ldc, is, js);
+#else
+	KERNEL_OPERATION(min_i, min_j, min_l, alpha, desta, destb, c, ldc, is, js);
+#endif
 
       } /* end of is */
     } /* end of js */
