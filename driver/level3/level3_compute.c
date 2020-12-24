@@ -139,16 +139,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
   lda = LDA;
   ldb = LDB;
   ldc = LDC;
-#define IFPACKED(TRAN) (TRAN == 2)
-
-#if IFPACKED(transa)
-#define AP
-#endif
-
-#if IFPACKED(transb)
-#define BP
-#endif
-
+  
   alpha = (FLOAT *)args -> alpha;
   beta  = (FLOAT *)args -> beta;
 
@@ -177,11 +168,9 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 
   l2size = GEMM_P * GEMM_Q;
 
-#if defined(AP) || defined(BP)
+#if defined(AN) || defined(AT) || defined(BN) || defined(BT)
   unsigned long desta, destb;
-  //init desta and destb
-  desta = *sa;
-  destb = *sb;
+  FLOAT* tmpa;
 #endif
 
 
@@ -189,7 +178,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
     min_j = n_to - js;
     if (min_j > GEMM_R) min_j = GEMM_R;
     //reset desta
-    desta = *sa;
+    tmpa = sa;
 
     for(ls = 0; ls < k; ls += min_l){
 
@@ -219,21 +208,21 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 	  l1stride = 0;
 	}
       }
-#if defined(AP)
+#if defined(AN) || defined(AT)
       //a packed
-      desta = *(sa++);
+      desta = *(tmpa++);
 #else
       //ICOPY_OPERATION(min_l, min_i, a, lda, ls, m_from, sa);
       ICOPY_OPERATION(min_l, min_i, a, lda, ls, m_from, desta);
 #endif
       
-#if defined(BP)
+#if defined(BN) || defined(BT)
       destb = *(sb++);
 #else
       OCOPY_OPERATION(min_l, min_j, b, ldb, ls, js, destb);
 #endif
       
-#if defined(AP)
+#if defined(AN) || defined(AT)
       KERNEL_OPERATION(min_i, min_j, min_l, 1, desta, destb, c, ldc, m_from, js);
 #else 
       KERNEL_OPERATION(min_i, min_j, min_l, alpha, desta, destb, c, ldc, m_from, js);
@@ -272,13 +261,13 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 	  if (min_i > GEMM_P) {
 	    min_i = ((min_i / 2 + GEMM_UNROLL_M - 1)/GEMM_UNROLL_M) * GEMM_UNROLL_M;
 	  }
-#if defined(AP)
-    desta = *(a++);
+#if defined(AN) || defined(AT)
+    desta = *(tmpa++);
 #else
 	ICOPY_OPERATION(min_l, min_i, a, lda, ls, is, desta);
 #endif
 
-#if defined(AP)
+#if defined(AN) || defined(AT)
 	KERNEL_OPERATION(min_i, min_j, min_l, 1, desta, destb, c, ldc, is, js);
 #else
 	KERNEL_OPERATION(min_i, min_j, min_l, alpha, desta, destb, c, ldc, is, js);

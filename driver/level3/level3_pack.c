@@ -39,7 +39,7 @@
 /* This file is a template for level 3 operation */
 
 #ifndef ICOPY_OPERATION
-#define ICOPY_OPERATION
+//#define ICOPY_OPERATION
 #ifdef AN
 #define ICOPY_OPERATION(M, N, A, LDA, X, Y, BUFFER, ALPHA) GEMM_ITCOPY_PACK(M, N, (IFLOAT *)(A) + ((Y) + (X) * (LDA)) * COMPSIZE, LDA, BUFFER, ALPHA);
 #endif
@@ -49,7 +49,7 @@
 #endif
 
 #ifndef OCOPY_OPERATION
-#define OCOPY_OPERATION
+//#define OCOPY_OPERATION
 #ifdef BN
 #define OCOPY_OPERATION(M, N, A, LDA, X, Y, BUFFER, ALPHA) GEMM_ONCOPY_PACK(M, N, (IFLOAT *)(A) + ((X) + (Y) * (LDA)) * COMPSIZE, LDA, BUFFER, ALPHA);
 #endif
@@ -58,8 +58,8 @@
 #endif
 #endif
 
-#ifndef KERNEL_OPERATION
-#define KERNEL_OPERATION
+//#ifndef KERNEL_OPERATION
+//#define KERNEL_OPERATION
 
 #ifndef A
 #define A	args -> a
@@ -95,9 +95,10 @@
 
 int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 		  XFLOAT *sa, XFLOAT *sb, BLASLONG dummy){
-  BLASLONG k, lda;
+  BLASLONG k, lda, ldb;
   FLOAT *alpha;
   IFLOAT *a;
+  IFLOAT *b;
   IFLOAT *dest = (IFLOAT*)((unsigned long) sa + DEST_BASE);
   unsigned long *block = (unsigned long)((unsigned long)sa + MAX_THREADS*8);
   BLASLONG m_from, m_to, n_from, n_to;
@@ -116,8 +117,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 
   lda = LDA;
 
-  alpha = (FLOAT *)args -> alpha;
-  beta  = (FLOAT *)args -> beta;
+  //alpha = (FLOAT *)args -> alpha;
 
   m_from = 0;
   m_to   = M;
@@ -128,8 +128,9 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 
   l2size = GEMM_P * GEMM_Q;
 
-
 #if defined(BN) || defined(BT)
+  b = a;
+  ldb = lda;
   for(js = n_from; js < n_to; js += GEMM_R){
     min_j = n_to - js;
     if (min_j > GEMM_R) min_j = GEMM_R;
@@ -164,13 +165,12 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 	}
       }
       
-      ICOPY_OPERATION(min_l, min_i, a, lda, ls, m_from, dest);
+      ICOPY_OPERATION(min_l, min_i, a, lda, ls, m_from, dest, alpha);
       *block = dest; dest += min_l * min_i; block++;
 #endif
 #if defined(BN) || defined(BT)
 //here is different from level3.c . pack for only once
-	OCOPY_OPERATION(min_l, min_j, b, ldb, ls, js,
-			dest );
+	OCOPY_OPERATION(min_l, min_j, b, ldb, ls, js, dest, alpha);
       *block = dest; dest += min_l * min_i; block++;
 
 #endif
@@ -184,13 +184,14 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 	  if (min_i > GEMM_P) {
 	    min_i = ((min_i / 2 + GEMM_UNROLL_M - 1)/GEMM_UNROLL_M) * GEMM_UNROLL_M;
 	  }
-	ICOPY_OPERATION(min_l, min_i, a, lda, ls, is, dest);
+	ICOPY_OPERATION(min_l, min_i, a, lda, ls, is, dest, alpha);
 	*block = dest; dest += min_l * min_i; block++;
-#endif
       } /* end of is */
+#endif
     } /* end of js */
+#if defined(BN) || defined(BT)
   } /* end of ls */
-
+#endif
 
   return 0;
 }
