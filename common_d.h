@@ -46,12 +46,23 @@
 #define	DGEMM_ONCOPY		dgemm_oncopy
 #define	DGEMM_OTCOPY		dgemm_otcopy
 
+#define	DGEMM_ONCOPY_PACK		dgemm_oncopy_pack
+#define	DGEMM_OTCOPY_PACK		dgemm_otcopy_pack
+
 #if DGEMM_DEFAULT_UNROLL_M == DGEMM_DEFAULT_UNROLL_N
 #define	DGEMM_INCOPY		dgemm_oncopy
 #define	DGEMM_ITCOPY		dgemm_otcopy
 #else
 #define	DGEMM_INCOPY		dgemm_incopy
 #define	DGEMM_ITCOPY		dgemm_itcopy
+#endif
+
+#if DGEMM_DEFAULT_UNROLL_M == DGEMM_DEFAULT_UNROLL_N
+#define	DGEMM_INCOPY_PACK		dgemm_oncopy_pack
+#define	DGEMM_ITCOPY_PACK		dgemm_otcopy_pack
+#else
+#define	DGEMM_INCOPY_PACK		dgemm_incopy_pack
+#define	DGEMM_ITCOPY_PACK		dgemm_itcopy_pack
 #endif
 
 #define	DTRMM_OUNUCOPY		dtrmm_ounucopy
@@ -203,6 +214,11 @@
 #define	DGEMM_OTCOPY		gotoblas -> dgemm_otcopy
 #define	DGEMM_INCOPY		gotoblas -> dgemm_incopy
 #define	DGEMM_ITCOPY		gotoblas -> dgemm_itcopy
+
+#define	DGEMM_ONCOPY_PACK		gotoblas -> dgemm_oncopy_pack
+#define	DGEMM_OTCOPY_PACK		gotoblas -> dgemm_otcopy_pack
+#define	DGEMM_INCOPY_PACK		gotoblas -> dgemm_incopy_pack
+#define	DGEMM_ITCOPY_PACK		gotoblas -> dgemm_itcopy_pack
 
 #define	DTRMM_OUNUCOPY		gotoblas -> dtrmm_ounucopy
 #define	DTRMM_OUTUCOPY		gotoblas -> dtrmm_outucopy

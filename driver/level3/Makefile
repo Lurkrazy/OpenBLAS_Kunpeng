@@ -401,6 +401,33 @@ sgemm_bn_pack.$(SUFFIX) : gemm_pack.c level3_pack.c ../../param.h
 sgemm_bt_pack.$(SUFFIX) : gemm_pack.c level3_pack.c ../../param.h
 	$(CC) $(CFLAGS) $(BLOCKS) -c -UDOUBLE -DBT $< -o $(@F)
 
+sgemm_compute_nn.$(SUFFIX) : gemm_compute.c level3_compute.c ../../param.h
+	$(CC) $(CFLAGS) $(BLOCKS) -c -UDOUBLE -DAN -DBN $< -o $(@F)
+
+sgemm_compute_nt.$(SUFFIX) : gemm_compute.c level3_compute.c ../../param.h
+	$(CC) $(CFLAGS) $(BLOCKS) -c -UDOUBLE -DAN -DBT $< -o $(@F)
+
+sgemm_compute_np.$(SUFFIX) : gemm_compute.c level3_compute.c ../../param.h
+	$(CC) $(CFLAGS) $(BLOCKS) -c -UDOUBLE -DAN -DBP $< -o $(@F)
+
+sgemm_compute_tn.$(SUFFIX) : gemm_compute.c level3_compute.c ../../param.h
+	$(CC) $(CFLAGS) $(BLOCKS) -c -UDOUBLE -DAT -DBN $< -o $(@F)
+
+sgemm_compute_tt.$(SUFFIX) : gemm_compute.c level3_compute.c ../../param.h
+	$(CC) $(CFLAGS) $(BLOCKS) -c -UDOUBLE -DAT -DBT $< -o $(@F)
+
+sgemm_compute_tp.$(SUFFIX) : gemm_compute.c level3_compute.c ../../param.h
+	$(CC) $(CFLAGS) $(BLOCKS) -c -UDOUBLE -DAT -DBP $< -o $(@F)
+
+sgemm_compute_pn.$(SUFFIX) : gemm_compute.c level3_compute.c ../../param.h
+	$(CC) $(CFLAGS) $(BLOCKS) -c -UDOUBLE -DAP -DBN $< -o $(@F)
+
+sgemm_compute_pt.$(SUFFIX) : gemm_compute.c level3_compute.c ../../param.h
+	$(CC) $(CFLAGS) $(BLOCKS) -c -UDOUBLE -DAP -DBT $< -o $(@F)
+
+sgemm_compute_pp.$(SUFFIX) : gemm_compute.c level3_compute.c ../../param.h
+	$(CC) $(CFLAGS) $(BLOCKS) -c -UDOUBLE -DAP -DBP $< -o $(@F)
+
 dgemm_nn.$(SUFFIX) : gemm.c level3.c ../../param.h
 	$(CC) $(CFLAGS) $(BLOCKS) -c -DDOUBLE -UCOMPLEX -DNN $< -o $(@F)
 
@@ -424,6 +451,33 @@ dgemm_bn_pack.$(SUFFIX) : gemm_pack.c level3_pack.c ../../param.h
 
 dgemm_bt_pack.$(SUFFIX) : gemm_pack.c level3_pack.c ../../param.h
 	$(CC) $(CFLAGS) $(BLOCKS) -c -DDOUBLE -DBT $< -o $(@F)
+
+dgemm_compute_nn.$(SUFFIX) : gemm_compute.c level3_compute.c ../../param.h
+	$(CC) $(CFLAGS) $(BLOCKS) -c -UDOUBLE -DAN -DBN $< -o $(@F)
+
+dgemm_compute_nt.$(SUFFIX) : gemm_compute.c level3_compute.c ../../param.h
+	$(CC) $(CFLAGS) $(BLOCKS) -c -UDOUBLE -DAN -DBT $< -o $(@F)
+
+dgemm_compute_np.$(SUFFIX) : gemm_compute.c level3_compute.c ../../param.h
+	$(CC) $(CFLAGS) $(BLOCKS) -c -UDOUBLE -DAN -DBP $< -o $(@F)
+
+dgemm_compute_tn.$(SUFFIX) : gemm_compute.c level3_compute.c ../../param.h
+	$(CC) $(CFLAGS) $(BLOCKS) -c -UDOUBLE -DAT -DBN $< -o $(@F)
+
+dgemm_compute_tt.$(SUFFIX) : gemm_compute.c level3_compute.c ../../param.h
+	$(CC) $(CFLAGS) $(BLOCKS) -c -UDOUBLE -DAT -DBT $< -o $(@F)
+
+dgemm_compute_tp.$(SUFFIX) : gemm_compute.c level3_compute.c ../../param.h
+	$(CC) $(CFLAGS) $(BLOCKS) -c -UDOUBLE -DAT -DBP $< -o $(@F)
+
+dgemm_compute_pn.$(SUFFIX) : gemm_compute.c level3_compute.c ../../param.h
+	$(CC) $(CFLAGS) $(BLOCKS) -c -UDOUBLE -DAP -DBN $< -o $(@F)
+
+dgemm_compute_pt.$(SUFFIX) : gemm_compute.c level3_compute.c ../../param.h
+	$(CC) $(CFLAGS) $(BLOCKS) -c -UDOUBLE -DAP -DBT $< -o $(@F)
+
+dgemm_compute_pp.$(SUFFIX) : gemm_compute.c level3_compute.c ../../param.h
+	$(CC) $(CFLAGS) $(BLOCKS) -c -UDOUBLE -DAP -DBP $< -o $(@F)
 
 qgemm_nn.$(SUFFIX) : gemm.c level3.c ../../param.h
 	$(CC) $(CFLAGS) $(BLOCKS) -c -DXDOUBLE -UCOMPLEX -DNN $< -o $(@F)

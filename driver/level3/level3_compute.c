@@ -46,46 +46,43 @@
 #endif
 
 #ifndef ICOPY_OPERATION
-#if defined(NN) || defined(NT) || defined(NC) || defined(NR) || \
-    defined(RN) || defined(RT) || defined(RC) || defined(RR)
-#define ICOPY_OPERATION(M, N, A, LDA, X, Y, BUFFER, ALPHA) GEMM_ITCOPY_PACK(M, N, (IFLOAT *)(A) + ((Y) + (X) * (LDA)) * COMPSIZE, LDA, BUFFER, ALPHA);
-#else
-#define ICOPY_OPERATION(M, N, A, LDA, X, Y, BUFFER, ALPHA) GEMM_INCOPY_PACK(M, N, (IFLOAT *)(A) + ((X) + (Y) * (LDA)) * COMPSIZE, LDA, BUFFER, ALPHA);
+#if defined(AN)
+#define ICOPY_OPERATION(M, N, A, LDA, X, Y, BUFFER) GEMM_ITCOPY(M, N, (IFLOAT *)(A) + ((Y) + (X) * (LDA)) * COMPSIZE, LDA, BUFFER);
+#elif defined(AT)
+#define ICOPY_OPERATION(M, N, A, LDA, X, Y, BUFFER) GEMM_INCOPY(M, N, (IFLOAT *)(A) + ((X) + (Y) * (LDA)) * COMPSIZE, LDA, BUFFER);
 #endif
 #endif
 
 #ifndef OCOPY_OPERATION
-#if defined(NN) || defined(TN) || defined(CN) || defined(RN) || \
-    defined(NR) || defined(TR) || defined(CR) || defined(RR)
-#define OCOPY_OPERATION(M, N, A, LDA, X, Y, BUFFER, ALPHA) GEMM_ONCOPY_PACK(M, N, (IFLOAT *)(A) + ((X) + (Y) * (LDA)) * COMPSIZE, LDA, BUFFER, ALPHA);
-#else
-#define OCOPY_OPERATION(M, N, A, LDA, X, Y, BUFFER, ALPHA) GEMM_OTCOPY_PACK(M, N, (IFLOAT *)(A) + ((Y) + (X) * (LDA)) * COMPSIZE, LDA, BUFFER, ALPHA);
+#if defined(BN)
+#define OCOPY_OPERATION(M, N, A, LDA, X, Y, BUFFER) GEMM_ONCOPY(M, N, (IFLOAT *)(A) + ((X) + (Y) * (LDA)) * COMPSIZE, LDA, BUFFER);
+#elif defined(BT)
+#define OCOPY_OPERATION(M, N, A, LDA, X, Y, BUFFER) GEMM_OTCOPY(M, N, (IFLOAT *)(A) + ((Y) + (X) * (LDA)) * COMPSIZE, LDA, BUFFER);
 #endif
 #endif
 
 #ifndef KERNEL_FUNC
-#if defined(NN) || defined(NT) || defined(TN) || defined(TT)
 #define KERNEL_FUNC	GEMM_KERNEL_N
 #endif
-#if defined(CN) || defined(CT) || defined(RN) || defined(RT)
-#define KERNEL_FUNC	GEMM_KERNEL_L
-#endif
-#if defined(NC) || defined(TC) || defined(NR) || defined(TR)
-#define KERNEL_FUNC	GEMM_KERNEL_R
-#endif
-#if defined(CC) || defined(CR) || defined(RC) || defined(RR)
-#define KERNEL_FUNC	GEMM_KERNEL_B
-#endif
-#endif
+
+//#ifndef KERNEL_FUNC 
+//#if defined(NN) || defined(NT) || defined(TN) || defined(TT)
+//#define KERNEL_FUNC	GEMM_KERNEL_N
+//#endif
+//#if defined(CN) || defined(CT) || defined(RN) || defined(RT)
+//#define KERNEL_FUNC	GEMM_KERNEL_L
+//#endif
+//#if defined(NC) || defined(TC) || defined(NR) || defined(TR)
+//#define KERNEL_FUNC	GEMM_KERNEL_R
+//#endif
+//#if defined(CC) || defined(CR) || defined(RC) || defined(RR)
+//#define KERNEL_FUNC	GEMM_KERNEL_B
+//#endif
+//#endif
 
 #ifndef KERNEL_OPERATION
-#if !defined(XDOUBLE) || !defined(QUAD_PRECISION)
 #define KERNEL_OPERATION(M, N, K, ALPHA, SA, SB, C, LDC, X, Y) \
 	KERNEL_FUNC(M, N, K, ALPHA[0], SA, SB, (FLOAT *)(C) + ((X) + (Y) * LDC) * COMPSIZE, LDC)
-#else
-#define KERNEL_OPERATION(M, N, K, ALPHA, SA, SB, C, LDC, X, Y) \
-	KERNEL_FUNC(M, N, K, ALPHA, SA, SB, (FLOAT *)(C) + ((X) + (Y) * LDC) * COMPSIZE, LDC)
-#endif
 #endif
 
 #ifndef A
@@ -117,10 +114,11 @@
 #endif
 
 int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
-		  //XFLOAT *sa, XFLOAT *sb, blasint transa, blasint transb, BLASLONG dummy){
-		  void *sa, void *sb, blasint transa, blasint transb, BLASLONG dummy){
+		  void *sa, void *sb
+          //blasint transa, blasint transb
+          ,BLASLONG dummy){
   BLASLONG k, lda, ldb, ldc;
-  FLOAT *beta;
+  FLOAT *alpha, *beta;
   IFLOAT *a, *b;
   FLOAT *c;
   BLASLONG m_from, m_to, n_from, n_to;
@@ -140,7 +138,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
   ldb = LDB;
   ldc = LDC;
   
-  alpha = (FLOAT *)args -> alpha;
+  *alpha = 1;
   beta  = (FLOAT *)args -> beta;
 
   m_from = 0;
@@ -168,17 +166,24 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 
   l2size = GEMM_P * GEMM_Q;
 
-#if defined(AN) || defined(AT) || defined(BN) || defined(BT)
-  unsigned long desta, destb;
-  FLOAT* tmpa;
-#endif
+  unsigned long long desta;
+  unsigned long long destb;
 
+#if defined(AP)
+  unsigned long long* tmpa;
+#else
+//  FLOAT* tmpa;
+#endif
 
   for(js = n_from; js < n_to; js += GEMM_R){
     min_j = n_to - js;
     if (min_j > GEMM_R) min_j = GEMM_R;
+#if defined(AP)
     //reset desta
-    tmpa = sa;
+    tmpa = (unsigned long long)sa;
+#else
+//    tmpa = (FLOAT *)sa;
+#endif
 
     for(ls = 0; ls < k; ls += min_l){
 
@@ -208,25 +213,23 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 	  l1stride = 0;
 	}
       }
-#if defined(AN) || defined(AT)
+#if defined(AP)
       //a packed
       desta = *(tmpa++);
 #else
       //ICOPY_OPERATION(min_l, min_i, a, lda, ls, m_from, sa);
+      desta = (FLOAT *)sa;
       ICOPY_OPERATION(min_l, min_i, a, lda, ls, m_from, desta);
 #endif
       
-#if defined(BN) || defined(BT)
-      destb = *(sb++);
+#if defined(BP)
+      destb = *((unsigned long long*)sb++);
 #else
+      destb = sb;
       OCOPY_OPERATION(min_l, min_j, b, ldb, ls, js, destb);
 #endif
       
-#if defined(AN) || defined(AT)
-      KERNEL_OPERATION(min_i, min_j, min_l, 1, desta, destb, c, ldc, m_from, js);
-#else 
       KERNEL_OPERATION(min_i, min_j, min_l, alpha, desta, destb, c, ldc, m_from, js);
-#endif
 
 
 //      for(jjs = js; jjs < js + min_j; jjs += min_jj){
@@ -261,17 +264,14 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 	  if (min_i > GEMM_P) {
 	    min_i = ((min_i / 2 + GEMM_UNROLL_M - 1)/GEMM_UNROLL_M) * GEMM_UNROLL_M;
 	  }
-#if defined(AN) || defined(AT)
+#if defined(AP)
     desta = *(tmpa++);
 #else
+    desta = (FLOAT *)sa;
 	ICOPY_OPERATION(min_l, min_i, a, lda, ls, is, desta);
 #endif
 
-#if defined(AN) || defined(AT)
-	KERNEL_OPERATION(min_i, min_j, min_l, 1, desta, destb, c, ldc, is, js);
-#else
 	KERNEL_OPERATION(min_i, min_j, min_l, alpha, desta, destb, c, ldc, is, js);
-#endif
 
       } /* end of is */
     } /* end of js */

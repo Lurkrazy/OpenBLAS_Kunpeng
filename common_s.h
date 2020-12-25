@@ -52,12 +52,23 @@
 #define	SGEMM_ONCOPY		sgemm_oncopy
 #define	SGEMM_OTCOPY		sgemm_otcopy
 
+#define	SGEMM_ONCOPY_PACK		sgemm_oncopy_pack
+#define	SGEMM_OTCOPY_PACK		sgemm_otcopy_pack
+
 #if SGEMM_DEFAULT_UNROLL_M == SGEMM_DEFAULT_UNROLL_N
 #define	SGEMM_INCOPY		sgemm_oncopy
 #define	SGEMM_ITCOPY		sgemm_otcopy
 #else
 #define	SGEMM_INCOPY		sgemm_incopy
 #define	SGEMM_ITCOPY		sgemm_itcopy
+#endif
+
+#if SGEMM_DEFAULT_UNROLL_M == SGEMM_DEFAULT_UNROLL_N
+#define	SGEMM_INCOPY_PACK		sgemm_oncopy_pack
+#define	SGEMM_ITCOPY_PACK		sgemm_otcopy_pack
+#else
+#define	SGEMM_INCOPY_PACK		sgemm_incopy_pack
+#define	SGEMM_ITCOPY_PACK		sgemm_itcopy_pack
 #endif
 
 #define	STRMM_OUNUCOPY		strmm_ounucopy
@@ -220,6 +231,11 @@
 #define	SGEMM_OTCOPY		gotoblas -> sgemm_otcopy
 #define	SGEMM_INCOPY		gotoblas -> sgemm_incopy
 #define	SGEMM_ITCOPY		gotoblas -> sgemm_itcopy
+
+#define	SGEMM_ONCOPY_PACK		gotoblas -> sgemm_oncopy_pack
+#define	SGEMM_OTCOPY_PACK		gotoblas -> sgemm_otcopy_pack
+#define	SGEMM_INCOPY_PACK		gotoblas -> sgemm_incopy_pack
+#define	SGEMM_ITCOPY_PACK		gotoblas -> sgemm_itcopy_pack
 
 #define	STRMM_OUNUCOPY		gotoblas -> strmm_ounucopy
 #define	STRMM_OUTUCOPY		gotoblas -> strmm_outucopy
