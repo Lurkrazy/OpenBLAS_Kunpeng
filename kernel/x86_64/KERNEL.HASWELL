@@ -55,6 +55,24 @@ DGEMMITCOPYOBJ =  dgemm_itcopy$(TSUFFIX).$(SUFFIX)
 DGEMMONCOPYOBJ =  dgemm_oncopy$(TSUFFIX).$(SUFFIX)
 DGEMMOTCOPYOBJ =  dgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
+SGEMMINCOPY_PACK    =  ../generic/gemm_ncopy_pack_8.c
+SGEMMITCOPY_PACK    =  ../generic/gemm_tcopy_pack_8.c
+SGEMMONCOPY_PACK    =  ../generic/gemm_ncopy_pack_4.c
+SGEMMOTCOPY_PACK    =  ../generic/gemm_tcopy_pack_4.c
+SGEMMINCOPYPACKOBJ =  sgemm_incopy_pack$(TSUFFIX).$(SUFFIX)
+SGEMMITCOPYPACKOBJ =  sgemm_itcopy_pack$(TSUFFIX).$(SUFFIX)
+SGEMMONCOPYPACKOBJ =  sgemm_oncopy_pack$(TSUFFIX).$(SUFFIX)
+SGEMMOTCOPYPACKOBJ =  sgemm_otcopy_pack$(TSUFFIX).$(SUFFIX)
+
+DGEMMINCOPY_PACK    =  ../generic/gemm_ncopy_pack_4.c
+DGEMMITCOPY_PACK    =  ../generic/gemm_tcopy_pack_4.c
+DGEMMONCOPY_PACK    =  ../generic/gemm_ncopy_pack_8.c
+DGEMMOTCOPY_PACK    =  ../generic/gemm_tcopy_pack_8.c
+DGEMMINCOPYPACKOBJ =  dgemm_incopy_pack$(TSUFFIX).$(SUFFIX)
+DGEMMITCOPYPACKOBJ =  dgemm_itcopy_pack$(TSUFFIX).$(SUFFIX)
+DGEMMONCOPYPACKOBJ =  dgemm_oncopy_pack$(TSUFFIX).$(SUFFIX)
+DGEMMOTCOPYPACKOBJ =  dgemm_otcopy_pack$(TSUFFIX).$(SUFFIX)
+
 CTRMMKERNEL    =  cgemm_kernel_8x2_haswell.S
 CGEMMKERNEL    =  cgemm_kernel_8x2_haswell.c
 CGEMMINCOPY    =  ../generic/zgemm_ncopy_8.c
