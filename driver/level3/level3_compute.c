@@ -119,7 +119,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
           ,BLASLONG dummy){
   BLASLONG k, lda, ldb, ldc;
   FLOAT *alpha, *beta;
-  IFLOAT *a, *b;
+  IFLOAT *a, *b, *DESTA, *DESTB;
   FLOAT *c;
   BLASLONG m_from, m_to, n_from, n_to;
 
@@ -130,15 +130,17 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 
   k = K;
 
-  a = (IFLOAT *)A;
-  b = (IFLOAT *)B;
+  DESTA = (IFLOAT *)A;
+  DESTB = (IFLOAT *)B;
   c = (FLOAT *)C;
 
   lda = LDA;
   ldb = LDB;
   ldc = LDC;
-  
-  *alpha = 1;
+
+  //alphaT just for initialize alpha = 1
+  FLOAT alphaT[1] = {1};
+  alpha = alphaT;
   beta  = (FLOAT *)args -> beta;
 
   m_from = 0;
@@ -163,26 +165,24 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 	}
   }
 
-
   l2size = GEMM_P * GEMM_Q;
 
-  unsigned long long desta;
-  unsigned long long destb;
-
-#if defined(AP)
-  unsigned long long* tmpa;
-#else
-//  FLOAT* tmpa;
-#endif
+//  unsigned long long desta;
+//  unsigned long long destb;
+//
+//#if defined(AP)
+//  unsigned long long* tmpa;
+//#else
+////  FLOAT* tmpa;
+//#endif
 
   for(js = n_from; js < n_to; js += GEMM_R){
     min_j = n_to - js;
     if (min_j > GEMM_R) min_j = GEMM_R;
+
 #if defined(AP)
-    //reset desta
-    tmpa = (unsigned long long)sa;
-#else
-//    tmpa = (FLOAT *)sa;
+  //reset the pointer to packed A
+  unsigned long long* pointerToEveryBlockofPackedA = (unsigned long long *)DESTA;
 #endif
 
     for(ls = 0; ls < k; ls += min_l){
@@ -215,18 +215,20 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
       }
 #if defined(AP)
       //a packed
-      desta = *(tmpa++);
+      FLOAT* desta = (FLOAT *)(*pointerToEveryBlockofPackedA);
+      pointerToEveryBlockofPackedA++;
 #else
-      //ICOPY_OPERATION(min_l, min_i, a, lda, ls, m_from, sa);
-      desta = (FLOAT *)sa;
-      ICOPY_OPERATION(min_l, min_i, a, lda, ls, m_from, desta);
+      ICOPY_OPERATION(min_l, min_i, a, lda, ls, m_from, sa);
+      FLOAT* desta = sa;
 #endif
       
 #if defined(BP)
-      destb = *((unsigned long long*)sb++);
+      unsigned long long* pointerToEveryBlockofPackedB = DESTB;
+      FLOAT* destb = (FLOAT *)(*pointerToEveryBlockofPackedB);
+      pointerToEveryBlockofPackedB++;
 #else
-      destb = sb;
-      OCOPY_OPERATION(min_l, min_j, b, ldb, ls, js, destb);
+      OCOPY_OPERATION(min_l, min_j, b, ldb, ls, js, sb);
+      FLOAT* destb = sb;
 #endif
       
       KERNEL_OPERATION(min_i, min_j, min_l, alpha, desta, destb, c, ldc, m_from, js);
@@ -265,10 +267,12 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 	    min_i = ((min_i / 2 + GEMM_UNROLL_M - 1)/GEMM_UNROLL_M) * GEMM_UNROLL_M;
 	  }
 #if defined(AP)
-    desta = *(tmpa++);
+      //a packed
+      FLOAT* desta = (FLOAT *)(*pointerToEveryBlockofPackedA);
+      pointerToEveryBlockofPackedA++;
 #else
-    desta = (FLOAT *)sa;
-	ICOPY_OPERATION(min_l, min_i, a, lda, ls, is, desta);
+	    ICOPY_OPERATION(min_l, min_i, a, lda, ls, is, sa);
+      FLOAT* desta = sa;
 #endif
 
 	KERNEL_OPERATION(min_i, min_j, min_l, alpha, desta, destb, c, ldc, is, js);

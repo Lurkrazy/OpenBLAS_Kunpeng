@@ -244,7 +244,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
   FUNCTION_PROFILE_START();
   
   buffer = (XFLOAT *)blas_memory_alloc(0);
-
+  //buffer for computing A * B
   sa = (XFLOAT *)((BLASLONG)buffer +GEMM_OFFSET_A);
   sb = (XFLOAT *)(((BLASLONG)sa + ((GEMM_P * GEMM_Q * COMPSIZE * SIZE + GEMM_ALIGN) & ~GEMM_ALIGN)) + GEMM_OFFSET_B);
 

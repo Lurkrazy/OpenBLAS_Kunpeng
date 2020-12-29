@@ -99,8 +99,9 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
   FLOAT *alpha;
   IFLOAT *a;
   IFLOAT *b;
-  IFLOAT *dest = (IFLOAT*)((unsigned long) sa + DEST_BASE);
-  unsigned long *block = (unsigned long)((unsigned long)sa + MAX_THREADS*8);
+  IFLOAT *dest = (IFLOAT*)((unsigned long long) sa + DEST_BASE);
+  //unsigned long *block = (unsigned long)((unsigned long)sa + MAX_THREADS*8);
+  unsigned long long* block = (unsigned long long)sa;
   BLASLONG m_from, m_to, n_from, n_to;
 
   BLASLONG ls, is, js;
@@ -109,7 +110,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
   BLASLONG l1stride, gemm_p, l2size;
 
   //threads = 1
-  *(unsigned long*)((unsigned long)sa) = ((unsigned long)block);
+  //*(unsigned long*)((unsigned long)sa) = ((unsigned long long)block);
 
   k = K;
 
@@ -171,7 +172,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 #if defined(BN) || defined(BT)
 //here is different from level3.c . pack for only once
 	OCOPY_OPERATION(min_l, min_j, b, ldb, ls, js, dest, alpha);
-      *block = dest; dest += min_l * min_i; block++;
+      *block = dest; dest += min_l * min_j; block++;
 
 #endif
 #if defined(AN) || defined(AT) 

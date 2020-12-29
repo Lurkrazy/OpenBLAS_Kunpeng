@@ -63,10 +63,13 @@
 #define	SGEMM_ITCOPY		sgemm_itcopy
 #endif
 
+#if SGEMM_DEFAULT_UNROLL_M == SGEMM_DEFAULT_UNROLL_N
 #define	SGEMM_INCOPY_PACK		sgemm_oncopy_pack
 #define	SGEMM_ITCOPY_PACK		sgemm_otcopy_pack
+#else
 #define	SGEMM_INCOPY_PACK		sgemm_incopy_pack
 #define	SGEMM_ITCOPY_PACK		sgemm_itcopy_pack
+#endif
 
 #define	STRMM_OUNUCOPY		strmm_ounucopy
 #define	STRMM_OUNNCOPY		strmm_ounncopy

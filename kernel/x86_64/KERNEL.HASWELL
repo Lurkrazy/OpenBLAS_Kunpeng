@@ -55,19 +55,19 @@ DGEMMITCOPYOBJ =  dgemm_itcopy$(TSUFFIX).$(SUFFIX)
 DGEMMONCOPYOBJ =  dgemm_oncopy$(TSUFFIX).$(SUFFIX)
 DGEMMOTCOPYOBJ =  dgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
-SGEMMINCOPY_PACK    =  ../generic/gemm_ncopy_pack_8.c
-SGEMMITCOPY_PACK    =  ../generic/gemm_tcopy_pack_8.c
-SGEMMONCOPY_PACK    =  ../generic/gemm_ncopy_pack_4.c
-SGEMMOTCOPY_PACK    =  ../generic/gemm_tcopy_pack_4.c
+SGEMMINCOPYPACK    =  ../generic/gemm_ncopy_pack_8.c
+SGEMMITCOPYPACK    =  ../generic/gemm_tcopy_pack_8.c
+SGEMMONCOPYPACK    =  ../generic/gemm_ncopy_pack_4.c
+SGEMMOTCOPYPACK    =  ../generic/gemm_tcopy_pack_4.c
 SGEMMINCOPYPACKOBJ =  sgemm_incopy_pack$(TSUFFIX).$(SUFFIX)
 SGEMMITCOPYPACKOBJ =  sgemm_itcopy_pack$(TSUFFIX).$(SUFFIX)
 SGEMMONCOPYPACKOBJ =  sgemm_oncopy_pack$(TSUFFIX).$(SUFFIX)
 SGEMMOTCOPYPACKOBJ =  sgemm_otcopy_pack$(TSUFFIX).$(SUFFIX)
 
-DGEMMINCOPY_PACK    =  ../generic/gemm_ncopy_pack_4.c
-DGEMMITCOPY_PACK    =  ../generic/gemm_tcopy_pack_4.c
-DGEMMONCOPY_PACK    =  ../generic/gemm_ncopy_pack_8.c
-DGEMMOTCOPY_PACK    =  ../generic/gemm_tcopy_pack_8.c
+DGEMMINCOPYPACK    =  ../generic/gemm_ncopy_pack_4.c
+DGEMMITCOPYPACK    =  ../generic/gemm_tcopy_pack_4.c
+DGEMMONCOPYPACK    =  ../generic/gemm_ncopy_pack_8.c
+DGEMMOTCOPYPACK    =  ../generic/gemm_tcopy_pack_8.c
 DGEMMINCOPYPACKOBJ =  dgemm_incopy_pack$(TSUFFIX).$(SUFFIX)
 DGEMMITCOPYPACKOBJ =  dgemm_itcopy_pack$(TSUFFIX).$(SUFFIX)
 DGEMMONCOPYPACKOBJ =  dgemm_oncopy_pack$(TSUFFIX).$(SUFFIX)
