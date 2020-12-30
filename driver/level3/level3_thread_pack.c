@@ -58,9 +58,6 @@
 #endif
 #endif
 
-#ifndef KERNEL_OPERATION
-#define KERNEL_OPERATION
-
 #ifndef A
 #define A	args -> a
 #endif
@@ -117,7 +114,6 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
   lda = LDA;
 
   alpha = (FLOAT *)args -> alpha;
-  beta  = (FLOAT *)args -> beta;
 
   m_from = 0;
   m_to   = M;
@@ -129,7 +125,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
   l2size = GEMM_P * GEMM_Q;
 
 
-#if defined(BN) || defined(BT)
+#if defined(BP)
   for(js = n_from; js < n_to; js += GEMM_R){
     min_j = n_to - js;
     if (min_j > GEMM_R) min_j = GEMM_R;
@@ -149,7 +145,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 	while (gemm_p * min_l > l2size) gemm_p -= GEMM_UNROLL_M;
       }
 
-#if defined (AN) || defined(AT)
+#if defined (AP)
       /* First, we have to move data A to L2 cache */
       min_i = m_to - m_from;
       l1stride = 1;
@@ -167,14 +163,13 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
       ICOPY_OPERATION(min_l, min_i, a, lda, ls, m_from, dest);
       *block = dest; dest += min_l * min_i; block++;
 #endif
-#if defined(BN) || defined(BT)
+#if defined(BP)
 //here is different from level3.c . pack for only once
-	OCOPY_OPERATION(min_l, min_j, b, ldb, ls, js,
-			dest );
+	OCOPY_OPERATION(min_l, min_j, b, ldb, ls, js, dest);
       *block = dest; dest += min_l * min_i; block++;
 
 #endif
-#if defined(AN) || defined(AT) 
+#if defined(AP)
       for(is = m_from + min_i; is < m_to; is += min_i){
 	min_i = m_to - is;
 
@@ -186,11 +181,12 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 	  }
 	ICOPY_OPERATION(min_l, min_i, a, lda, ls, is, dest);
 	*block = dest; dest += min_l * min_i; block++;
-#endif
       } /* end of is */
+#endif
     } /* end of js */
+#if defined(BP)
   } /* end of ls */
-
+#endif
 
   return 0;
 }

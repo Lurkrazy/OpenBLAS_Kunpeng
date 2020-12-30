@@ -443,6 +443,16 @@
 #define	DGEMM_THREAD_RC		dgemm_thread_nt
 #define	DGEMM_THREAD_RR		dgemm_thread_nn
 
+#define	DGEMM_THREAD_COMPUTE_NN		dgemm_thread_compute_nn
+#define	DGEMM_THREAD_COMPUTE_NT		dgemm_thread_compute_nt
+#define	DGEMM_THREAD_COMPUTE_NP		dgemm_thread_compute_np
+#define	DGEMM_THREAD_COMPUTE_TN		dgemm_thread_compute_tn
+#define	DGEMM_THREAD_COMPUTE_TT		dgemm_thread_compute_tt
+#define	DGEMM_THREAD_COMPUTE_TP		dgemm_thread_compute_tp
+#define	DGEMM_THREAD_COMPUTE_PN		dgemm_thread_compute_pn
+#define	DGEMM_THREAD_COMPUTE_PT		dgemm_thread_compute_pt
+#define	DGEMM_THREAD_COMPUTE_PP		dgemm_thread_compute_pp
+
 #define	DSYMM_THREAD_LU		dsymm_thread_LU
 #define	DSYMM_THREAD_LL		dsymm_thread_LL
 #define	DSYMM_THREAD_RU		dsymm_thread_RU
