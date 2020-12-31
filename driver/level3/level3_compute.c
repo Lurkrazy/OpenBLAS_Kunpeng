@@ -114,9 +114,7 @@
 #endif
 
 int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
-		  void *sa, void *sb
-          //blasint transa, blasint transb
-          ,BLASLONG dummy){
+		  XFLOAT *sa, XFLOAT *sb, BLASLONG dummy){
   BLASLONG k, lda, ldb, ldc;
   FLOAT *alpha, *beta;
   IFLOAT *a, *b, *DESTA, *DESTB;
