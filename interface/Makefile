@@ -281,7 +281,7 @@ CSBLAS2OBJS   = \
 CSBLAS3OBJS   = \
 	cblas_sgemm.$(SUFFIX) cblas_ssymm.$(SUFFIX) cblas_strmm.$(SUFFIX) cblas_strsm.$(SUFFIX) \
 	cblas_ssyrk.$(SUFFIX) cblas_ssyr2k.$(SUFFIX) cblas_somatcopy.$(SUFFIX)  cblas_simatcopy.$(SUFFIX)\
-	cblas_sgeadd.$(SUFFIX)
+	cblas_sgeadd.$(SUFFIX) cblas_sgemm_compute.$(SUFFIX) cblas_sgemm_pack.$(SUFFIX)
 
 ifeq ($(BUILD_BFLOAT16),1)
 CSBBLAS1OBJS = cblas_sbdot.$(SUFFIX)
@@ -306,7 +306,7 @@ CDBLAS2OBJS   = \
 CDBLAS3OBJS   += \
 	cblas_dgemm.$(SUFFIX) cblas_dsymm.$(SUFFIX) cblas_dtrmm.$(SUFFIX) cblas_dtrsm.$(SUFFIX) \
 	cblas_dsyrk.$(SUFFIX) cblas_dsyr2k.$(SUFFIX) cblas_domatcopy.$(SUFFIX)  cblas_dimatcopy.$(SUFFIX) \
-        cblas_dgeadd.$(SUFFIX) 
+        cblas_dgeadd.$(SUFFIX) cblas_dgemm_compute.$(SUFFIX) cblas_dgemm_pack.$(SUFFIX) 
 
 CCBLAS1OBJS   = \
 	cblas_icamax.$(SUFFIX) cblas_icamin.$(SUFFIX) cblas_scasum.$(SUFFIX)  cblas_caxpy.$(SUFFIX) \
