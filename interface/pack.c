@@ -99,7 +99,7 @@ void CNAME(enum CBLAS_ORDER order, const CBLAS_IDENTIFIER identifier, enum CBLAS
 	   blasint m, blasint n, blasint k, FLOAT alpha, FLOAT *src, blasint ld, FLOAT *dest)
 {
   blas_arg_t args;
-  int trans;
+  int trans, meta;
   blasint nrow, info;
 
   //XFLOAT *buffer;
@@ -162,11 +162,11 @@ void CNAME(enum CBLAS_ORDER order, const CBLAS_IDENTIFIER identifier, enum CBLAS
 
     if (Trans == CblasNoTrans)     trans = 0;
     if (Trans == CblasTrans)       trans = 1;
-    if (identifier == CblasAMatrix) mata = 0;
-    else mata = 1;
+    if (identifier == CblasAMatrix) meta = 0;
+    else meta = 1;
 
     // always use args.a 
-    if(mata == 0) {
+    if(meta == 0) {
         nrow = args.m;
         if (trans & 1) nrow = args.k;
         args.a = (void *)src;
@@ -177,7 +177,7 @@ void CNAME(enum CBLAS_ORDER order, const CBLAS_IDENTIFIER identifier, enum CBLAS
     }
     info = -1;
 
-    if (args.ld < nrow)  info =  8;
+    if (args.lda < nrow)  info =  8;
     if (args.k < 0)        info =  5;
     if (args.n < 0)        info =  4;
     if (args.m < 0)        info =  3;
@@ -189,22 +189,20 @@ void CNAME(enum CBLAS_ORDER order, const CBLAS_IDENTIFIER identifier, enum CBLAS
     args.n = m;
     args.k = k;
 
-
-    args.lda = ldb;
-    args.ldb = lda;
-    args.ldc = ldc;
+    //???potential error
+    args.lda = ld;
 
     if (Trans == CblasNoTrans)     trans = 0;
     if (Trans == CblasTrans)       trans = 1;
-    if (identifier == CblasAMatrix) mata = 1;
-    else mata = 0;
+    if (identifier == CblasAMatrix) meta = 1;
+    else meta = 0;
 
-    if(mata == 0) {
+    if(meta == 0) {
         nrow = args.m;
         if (trans & 1) nrow = args.k;
         args.a = (void *)src;
     } else {
-        nrowb = args.k;
+        nrow = args.k;
         if (trans & 1) nrow = args.n;
 	args.a = (void *)src;
     }
@@ -247,7 +245,7 @@ void CNAME(enum CBLAS_ORDER order, const CBLAS_IDENTIFIER identifier, enum CBLAS
  if (args.nthreads == 1) {
 #endif
 
-    (gemmpack[(mata<<1) | trans])(&args, NULL, NULL, dest, NULL, 0);
+    (gemmpack[(meta<<1) | trans])(&args, NULL, NULL, dest, NULL, 0);
 
 #ifdef SMP
 
@@ -267,7 +265,7 @@ void CNAME(enum CBLAS_ORDER order, const CBLAS_IDENTIFIER identifier, enum CBLAS
       } else {
 #endif
 */
-	(gemmpack[4 | (mata<<1) | trans])(&args, NULL, NULL, sa, sb, 0);
+	(gemmpack[4 | (meta<<1) | trans])(&args, NULL, NULL, sa, sb, 0);
 
 #else
 //not consider now

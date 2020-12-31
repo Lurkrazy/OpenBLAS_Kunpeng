@@ -316,15 +316,15 @@
 #define	DGEMM_RC		dgemm_nt
 #define	DGEMM_RR		dgemm_nn
 
-#define DGEMM_AN_BN     dgemm_an_bn
-#define DGEMM_AT_BN     dgemm_at_bn
-#define DGEMM_AP_BN     dgemm_ap_bn
-#define DGEMM_AN_BT     dgemm_an_bt
-#define DGEMM_AT_BT     dgemm_at_bt
-#define DGEMM_AP_BT     dgemm_ap_bt
-#define DGEMM_AN_BP     dgemm_an_bp
-#define DGEMM_AT_BP     dgemm_at_bp
-#define DGEMM_AP_BP     dgemm_ap_bp
+#define DGEMM_AN_BN     dgemm_compute_nn
+#define DGEMM_AT_BN     dgemm_compute_tn
+#define DGEMM_AP_BN     dgemm_compute_pn
+#define DGEMM_AN_BT     dgemm_compute_nt
+#define DGEMM_AT_BT     dgemm_compute_tt
+#define DGEMM_AP_BT     dgemm_compute_pt
+#define DGEMM_AN_BP     dgemm_compute_np
+#define DGEMM_AT_BP     dgemm_compute_tp
+#define DGEMM_AP_BP     dgemm_compute_pp
 
 #define DGEMM_AN_PACK   dgemm_an_pack
 #define DGEMM_AT_PACK   dgemm_at_pack

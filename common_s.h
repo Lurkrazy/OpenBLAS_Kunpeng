@@ -334,15 +334,15 @@
 #define	SGEMM_RC		sgemm_nt
 #define	SGEMM_RR		sgemm_nn
 
-#define SGEMM_AN_BN     sgemm_an_bn
-#define SGEMM_AT_BN     sgemm_at_bn
-#define SGEMM_AP_BN     sgemm_ap_bn
-#define SGEMM_AN_BT     sgemm_an_bt
-#define SGEMM_AT_BT     sgemm_at_bt
-#define SGEMM_AP_BT     sgemm_ap_bt
-#define SGEMM_AN_BP     sgemm_an_bp
-#define SGEMM_AT_BP     sgemm_at_bp
-#define SGEMM_AP_BP     sgemm_ap_bp
+#define SGEMM_AN_BN     sgemm_compute_nn
+#define SGEMM_AT_BN     sgemm_compute_tn
+#define SGEMM_AP_BN     sgemm_compute_pn
+#define SGEMM_AN_BT     sgemm_compute_nt
+#define SGEMM_AT_BT     sgemm_compute_tt
+#define SGEMM_AP_BT     sgemm_compute_pt
+#define SGEMM_AN_BP     sgemm_compute_np
+#define SGEMM_AT_BP     sgemm_compute_tp
+#define SGEMM_AP_BP     sgemm_compute_pp
 
 #define SGEMM_AN_PACK   sgemm_an_pack
 #define SGEMM_AT_PACK   sgemm_at_pack

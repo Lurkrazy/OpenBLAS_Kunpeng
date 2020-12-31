@@ -262,7 +262,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
  if (args.nthreads == 1) {
 #endif
 
-    (gemmcompute[transa | transb << 2])(&args, NULL, NULL, sa, sb, TransA, TransB, 0);
+    (gemmcompute[transa | transb << 2])(&args, NULL, NULL, sa, sb, 0);
 
 #ifdef SMP
 
@@ -277,12 +277,12 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
 
 	args.nthreads /= nodes;
 
-	gemm_thread_mn(mode, &args, NULL, NULL, gemmcompute[16 | transa | transb << 2], sa, sb, TransA, TransB, nodes);
+	gemm_thread_mn(mode, &args, NULL, NULL, gemmcompute[16 | transa | transb << 2], sa, sb, nodes);
 
       } else {
 #endif
 
-	(gemmcompute[16 | transa | transb << 2])(&args, NULL, NULL, sa, sb, TransA, TransB, 0);
+	(gemmcompute[16 | transa | transb << 2])(&args, NULL, NULL, sa, sb, 0);
 
 #else
 

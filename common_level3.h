@@ -567,25 +567,25 @@ int dgemm_nt(blas_arg_t *, BLASLONG *, BLASLONG *, double *, double *, BLASLONG)
 int dgemm_tn(blas_arg_t *, BLASLONG *, BLASLONG *, double *, double *, BLASLONG);
 int dgemm_tt(blas_arg_t *, BLASLONG *, BLASLONG *, double *, double *, BLASLONG);
 
-int sgemm_an_bn(blas_arg_t *, BLASLONG *, BLASLONG *, float *, float *, BLASLONG);
-int sgemm_at_bn(blas_arg_t *, BLASLONG *, BLASLONG *, float *, float *, BLASLONG);
-int sgemm_ap_bn(blas_arg_t *, BLASLONG *, BLASLONG *, float *, float *, BLASLONG);
-int sgemm_an_bt(blas_arg_t *, BLASLONG *, BLASLONG *, float *, float *, BLASLONG);
-int sgemm_at_bt(blas_arg_t *, BLASLONG *, BLASLONG *, float *, float *, BLASLONG);
-int sgemm_ap_bt(blas_arg_t *, BLASLONG *, BLASLONG *, float *, float *, BLASLONG);
-int sgemm_an_bp(blas_arg_t *, BLASLONG *, BLASLONG *, float *, float *, BLASLONG);
-int sgemm_at_bp(blas_arg_t *, BLASLONG *, BLASLONG *, float *, float *, BLASLONG);
-int sgemm_ap_bp(blas_arg_t *, BLASLONG *, BLASLONG *, float *, float *, BLASLONG);
-
-int dgemm_an_bn(blas_arg_t *, BLASLONG *, BLASLONG *, double *, double *, BLASLONG);
-int dgemm_at_bn(blas_arg_t *, BLASLONG *, BLASLONG *, double *, double *, BLASLONG);
-int dgemm_ap_bn(blas_arg_t *, BLASLONG *, BLASLONG *, double *, double *, BLASLONG);
-int dgemm_an_bt(blas_arg_t *, BLASLONG *, BLASLONG *, double *, double *, BLASLONG);
-int dgemm_at_bt(blas_arg_t *, BLASLONG *, BLASLONG *, double *, double *, BLASLONG);
-int dgemm_ap_bt(blas_arg_t *, BLASLONG *, BLASLONG *, double *, double *, BLASLONG);
-int dgemm_an_bp(blas_arg_t *, BLASLONG *, BLASLONG *, double *, double *, BLASLONG);
-int dgemm_at_bp(blas_arg_t *, BLASLONG *, BLASLONG *, double *, double *, BLASLONG);
-int dgemm_ap_bp(blas_arg_t *, BLASLONG *, BLASLONG *, double *, double *, BLASLONG);
+//int sgemm_compute_nn(blas_arg_t *, BLASLONG *, BLASLONG *, float *, float *, BLASLONG);
+//int sgemm_compute_tn(blas_arg_t *, BLASLONG *, BLASLONG *, float *, float *, BLASLONG);
+//int sgemm_compute_pn(blas_arg_t *, BLASLONG *, BLASLONG *, float *, float *, BLASLONG);
+//int sgemm_compute_nt(blas_arg_t *, BLASLONG *, BLASLONG *, float *, float *, BLASLONG);
+//int sgemm_compute_tt(blas_arg_t *, BLASLONG *, BLASLONG *, float *, float *, BLASLONG);
+//int sgemm_compute_pt(blas_arg_t *, BLASLONG *, BLASLONG *, float *, float *, BLASLONG);
+//int sgemm_compute_np(blas_arg_t *, BLASLONG *, BLASLONG *, float *, float *, BLASLONG);
+//int sgemm_compute_tp(blas_arg_t *, BLASLONG *, BLASLONG *, float *, float *, BLASLONG);
+//int sgemm_compute_pp(blas_arg_t *, BLASLONG *, BLASLONG *, float *, float *, BLASLONG);
+//
+//int dgemm_compute_nn(blas_arg_t *, BLASLONG *, BLASLONG *, double *, double *, BLASLONG);
+//int dgemm_compute_tn(blas_arg_t *, BLASLONG *, BLASLONG *, double *, double *, BLASLONG);
+//int dgemm_compute_pn(blas_arg_t *, BLASLONG *, BLASLONG *, double *, double *, BLASLONG);
+//int dgemm_compute_nt(blas_arg_t *, BLASLONG *, BLASLONG *, double *, double *, BLASLONG);
+//int dgemm_compute_tt(blas_arg_t *, BLASLONG *, BLASLONG *, double *, double *, BLASLONG);
+//int dgemm_compute_pt(blas_arg_t *, BLASLONG *, BLASLONG *, double *, double *, BLASLONG);
+//int dgemm_compute_np(blas_arg_t *, BLASLONG *, BLASLONG *, double *, double *, BLASLONG);
+//int dgemm_compute_tp(blas_arg_t *, BLASLONG *, BLASLONG *, double *, double *, BLASLONG);
+//int dgemm_compute_pp(blas_arg_t *, BLASLONG *, BLASLONG *, double *, double *, BLASLONG);
 
 int sgemm_an_pack(blas_arg_t *, BLASLONG *, BLASLONG *, float *, float *, BLASLONG);
 int sgemm_at_pack(blas_arg_t *, BLASLONG *, BLASLONG *, float *, float *, BLASLONG);
