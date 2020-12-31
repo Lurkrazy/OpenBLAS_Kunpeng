@@ -113,8 +113,7 @@
 #define K	args -> k
 #endif
 
-int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
-		  XFLOAT *sa, XFLOAT *sb, BLASLONG dummy){
+int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLOAT *sb, BLASLONG dummy){
   BLASLONG k, lda, ldb, ldc;
   FLOAT *alpha, *beta;
   IFLOAT *a, *b, *DESTA, *DESTB;
