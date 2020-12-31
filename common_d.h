@@ -316,6 +316,21 @@
 #define	DGEMM_RC		dgemm_nt
 #define	DGEMM_RR		dgemm_nn
 
+#define DGEMM_AN_BN     dgemm_an_bn
+#define DGEMM_AT_BN     dgemm_at_bn
+#define DGEMM_AP_BN     dgemm_ap_bn
+#define DGEMM_AN_BT     dgemm_an_bt
+#define DGEMM_AT_BT     dgemm_at_bt
+#define DGEMM_AP_BT     dgemm_ap_bt
+#define DGEMM_AN_BP     dgemm_an_bp
+#define DGEMM_AT_BP     dgemm_at_bp
+#define DGEMM_AP_BP     dgemm_ap_bp
+
+#define DGEMM_AN_PACK   dgemm_an_pack
+#define DGEMM_AT_PACK   dgemm_at_pack
+#define DGEMM_BN_PACK   dgemm_bn_pack
+#define DGEMM_BT_PACK   dgemm_bt_pack
+
 #define	DSYMM_LU		dsymm_LU
 #define	DSYMM_LL		dsymm_LL
 #define	DSYMM_RU		dsymm_RU

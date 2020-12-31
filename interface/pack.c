@@ -132,22 +132,22 @@ void CNAME(enum CBLAS_ORDER order, const CBLAS_IDENTIFIER identifier, enum CBLAS
 
   PRINT_DEBUG_CNAME;
 
-#if !defined(COMPLEX) && !defined(DOUBLE) && defined(USE_SGEMM_KERNEL_DIRECT)
-#ifdef DYNAMIC_ARCH
- if (support_avx512() )
-#endif  
-  if (beta == 0 && alpha == 1.0 && order == CblasRowMajor && TransA == CblasNoTrans && TransB == CblasNoTrans && SGEMM_DIRECT_PERFORMANT(m,n,k)) {
-	SGEMM_DIRECT(m, n, k, a, lda, b, ldb, c, ldc);
-	return;
-  }
+//#if !defined(COMPLEX) && !defined(DOUBLE) && defined(USE_SGEMM_KERNEL_DIRECT)
+////#ifdef DYNAMIC_ARCH
+//// if (support_avx512() )
+////#endif  
+//  //if (beta == 0 && alpha == 1.0 && order == CblasRowMajor && TransA == CblasNoTrans && TransB == CblasNoTrans && SGEMM_DIRECT_PERFORMANT(m,n,k)) {
+//  //  SGEMM_DIRECT(m, n, k, a, lda, b, ldb, c, ldc);
+//  //  return;
+//  //}
+//
+//#endif
 
-#endif
-
-#ifndef COMPLEX
+//#ifndef COMPLEX
   args.alpha = (void *)&alpha;
-#else
-  args.alpha = (void *)alpha;
-#endif
+//#else
+//  args.alpha = (void *)alpha;
+//#endif
 
   trans = -1;
   info   =  0;
