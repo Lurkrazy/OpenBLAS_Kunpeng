@@ -215,7 +215,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
       FLOAT* desta = (FLOAT *)(*pointerToEveryBlockofPackedA);
       pointerToEveryBlockofPackedA++;
 #else
-      ICOPY_OPERATION(min_l, min_i, a, lda, ls, m_from, sa);
+      ICOPY_OPERATION(min_l, min_i, DESTA, lda, ls, m_from, sa);
       FLOAT* desta = sa;
 #endif
       
@@ -224,35 +224,11 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
       FLOAT* destb = (FLOAT *)(*pointerToEveryBlockofPackedB);
       pointerToEveryBlockofPackedB++;
 #else
-      OCOPY_OPERATION(min_l, min_j, b, ldb, ls, js, sb);
+      OCOPY_OPERATION(min_l, min_j, DESTB, ldb, ls, js, sb);
       FLOAT* destb = sb;
 #endif
       
       KERNEL_OPERATION(min_i, min_j, min_l, alpha, desta, destb, c, ldc, m_from, js);
-
-
-//      for(jjs = js; jjs < js + min_j; jjs += min_jj){
-//	min_jj = min_j + js - jjs;
-//#if defined(SKYLAKEX) || defined(COOPERLAKE)
-//	/* the current AVX512 s/d/c/z GEMM kernel requires n>=6*GEMM_UNROLL_N to achieve best performance */
-//	if (min_jj >= 6*GEMM_UNROLL_N) min_jj = 6*GEMM_UNROLL_N;
-//#else
-//        if (min_jj >= 3*GEMM_UNROLL_N) min_jj = 3*GEMM_UNROLL_N;
-//        else
-///*
-//		if (min_jj >= 2*GEMM_UNROLL_N) min_jj = 2*GEMM_UNROLL_N;
-//        	else
-//*/
-//          		if (min_jj > GEMM_UNROLL_N) min_jj = GEMM_UNROLL_N;
-//#endif
-//
-//	OCOPY_OPERATION(min_l, min_jj, b, ldb, ls, jjs,
-//			sb + min_l * (jjs - js) * COMPSIZE * l1stride);
-//
-//	KERNEL_OPERATION(min_i, min_jj, min_l, alpha,
-//			 sa, sb + min_l * (jjs - js)  * COMPSIZE * l1stride, c, ldc, m_from, jjs);
-//
-//      }
 
       for(is = m_from + min_i; is < m_to; is += min_i){
 	min_i = m_to - is;
@@ -268,7 +244,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
       FLOAT* desta = (FLOAT *)(*pointerToEveryBlockofPackedA);
       pointerToEveryBlockofPackedA++;
 #else
-	    ICOPY_OPERATION(min_l, min_i, a, lda, ls, is, sa);
+	    ICOPY_OPERATION(min_l, min_i, DESTA, lda, ls, is, sa);
       FLOAT* desta = sa;
 #endif
 

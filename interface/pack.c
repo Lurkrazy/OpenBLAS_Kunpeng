@@ -102,8 +102,8 @@ void CNAME(enum CBLAS_ORDER order, const CBLAS_IDENTIFIER identifier, enum CBLAS
   int trans, meta;
   blasint nrow, info;
 
-  //XFLOAT *buffer;
-  //XFLOAT *sa, *sb;
+  XFLOAT *buffer;
+  XFLOAT *sa, *sb;
 
 #ifdef SMP
   double MNK;

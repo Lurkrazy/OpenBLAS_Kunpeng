@@ -39,12 +39,12 @@ int main(int argc, char *argv[]){
 
   IFLOAT *a, *b;
   FLOAT *c, *sc;
-  FLOAT alpha[] = {1.0, 0.0};
+  FLOAT alpha[] = {2.0, 1.0, 0.0};
   FLOAT beta [] = {0.0, 0.0};
   char transa = 'N';
   char transb = 'N';
   blasint m, n, k, i, j, lda, ldb, ldc;
-  int loops = 1;
+  int loops = 2000;
   int has_param_m = 0;
   int has_param_n = 0;
   int has_param_k = 0;
@@ -133,6 +133,11 @@ int main(int argc, char *argv[]){
 
   fprintf(stderr, "          SIZE                   Flops             Time\n");
 
+  FLOAT *dest;
+  if (( dest = (FLOAT *)malloc(sizeof(FLOAT) * m * n * 10)) == NULL) {
+      fprintf(stderr,"Out of Memory!!\n");exit(1);
+  }
+
   for (i = from; i <= to; i += step) {
     
     timeg=0;
@@ -150,22 +155,15 @@ int main(int argc, char *argv[]){
     //why no rolmajor or colmajor option???
     GEMM (&transa, &transb, &m, &n, &k, alpha, a, &lda, b, &ldb, beta, c, &ldc);
 
-    FLOAT *dest;
 #define PACK 1
 
 #ifdef PACK
 #ifdef DOUBLE 
     //pack and compute
-    if (( dest = (FLOAT *)malloc(sizeof(FLOAT) * m * n * 100000000)) == NULL) {
-        fprintf(stderr,"Out of Memory!!\n");exit(1);
-    }
     cblas_dgemm_pack(CblasColMajor, CblasAMatrix, CblasNoTrans, m, n, k, alpha[0], a, lda, dest);
     cblas_dgemm_compute(CblasColMajor, CblasPacked, CblasNoTrans, m, n, k, dest, lda, b, ldb, beta[0], sc, ldc);
 #else
     //pack and compute
-    if (( dest = (FLOAT *)malloc(sizeof(FLOAT) * m * n * 100000000)) == NULL) {
-        fprintf(stderr,"Out of Memory!!\n");exit(1);
-    }
     cblas_sgemm_pack(CblasColMajor, CblasAMatrix, CblasNoTrans, m, n, k, alpha[0], a, lda, dest);
     cblas_sgemm_compute(CblasColMajor, CblasPacked, CblasNoTrans, m, n, k, dest, lda, b, ldb, beta[0], sc, ldc);
 #endif
@@ -174,10 +172,11 @@ int main(int argc, char *argv[]){
 #endif
     
     //correctness test
-    for(j = 0; j < m * n * k; j++)
+    for(j = 0; j < m * n; j++)
     {
         if(c[j] != sc[j])
         {
+            fprintf(stderr, "fail to pass the test, c[%d] = %.17f, sc[%d] = %.17f\n\n", j, c[j], j, sc[j]);
             exit(-1);
         }
     }
