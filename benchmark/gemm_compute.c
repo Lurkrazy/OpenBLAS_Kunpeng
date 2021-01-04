@@ -134,7 +134,7 @@ int main(int argc, char *argv[]){
   fprintf(stderr, "          SIZE                   Flops             Time\n");
 
   FLOAT *dest;
-  if (( dest = (FLOAT *)malloc(sizeof(FLOAT) * m * n * 10)) == NULL) {
+  if (( dest = (FLOAT *)malloc(sizeof(FLOAT) * m * n + 1048576 + 1024)) == NULL) {
       fprintf(stderr,"Out of Memory!!\n");exit(1);
   }
 
@@ -174,7 +174,7 @@ int main(int argc, char *argv[]){
     //correctness test
     for(j = 0; j < m * n; j++)
     {
-        if(c[j] != sc[j])
+        if(c[j] - sc[j] >= 1e-5)
         {
             fprintf(stderr, "fail to pass the test, c[%d] = %.17f, sc[%d] = %.17f\n\n", j, c[j], j, sc[j]);
             exit(-1);
