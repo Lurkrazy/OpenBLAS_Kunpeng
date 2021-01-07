@@ -38,9 +38,9 @@ SBLASOBJS	+= \
 	ssyr2k_UN.$(SUFFIX) ssyr2k_UT.$(SUFFIX) ssyr2k_LN.$(SUFFIX) ssyr2k_LT.$(SUFFIX) \
 	ssyrk_kernel_U.$(SUFFIX)  ssyrk_kernel_L.$(SUFFIX) \
 	ssyr2k_kernel_U.$(SUFFIX) ssyr2k_kernel_L.$(SUFFIX) \
-	sgemm_an_pack.o sgemm_at_pack.o sgemm_bn_pack.o sgemm_bt_pack.o \
-	sgemm_compute_nn.o sgemm_compute_nt.o sgemm_compute_tn.o sgemm_compute_tt.o sgemm_compute_pn.o \
-        sgemm_compute_pt.o sgemm_compute_np.o sgemm_compute_tp.o sgemm_compute_pp.o
+	sgemm_an_pack.$(SUFFIX) sgemm_at_pack.$(SUFFIX) sgemm_bn_pack.$(SUFFIX) sgemm_bt_pack.$(SUFFIX) \
+	sgemm_compute_nn.$(SUFFIX) sgemm_compute_nt.$(SUFFIX) sgemm_compute_tn.$(SUFFIX) sgemm_compute_tt.$(SUFFIX) sgemm_compute_pn.$(SUFFIX) \
+        sgemm_compute_pt.$(SUFFIX) sgemm_compute_np.$(SUFFIX) sgemm_compute_tp.$(SUFFIX) sgemm_compute_pp.$(SUFFIX)
 
 DBLASOBJS	+= \
 	dgemm_nn.$(SUFFIX) dgemm_nt.$(SUFFIX) dgemm_tn.$(SUFFIX) dgemm_tt.$(SUFFIX) \
@@ -57,9 +57,9 @@ DBLASOBJS	+= \
 	dsyr2k_UN.$(SUFFIX) dsyr2k_UT.$(SUFFIX) dsyr2k_LN.$(SUFFIX) dsyr2k_LT.$(SUFFIX) \
 	dsyrk_kernel_U.$(SUFFIX)  dsyrk_kernel_L.$(SUFFIX) \
 	dsyr2k_kernel_U.$(SUFFIX) dsyr2k_kernel_L.$(SUFFIX) \
-	dgemm_an_pack.o dgemm_at_pack.o dgemm_bn_pack.o dgemm_bt_pack.o \
-	dgemm_compute_nn.o dgemm_compute_nt.o dgemm_compute_tn.o dgemm_compute_tt.o dgemm_compute_pn.o \
-        dgemm_compute_pt.o dgemm_compute_np.o dgemm_compute_tp.o dgemm_compute_pp.o
+	dgemm_an_pack.$(SUFFIX) dgemm_at_pack.$(SUFFIX) dgemm_bn_pack.$(SUFFIX) dgemm_bt_pack.$(SUFFIX) \
+	dgemm_compute_nn.$(SUFFIX) dgemm_compute_nt.$(SUFFIX) dgemm_compute_tn.$(SUFFIX) dgemm_compute_tt.$(SUFFIX) dgemm_compute_pn.$(SUFFIX) \
+        dgemm_compute_pt.$(SUFFIX) dgemm_compute_np.$(SUFFIX) dgemm_compute_tp.$(SUFFIX) dgemm_compute_pp.$(SUFFIX)
 
 QBLASOBJS	+= \
 	qgemm_nn.$(SUFFIX) qgemm_nt.$(SUFFIX) qgemm_tn.$(SUFFIX) qgemm_tt.$(SUFFIX) \

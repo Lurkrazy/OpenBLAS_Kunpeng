@@ -38,23 +38,22 @@
 
 /* This file is a template for level 3 operation */
 
+
 #ifndef ICOPY_OPERATION
-//#define ICOPY_OPERATION
 #ifdef AN
-#define ICOPY_OPERATION(M, N, A, LDA, X, Y, BUFFER, ALPHA) GEMM_ITCOPY_PACK(M, N, (IFLOAT *)(A) + ((Y) + (X) * (LDA)) * COMPSIZE, LDA, BUFFER, ALPHA);
+#define ICOPY_OPERATION(M, N, A, LDA, X, Y, BUFFER, ALPHA) GEMM_ITCOPY_PACK(M, N, (IFLOAT *)(A) + ((Y) + (X) * (LDA)) * COMPSIZE, LDA, BUFFER, ALPHA[0]);
 #endif
 #ifdef AT
-#define ICOPY_OPERATION(M, N, A, LDA, X, Y, BUFFER, ALPHA) GEMM_INCOPY_PACK(M, N, (IFLOAT *)(A) + ((X) + (Y) * (LDA)) * COMPSIZE, LDA, BUFFER, ALPHA);
+#define ICOPY_OPERATION(M, N, A, LDA, X, Y, BUFFER, ALPHA) GEMM_INCOPY_PACK(M, N, (IFLOAT *)(A) + ((X) + (Y) * (LDA)) * COMPSIZE, LDA, BUFFER, ALPHA[0]);
 #endif
 #endif
 
 #ifndef OCOPY_OPERATION
-//#define OCOPY_OPERATION
 #ifdef BN
-#define OCOPY_OPERATION(M, N, A, LDA, X, Y, BUFFER, ALPHA) GEMM_ONCOPY_PACK(M, N, (IFLOAT *)(A) + ((X) + (Y) * (LDA)) * COMPSIZE, LDA, BUFFER, ALPHA);
+#define OCOPY_OPERATION(M, N, A, LDA, X, Y, BUFFER, ALPHA) GEMM_ONCOPY_PACK(M, N, (IFLOAT *)(A) + ((X) + (Y) * (LDA)) * COMPSIZE, LDA, BUFFER, ALPHA[0]);
 #endif
 #ifdef BT
-#define OCOPY_OPERATION(M, N, A, LDA, X, Y, BUFFER, ALPHA) GEMM_OTCOPY_PACK(M, N, (IFLOAT *)(A) + ((Y) + (X) * (LDA)) * COMPSIZE, LDA, BUFFER, ALPHA);
+#define OCOPY_OPERATION(M, N, A, LDA, X, Y, BUFFER, ALPHA) GEMM_OTCOPY_PACK(M, N, (IFLOAT *)(A) + ((Y) + (X) * (LDA)) * COMPSIZE, LDA, BUFFER, ALPHA[0]);
 #endif
 #endif
 
@@ -80,8 +79,8 @@
 #define DEST_BASE 1048576
 #define MAX_THREADS 128
 /*
- *  sa is the base addr of dest.
- *  the length of sa must > m*k*sizeof)FLOAT) + 1048576.
+ *  DEST is the base addr of dest.
+ *  the length of DEST must > m*k*sizeof)FLOAT) + 1048576.
  *
  *  addr map:
  *  addr of thread0 base, thread1 base .....
@@ -94,14 +93,14 @@
  * */
 
 int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
-		  XFLOAT *sa, XFLOAT *sb, BLASLONG dummy){
+		  XFLOAT *DEST, XFLOAT *sb, BLASLONG dummy){
   BLASLONG k, lda, ldb;
   FLOAT *alpha;
   IFLOAT *a;
   IFLOAT *b;
-  IFLOAT *dest = (IFLOAT*)((unsigned long long) sa + DEST_BASE);
-  //unsigned long *block = (unsigned long)((unsigned long)sa + MAX_THREADS*8);
-  unsigned long long* block = (unsigned long long)sa;
+  IFLOAT *dest = (IFLOAT*)((unsigned long long) DEST + DEST_BASE);
+  //unsigned long *block = (unsigned long)((unsigned long)DEST + MAX_THREADS*8);
+  unsigned long long* block = (unsigned long long)DEST;
   BLASLONG m_from, m_to, n_from, n_to;
 
   BLASLONG ls, is, js;
@@ -110,7 +109,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
   BLASLONG l1stride, gemm_p, l2size;
 
   //threads = 1
-  //*(unsigned long*)((unsigned long)sa) = ((unsigned long long)block);
+  //*(unsigned long*)((unsigned long)DEST) = ((unsigned long long)block);
 
   k = K;
 
@@ -118,7 +117,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 
   lda = LDA;
 
-  //alpha = (FLOAT *)args -> alpha;
+  alpha = (FLOAT *)(args -> alpha);
 
   m_from = 0;
   m_to   = M;
@@ -185,6 +184,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 	  if (min_i > GEMM_P) {
 	    min_i = ((min_i / 2 + GEMM_UNROLL_M - 1)/GEMM_UNROLL_M) * GEMM_UNROLL_M;
 	  }
+    
 	ICOPY_OPERATION(min_l, min_i, a, lda, ls, is, dest, alpha);
 	*block = dest; dest += min_l * min_i; block++;
       } /* end of is */

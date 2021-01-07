@@ -220,7 +220,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 #endif
       
 #if defined(BP)
-      unsigned long long* pointerToEveryBlockofPackedB = DESTB;
+      unsigned long long* pointerToEveryBlockofPackedB = (unsigned long long *)DESTB;
       FLOAT* destb = (FLOAT *)(*pointerToEveryBlockofPackedB);
       pointerToEveryBlockofPackedB++;
 #else
