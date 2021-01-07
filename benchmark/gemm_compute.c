@@ -38,8 +38,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 int main(int argc, char *argv[]){
 
   IFLOAT *a, *b;
-  FLOAT *c, *sc;
+  FLOAT *c, *sc, *sd;
   FLOAT alpha[] = {2.0, 1.0, 0.0};
+  //FLOAT alpha[] = {1.0, 1.0, 0.0};
   FLOAT beta [] = {0.0, 0.0};
   char transa = 'N';
   char transb = 'N';
@@ -49,9 +50,10 @@ int main(int argc, char *argv[]){
   int has_param_n = 0;
   int has_param_k = 0;
   char *p;
+  int error_flag = 0;
 
   int from =   1;
-  int to   = 200;
+  int to   = 1500;
   int step =   1;
 
   double time1, timeg;
@@ -113,11 +115,16 @@ int main(int argc, char *argv[]){
   if (( sc = (FLOAT *)malloc(sizeof(FLOAT) * m * n * COMPSIZE)) == NULL) {
     fprintf(stderr,"Out of Memory!!\n");exit(1);
   }
-
+  if (( sd = (FLOAT *)malloc(sizeof(FLOAT) * m * n * COMPSIZE)) == NULL) {
+    fprintf(stderr,"Out of Memory!!\n");exit(1);
+  }
 #ifdef __linux
   srandom(getpid());
 #endif
 
+//#define REAL_RAND 1
+
+#ifdef REAL_RAND
   for (i = 0; i < m * k * COMPSIZE; i++) {
     a[i] = ((IFLOAT) rand() / (IFLOAT) RAND_MAX) - 0.5;
   }
@@ -130,16 +137,40 @@ int main(int argc, char *argv[]){
   for (i = 0; i < m * n * COMPSIZE; i++) {
     sc[i] = c[i];
   }
+  for (i = 0; i < m * n * COMPSIZE; i++) {
+    sd[i] = c[i];
+  }
+#else
+  srand(0x216);
+  for (i = 0; i < m * k * COMPSIZE; i++) {
+    a[i] = ((IFLOAT) rand() / (IFLOAT) RAND_MAX) - 0.5;
+  }
+  for (i = 0; i < k * n * COMPSIZE; i++) {
+    b[i] = ((IFLOAT) rand() / (IFLOAT) RAND_MAX) - 0.5;
+  }
+  for (i = 0; i < m * n * COMPSIZE; i++) {
+    c[i] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
+  }
+  for (i = 0; i < m * n * COMPSIZE; i++) {
+    sc[i] = c[i];
+  }
+  for (i = 0; i < m * n * COMPSIZE; i++) {
+    sd[i] = c[i];
+  }
+#endif
+
 
   fprintf(stderr, "          SIZE                   Flops             Time\n");
 
   FLOAT *dest;
-  if (( dest = (FLOAT *)malloc(sizeof(FLOAT) * m * n + 1048576 + 1024)) == NULL) {
-      fprintf(stderr,"Out of Memory!!\n");exit(1);
-  }
+#define PACK 1
+#define TESTA 1
+//#define TESTB 1
 
   for (i = from; i <= to; i += step) {
     
+  //test real random
+  printf("\na[0] = %f, b[0] = %f\n", a[0], b[0], c[0]);
     timeg=0;
 
     if (!has_param_m) { m = i; }
@@ -151,67 +182,132 @@ int main(int argc, char *argv[]){
     if (transb == 'N') { ldb = k; }
     else { ldb = n; }
     ldc = m;
-    
-    //why no rolmajor or colmajor option???
-    GEMM (&transa, &transb, &m, &n, &k, alpha, a, &lda, b, &ldb, beta, c, &ldc);
 
-#define PACK 1
+#ifdef PACK 
+    if (( dest = (FLOAT *)malloc(sizeof(FLOAT) * m * n * k + 1048576 + 1024)) == NULL) {
+        fprintf(stderr,"Out of Memory!!\n");exit(1);
+    }
+#endif
+
+    GEMM (&transa, &transb, &m, &n, &k, alpha, a, &lda, b, &ldb, beta, c, &ldc);
+    //cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, m, n, k, alpha[0], a, lda, b, ldb, beta[0], c, ldc);
+
 
 #ifdef PACK
 #ifdef DOUBLE 
     //pack and compute
+    //test A packed 
+    #ifdef TESTA
     cblas_dgemm_pack(CblasColMajor, CblasAMatrix, CblasNoTrans, m, n, k, alpha[0], a, lda, dest);
     cblas_dgemm_compute(CblasColMajor, CblasPacked, CblasNoTrans, m, n, k, dest, lda, b, ldb, beta[0], sc, ldc);
+    #endif
+    //test B packed 
+    #ifdef TESTB
+    cblas_dgemm_pack(CblasColMajor, CblasBMatrix, CblasNoTrans, m, n, k, alpha[0], b, ldb, dest);
+    cblas_dgemm_compute(CblasColMajor, CblasNoTrans, CblasPacked, m, n, k, a, lda, dest, ldb, beta[0], sd, ldc);
+    #endif
 #else
     //pack and compute
+    //test A packed 
+    #ifdef TESTA
     cblas_sgemm_pack(CblasColMajor, CblasAMatrix, CblasNoTrans, m, n, k, alpha[0], a, lda, dest);
     cblas_sgemm_compute(CblasColMajor, CblasPacked, CblasNoTrans, m, n, k, dest, lda, b, ldb, beta[0], sc, ldc);
+    #endif
+    //test B packed 
+    #ifdef TESTB
+    cblas_sgemm_pack(CblasColMajor, CblasBMatrix, CblasNoTrans, m, n, k, alpha[0], b, ldb, dest);
+    cblas_sgemm_compute(CblasColMajor, CblasNoTrans, CblasPacked, m, n, k, a, lda, dest, ldb, beta[0], sd, ldc);
+    #endif
 #endif
 #else
-    GEMM (&transa, &transb, &m, &n, &k, alpha, a, &lda, b, &ldb, beta, sc, &ldc);
+    cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, m, n, k, alpha[0], a, lda, b, ldb, beta[0], sc, ldc);
 #endif
     
+#ifdef PACK
     //correctness test
+    //test A packed    
+    #ifdef TESTA
     for(j = 0; j < m * n; j++)
     {
-        if(c[j] - sc[j] >= 1e-5)
+        //fprintf(stderr, "c[%d] = %.17f, sc[%d] = %.17f\n", j, c[j], j, sc[j]);
+            //fprintf(stderr, "For case %d, m = %d, n = %d, k = %d\n", i, m, n, k);
+        //if(fabs(c[j] - sc[j])/fabs(c[j]) <= 1e-15)
+        //{
+        //    printf("there is a test passed the test, c[%d] = %.17f, sc[%d] = %.17f\n", j, c[j], j, sc[j]);
+        ////    exit(-1);
+        //}
+        //if((c[j] - sc[j])/c[j] >= 1e-5)
+        if(fabs(c[j] - sc[j])/fabs(c[j]) >= 1e-15)
         {
-            fprintf(stderr, "fail to pass the test, c[%d] = %.17f, sc[%d] = %.17f\n\n", j, c[j], j, sc[j]);
+            //fprintf(stderr, "Fail to pass the test for A packed, c[%d] = %.17f, sc[%d] = %.17f\n\n", j, c[j], j, sc[j]);
+            //if(j > m*256)
+            //if(j < 512)
+            printf("Fail to pass the test for A packed, c[%d] = %.17f, sc[%d] = %.17f\n", j, c[j], j, sc[j]);
+            //error_flag = 1;
             exit(-1);
         }
     }
-    
-    printf("\n***********************************\ntest passed, done well!\n\n");
-    fprintf(stderr, " M=%4d, N=%4d, K=%4d : ", (int)m, (int)n, (int)k);
-
-    begin();
-
-    for (j=0; j<loops; j++) {
-#ifdef PACK
-#ifdef DOUBLE 
-    //pack and compute                                                                                          
-    cblas_dgemm_pack(CblasColMajor, CblasAMatrix, CblasNoTrans, m, n, k, alpha[0], a, lda, dest);                  
-    cblas_dgemm_compute(CblasColMajor, CblasPacked, CblasNoTrans, m, n, k, dest, lda, b, ldb, beta[0], sc, ldc);
-#else
-    //pack and compute                                                                                          
-    cblas_sgemm_pack(CblasColMajor, CblasAMatrix, CblasNoTrans, m, n, k, alpha[0], a, lda, dest);                  
-    cblas_sgemm_compute(CblasColMajor, CblasPacked, CblasNoTrans, m, n, k, dest, lda, b, ldb, beta[0], sc, ldc);
-#endif 
-#else 
-    GEMM (&transa, &transb, &m, &n, &k, alpha, a, &lda, b, &ldb, beta, c, &ldc);
-#endif 
+    #endif
+    //test B packed    
+    #ifdef TESTB
+    for(j = 0; j < m * n; j++)
+    {
+        if(c[j] - sd[j] >= 1e-5)
+        {
+            fprintf(stderr, "For case %d, m = %d, n = %d, k = %d\n", i, m, n, k);
+            fprintf(stderr, "Fail to pass the test for B packed, c[%d] = %.17f, sd[%d] = %.17f\n\n", j, c[j], j, sd[j]);
+            //error_flag = 1;
+            //exit(-1);
+        }
     }
+    #endif
+#else
+    for(j = 0; j < m * n; j++)
+    {
+        //fprintf(stderr, "c[%d] = %.17f, sc[%d] = %.17f\n", j, c[j], j, sc[j]);
+        if((c[j] - sc[j])/c[j] >= 1e-5)
+        {
+            fprintf(stderr, "For case %d, m = %d, n = %d, k = %d\n", i, m, n, k);
+            fprintf(stderr, "Fail to pass the test for A packed, c[%d] = %.17f, sc[%d] = %.17f\n\n", j, c[j], j, sc[j]);
+            //error_flag = 1;
+            exit(-1);
+        }
+    }
+#endif    
 
-    end();
-    time1 = getsec();
+    fprintf(stderr, " M=%4d, N=%4d, K=%4d : ", (int)m, (int)n, (int)k);
+    printf("\n***********************************\ntest passed, done well!\n\n");
 
-    timeg = time1/loops;
-    fprintf(stderr,
-	    " %10.2f MFlops %10.6f sec\n",
-	    COMPSIZE * COMPSIZE * 2. * (double)k * (double)m * (double)n / timeg * 1.e-6, time1);
-    
+//    begin();
+//
+//    for (j=0; j<loops; j++) {
+//#ifdef PACK
+//#ifdef DOUBLE 
+//    //pack and compute                                                                                          
+//    cblas_dgemm_pack(CblasColMajor, CblasAMatrix, CblasNoTrans, m, n, k, alpha[0], a, lda, dest);                  
+//    cblas_dgemm_compute(CblasColMajor, CblasPacked, CblasNoTrans, m, n, k, dest, lda, b, ldb, beta[0], sc, ldc);
+//#else
+//    //pack and compute                                                                                          
+//    cblas_sgemm_pack(CblasColMajor, CblasAMatrix, CblasNoTrans, m, n, k, alpha[0], a, lda, dest);                  
+//    cblas_sgemm_compute(CblasColMajor, CblasPacked, CblasNoTrans, m, n, k, dest, lda, b, ldb, beta[0], sc, ldc);
+//#endif 
+//#else 
+//    GEMM (&transa, &transb, &m, &n, &k, alpha, a, &lda, b, &ldb, beta, c, &ldc);
+//#endif 
+//    }
+//
+//    end();
+//    time1 = getsec();
+//
+//    timeg = time1/loops;
+//    fprintf(stderr,
+//	    " %10.2f MFlops %10.6f sec\n",
+//	    COMPSIZE * COMPSIZE * 2. * (double)k * (double)m * (double)n / timeg * 1.e-6, time1);
+//    
   }
-
+  
+  if(error_flag)
+      fprintf(stderr, "\nfail to pass all tests!\n");
   return 0;
 }
 
