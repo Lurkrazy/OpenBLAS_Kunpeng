@@ -27,12 +27,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "bench.h"
 #include "cblas.h"
+#include <float.h>
 #undef GEMM
 
 #ifdef DOUBLE
 #define GEMM   BLASFUNC(dgemm)
+#define MAX_NUM 100.0
+//#define MAX_NUM DBL_MAX
 #else
 #define GEMM   BLASFUNC(sgemm)
+#define MAX_NUM 100.0
+//#define MAX_NUM FLT_MAX
 #endif
 
 int main(int argc, char *argv[]){
@@ -41,7 +46,7 @@ int main(int argc, char *argv[]){
   FLOAT *c, *sc, *sd;
   FLOAT alpha[] = {2.0, 1.0, 0.0};
   //FLOAT alpha[] = {1.0, 1.0, 0.0};
-  FLOAT beta [] = {0.0, 0.0};
+  FLOAT beta [] = {2.0, 0.0};
   char transa = 'N';
   char transb = 'N';
   blasint m, n, k, i, j, lda, ldb, ldc;
@@ -142,14 +147,15 @@ int main(int argc, char *argv[]){
   }
 #else
   srand(0x216);
+  //generate floating-points in [0.5, RAND_MAX)
   for (i = 0; i < m * k * COMPSIZE; i++) {
-    a[i] = ((IFLOAT) rand() / (IFLOAT) RAND_MAX) - 0.5;
+    a[i] = ((IFLOAT) rand() / (IFLOAT) RAND_MAX) * (MAX_NUM);
   }
   for (i = 0; i < k * n * COMPSIZE; i++) {
-    b[i] = ((IFLOAT) rand() / (IFLOAT) RAND_MAX) - 0.5;
+    b[i] = ((IFLOAT) rand() / (IFLOAT) RAND_MAX) * (MAX_NUM);
   }
   for (i = 0; i < m * n * COMPSIZE; i++) {
-    c[i] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
+    c[i] = ((FLOAT) rand() / (FLOAT) RAND_MAX) * (MAX_NUM);
   }
   for (i = 0; i < m * n * COMPSIZE; i++) {
     sc[i] = c[i];
@@ -165,12 +171,13 @@ int main(int argc, char *argv[]){
   FLOAT *dest;
 #define PACK 1
 #define TESTA 1
-//#define TESTB 1
+#define TESTB 1
 
   for (i = from; i <= to; i += step) {
-    
+   
+    error_flag = 0;
   //test real random
-  printf("\na[0] = %f, b[0] = %f\n", a[0], b[0], c[0]);
+  //printf("\na[0] = %f, b[0] = %f\n", a[0], b[0], c[0]);
     timeg=0;
 
     if (!has_param_m) { m = i; }
@@ -229,6 +236,7 @@ int main(int argc, char *argv[]){
     #ifdef TESTA
     for(j = 0; j < m * n; j++)
     {
+        #ifdef DOUBLE
         //fprintf(stderr, "c[%d] = %.17f, sc[%d] = %.17f\n", j, c[j], j, sc[j]);
             //fprintf(stderr, "For case %d, m = %d, n = %d, k = %d\n", i, m, n, k);
         //if(fabs(c[j] - sc[j])/fabs(c[j]) <= 1e-15)
@@ -243,22 +251,55 @@ int main(int argc, char *argv[]){
             //if(j > m*256)
             //if(j < 512)
             printf("Fail to pass the test for A packed, c[%d] = %.17f, sc[%d] = %.17f\n", j, c[j], j, sc[j]);
-            //error_flag = 1;
-            exit(-1);
+            error_flag = 1;
+            //exit(-1);
         }
+        #else
+        if(fabs(c[j] - sc[j])/fabs(c[j]) >= 1e-6)
+        {
+            //fprintf(stderr, "Fail to pass the test for A packed, c[%d] = %.17f, sc[%d] = %.17f\n\n", j, c[j], j, sc[j]);
+            //if(j > m*256)
+            //if(j < 512)
+            printf("Fail to pass the test for A packed, c[%d] = %.17f, sc[%d] = %.17f\n", j, c[j], j, sc[j]);
+            error_flag = 1;
+            //exit(-1);
+        }
+        #endif
     }
     #endif
     //test B packed    
     #ifdef TESTB
     for(j = 0; j < m * n; j++)
     {
-        if(c[j] - sd[j] >= 1e-5)
+        #ifdef DOUBLE
+        //fprintf(stderr, "c[%d] = %.17f, sc[%d] = %.17f\n", j, c[j], j, sc[j]);
+            //fprintf(stderr, "For case %d, m = %d, n = %d, k = %d\n", i, m, n, k);
+        //if(fabs(c[j] - sc[j])/fabs(c[j]) <= 1e-15)
+        //{
+        //    printf("there is a test passed the test, c[%d] = %.17f, sc[%d] = %.17f\n", j, c[j], j, sc[j]);
+        ////    exit(-1);
+        //}
+        //if((c[j] - sc[j])/c[j] >= 1e-5)
+        if(fabs(c[j] - sc[j])/fabs(c[j]) >= 1e-15)
         {
-            fprintf(stderr, "For case %d, m = %d, n = %d, k = %d\n", i, m, n, k);
-            fprintf(stderr, "Fail to pass the test for B packed, c[%d] = %.17f, sd[%d] = %.17f\n\n", j, c[j], j, sd[j]);
-            //error_flag = 1;
+            //fprintf(stderr, "Fail to pass the test for A packed, c[%d] = %.17f, sc[%d] = %.17f\n\n", j, c[j], j, sc[j]);
+            //if(j > m*256)
+            //if(j < 512)
+            printf("Fail to pass the test for A packed, c[%d] = %.17f, sc[%d] = %.17f\n", j, c[j], j, sc[j]);
+            error_flag = 1;
             //exit(-1);
         }
+        #else
+        if(fabs(c[j] - sc[j])/fabs(c[j]) >= 1e-6)
+        {
+            //fprintf(stderr, "Fail to pass the test for A packed, c[%d] = %.17f, sc[%d] = %.17f\n\n", j, c[j], j, sc[j]);
+            //if(j > m*256)
+            //if(j < 512)
+            printf("Fail to pass the test for A packed, c[%d] = %.17f, sc[%d] = %.17f\n", j, c[j], j, sc[j]);
+            error_flag = 1;
+            //exit(-1);
+        }
+        #endif
     }
     #endif
 #else
@@ -269,14 +310,18 @@ int main(int argc, char *argv[]){
         {
             fprintf(stderr, "For case %d, m = %d, n = %d, k = %d\n", i, m, n, k);
             fprintf(stderr, "Fail to pass the test for A packed, c[%d] = %.17f, sc[%d] = %.17f\n\n", j, c[j], j, sc[j]);
-            //error_flag = 1;
-            exit(-1);
+            error_flag = 1;
+            //exit(-1);
         }
     }
 #endif    
 
-    fprintf(stderr, " M=%4d, N=%4d, K=%4d : ", (int)m, (int)n, (int)k);
-    printf("\n***********************************\ntest passed, done well!\n\n");
+    //fprintf(stderr, "FOR M=%4d, N=%4d, K=%4d: ", (int)m, (int)n, (int)k);
+    printf("FOR M=%4d, N=%4d, K=%4d: ", (int)m, (int)n, (int)k);
+    if(error_flag) 
+        printf("\nTest failed!\n***********************************\n\n");
+    else
+        printf("\nTest passed, done well!\n***********************************\n\n");
 
 //    begin();
 //
@@ -306,8 +351,6 @@ int main(int argc, char *argv[]){
 //    
   }
   
-  if(error_flag)
-      fprintf(stderr, "\nfail to pass all tests!\n");
   return 0;
 }
 
