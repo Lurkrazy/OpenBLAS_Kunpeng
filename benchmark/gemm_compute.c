@@ -191,7 +191,7 @@ int main(int argc, char *argv[]){
     ldc = m;
 
 #ifdef PACK 
-    if (( dest = (FLOAT *)malloc(sizeof(FLOAT) * m * n * k + 1048576 + 1024)) == NULL) {
+    if (( dest = (FLOAT *)malloc(sizeof(FLOAT) * (m + n) * k + 1048576 + 1024)) == NULL) {
         fprintf(stderr,"Out of Memory!!\n");exit(1);
     }
 #endif
