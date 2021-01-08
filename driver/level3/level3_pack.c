@@ -39,21 +39,21 @@
 /* This file is a template for level 3 operation */
 
 
-#ifndef ICOPY_OPERATION
+#ifndef ICOPY_PACK_OPERATION
 #ifdef AN
-#define ICOPY_OPERATION(M, N, A, LDA, X, Y, BUFFER, ALPHA) GEMM_ITCOPY_PACK(M, N, (IFLOAT *)(A) + ((Y) + (X) * (LDA)) * COMPSIZE, LDA, BUFFER, ALPHA[0]);
+#define ICOPY_PACK_OPERATION(M, N, A, LDA, X, Y, BUFFER, ALPHA) GEMM_ITCOPY_PACK(M, N, (IFLOAT *)(A) + ((Y) + (X) * (LDA)) * COMPSIZE, LDA, BUFFER, ALPHA);
 #endif
 #ifdef AT
-#define ICOPY_OPERATION(M, N, A, LDA, X, Y, BUFFER, ALPHA) GEMM_INCOPY_PACK(M, N, (IFLOAT *)(A) + ((X) + (Y) * (LDA)) * COMPSIZE, LDA, BUFFER, ALPHA[0]);
+#define ICOPY_PACK_OPERATION(M, N, A, LDA, X, Y, BUFFER, ALPHA) GEMM_INCOPY_PACK(M, N, (IFLOAT *)(A) + ((X) + (Y) * (LDA)) * COMPSIZE, LDA, BUFFER, ALPHA);
 #endif
 #endif
 
-#ifndef OCOPY_OPERATION
+#ifndef OCOPY_PACK_OPERATION
 #ifdef BN
-#define OCOPY_OPERATION(M, N, A, LDA, X, Y, BUFFER, ALPHA) GEMM_ONCOPY_PACK(M, N, (IFLOAT *)(A) + ((X) + (Y) * (LDA)) * COMPSIZE, LDA, BUFFER, ALPHA[0]);
+#define OCOPY_PACK_OPERATION(M, N, A, LDA, X, Y, BUFFER, ALPHA) GEMM_ONCOPY_PACK(M, N, (IFLOAT *)(A) + ((X) + (Y) * (LDA)) * COMPSIZE, LDA, BUFFER, ALPHA);
 #endif
 #ifdef BT
-#define OCOPY_OPERATION(M, N, A, LDA, X, Y, BUFFER, ALPHA) GEMM_OTCOPY_PACK(M, N, (IFLOAT *)(A) + ((Y) + (X) * (LDA)) * COMPSIZE, LDA, BUFFER, ALPHA[0]);
+#define OCOPY_PACK_OPERATION(M, N, A, LDA, X, Y, BUFFER, ALPHA) GEMM_OTCOPY_PACK(M, N, (IFLOAT *)(A) + ((Y) + (X) * (LDA)) * COMPSIZE, LDA, BUFFER, ALPHA);
 #endif
 #endif
 
@@ -165,12 +165,12 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 	}
       }
       
-      ICOPY_OPERATION(min_l, min_i, a, lda, ls, m_from, dest, alpha);
+      ICOPY_PACK_OPERATION(min_l, min_i, a, lda, ls, m_from, dest, alpha[0]);
       *block = dest; dest += min_l * min_i; block++;
 #endif
 #if defined(BN) || defined(BT)
 //here is different from level3.c . pack for only once
-	OCOPY_OPERATION(min_l, min_j, b, ldb, ls, js, dest, alpha);
+	OCOPY_PACK_OPERATION(min_l, min_j, b, ldb, ls, js, dest, alpha[0]);
       *block = dest; dest += min_l * min_j; block++;
 
 #endif
@@ -185,7 +185,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 	    min_i = ((min_i / 2 + GEMM_UNROLL_M - 1)/GEMM_UNROLL_M) * GEMM_UNROLL_M;
 	  }
     
-	ICOPY_OPERATION(min_l, min_i, a, lda, ls, is, dest, alpha);
+	ICOPY_PACK_OPERATION(min_l, min_i, a, lda, ls, is, dest, alpha[0]);
 	*block = dest; dest += min_l * min_i; block++;
       } /* end of is */
 #endif
