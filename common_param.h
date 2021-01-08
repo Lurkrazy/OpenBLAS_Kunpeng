@@ -206,10 +206,10 @@ BLASLONG (*ismin_k) (BLASLONG, float *, BLASLONG);
   int    (*sgemm_oncopy   )(BLASLONG, BLASLONG, float *, BLASLONG, float *);
   int    (*sgemm_otcopy   )(BLASLONG, BLASLONG, float *, BLASLONG, float *);
 
-  int    (*sgemm_incopy_pack   )(BLASLONG, BLASLONG, float *, BLASLONG, float *, float *);
-  int    (*sgemm_itcopy_pack   )(BLASLONG, BLASLONG, float *, BLASLONG, float *, float *);
-  int    (*sgemm_oncopy_pack   )(BLASLONG, BLASLONG, float *, BLASLONG, float *, float *);
-  int    (*sgemm_otcopy_pack   )(BLASLONG, BLASLONG, float *, BLASLONG, float *, float *);
+  int    (*sgemm_incopy_pack   )(BLASLONG, BLASLONG, float *, BLASLONG, float *, float);
+  int    (*sgemm_itcopy_pack   )(BLASLONG, BLASLONG, float *, BLASLONG, float *, float);
+  int    (*sgemm_oncopy_pack   )(BLASLONG, BLASLONG, float *, BLASLONG, float *, float);
+  int    (*sgemm_otcopy_pack   )(BLASLONG, BLASLONG, float *, BLASLONG, float *, float);
 #endif
 #ifdef BUILD_SINGLE  
   int    (*strsm_kernel_LN)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
@@ -318,10 +318,10 @@ BLASLONG (*idmin_k) (BLASLONG, double *, BLASLONG);
   int    (*dgemm_oncopy   )(BLASLONG, BLASLONG, double *, BLASLONG, double *);
   int    (*dgemm_otcopy   )(BLASLONG, BLASLONG, double *, BLASLONG, double *);
   
-  int    (*dgemm_incopy_pack   )(BLASLONG, BLASLONG, double *, BLASLONG, double *, double *);
-  int    (*dgemm_itcopy_pack   )(BLASLONG, BLASLONG, double *, BLASLONG, double *, double *);
-  int    (*dgemm_oncopy_pack   )(BLASLONG, BLASLONG, double *, BLASLONG, double *, double *);
-  int    (*dgemm_otcopy_pack   )(BLASLONG, BLASLONG, double *, BLASLONG, double *, double *);
+  int    (*dgemm_incopy_pack   )(BLASLONG, BLASLONG, double *, BLASLONG, double *, double);
+  int    (*dgemm_itcopy_pack   )(BLASLONG, BLASLONG, double *, BLASLONG, double *, double);
+  int    (*dgemm_oncopy_pack   )(BLASLONG, BLASLONG, double *, BLASLONG, double *, double);
+  int    (*dgemm_otcopy_pack   )(BLASLONG, BLASLONG, double *, BLASLONG, double *, double);
 #endif
 #ifdef BUILD_DOUBLE
   int    (*dtrsm_kernel_LN)(BLASLONG, BLASLONG, BLASLONG, double, double *, double *, double *, BLASLONG, BLASLONG);
