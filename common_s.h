@@ -48,7 +48,7 @@
 #define	SGEMM_ONCOPY		sgemm_oncopy
 #define	SGEMM_OTCOPY		sgemm_otcopy
 
-#if SGEMM_DEFAULT_UNROLL_M == SGEMM_DEFAULT_UNROLL_N
+#if SGEMM_DEFAULT_UNROLL_M1 == SGEMM_DEFAULT_UNROLL_N1
 #define	SGEMM_INCOPY		sgemm_oncopy
 #define	SGEMM_ITCOPY		sgemm_otcopy
 #else

@@ -49,13 +49,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define pCRow3		x15
 #define pA		x16
 #define alpha		w17
+#define pCRow4		x18
+#define pCRow5		x19
+#define pCRow6		x20
+#define pCRow7		x21
 
 #define alpha0		s10
 #define alphaV0		v10.s[0]
 
-#define A_PRE_SIZE	2560
-#define B_PRE_SIZE	224
-#define C_PRE_SIZE	160
+#define A_PRE_SIZE	5120	
+#define B_PRE_SIZE	448
+#define C_PRE_SIZE	320
 
 
 // 00 origM
@@ -147,185 +151,197 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fmov		s31, s18
 .endm
 
+/*
+v8-v31 store C
+v0-v2 A
+v4-v5 B
+v3,v6-v7 tmp
+*/
 .macro KERNEL16x4_I
 	ldp	q0, q1, [pA], #32
 
-	ldp	s8, s9, [pB], #8
+	ldp	q4, q5, [pB], #32
 
-	fmul	v16.4s, v0.4s, v8.s[0]
-	fmul	v20.4s, v0.4s, v9.s[0]
+	fmul	v8.4s, v0.4s, v4.s[0]
+	fmul	v11.4s, v0.4s, v4.s[1]
+	ldr	q6, [pA] 
+	add	pA, pA, #16
+	fmul	v14.4s, v0.4s, v4.s[2]
+	fmul	v17.4s, v0.4s, v4.s[3]
+	fmul	v20.4s, v0.4s, v5.s[0]
+	fmul	v23.4s, v0.4s, v5.s[1]
+	fmul	v26.4s, v0.4s, v5.s[2]
+	fmul	v29.4s, v0.4s, v5.s[3]
 
-	ldp	s10, s11, [pB], #8
 
-	fmul	v24.4s, v0.4s, v10.s[0]
-	fmul	v28.4s, v0.4s, v11.s[0]
+	fmul	v9.4s, v1.4s, v4.s[0]
+	fmul	v12.4s, v1.4s, v4.s[1]
+	fmul	v15.4s, v1.4s, v4.s[2]
+	fmul	v18.4s, v1.4s, v4.s[3]
+	fmul	v21.4s, v1.4s, v5.s[0]
+	fmul	v24.4s, v1.4s, v5.s[1]
+	fmul	v27.4s, v1.4s, v5.s[2]
+	fmul	v30.4s, v1.4s, v5.s[3]
+	ldp	q0, q1, [pA], #32
 
-	ldp	q2, q3, [pA], #32
+	ldp	q2, q3, [pB], #32
 
-	fmul	v17.4s, v1.4s, v8.s[0]
-	fmul	v21.4s, v1.4s, v9.s[0]
-
-	ldp	q4, q5, [pA], #32
-
-	fmul	v25.4s, v1.4s, v10.s[0]
-	fmul	v29.4s, v1.4s, v11.s[0]
-
-	ldp	s12, s13, [pB], #8
-
-	fmul	v18.4s, v2.4s, v8.s[0]
-	fmul	v22.4s, v2.4s, v9.s[0]
-
-	ldp	s14, s15, [pB], #8
-
-	fmul	v19.4s, v3.4s, v8.s[0]
-	fmul	v23.4s, v3.4s, v9.s[0]
-
-	ldp	q6, q7, [pA], #32
-
-	fmul	v26.4s, v2.4s, v10.s[0]
-	fmul	v30.4s, v2.4s, v11.s[0]
-
+	fmul	v10.4s, v6.4s, v4.s[0]
+	fmul	v13.4s, v6.4s, v4.s[1]
 	prfm	PLDL1KEEP, [pA, #A_PRE_SIZE]
-
-	fmul	v27.4s, v3.4s, v10.s[0]
-	fmul	v31.4s, v3.4s, v11.s[0]
-
+	fmul	v16.4s, v6.4s, v4.s[2]
+	fmul	v19.4s, v6.4s, v4.s[3]
 	prfm	PLDL1KEEP, [pA, #A_PRE_SIZE+64]
+	fmul	v22.4s, v6.4s, v5.s[0]
+	fmul	v25.4s, v6.4s, v5.s[1]
+	fmul	v28.4s, v6.4s, v5.s[2]
+	fmul	v31.4s, v6.4s, v5.s[3]
+	ldr	q7, [pA]
+	add	pA, pA, #16
+
 .endm
 
 .macro KERNEL16x4_M1
-	fmla	v16.4s, v0.4s, v8.s[0]
-	fmla	v17.4s, v1.4s, v8.s[0]
+	fmla	v8.4s, v0.4s, v4.s[0]
+	fmla	v11.4s, v0.4s, v4.s[1]
+	ldr	q7, [pA, #32] 
+	fmla	v14.4s, v0.4s, v4.s[2]
+	fmla	v17.4s, v0.4s, v4.s[3]
+	fmla	v20.4s, v0.4s, v5.s[0]
+	fmla	v23.4s, v0.4s, v5.s[1]
+	ldp	q2, q3, [pB], #32
+	fmla	v26.4s, v0.4s, v5.s[2]
+	fmla	v29.4s, v0.4s, v5.s[3]
 
-	ldp	q4, q5, [pA], #32
 
-	fmla	v18.4s, v2.4s, v8.s[0]
-	fmla	v19.4s, v3.4s, v8.s[0]
+	fmla	v9.4s, v1.4s, v4.s[0]
+	fmla	v12.4s, v1.4s, v4.s[1]
+	fmla	v15.4s, v1.4s, v4.s[2]
+	fmla	v18.4s, v1.4s, v4.s[3]
+	fmla	v21.4s, v1.4s, v5.s[0]
+	fmla	v24.4s, v1.4s, v5.s[1]
+	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
+	fmla	v27.4s, v1.4s, v5.s[2]
+	fmla	v30.4s, v1.4s, v5.s[3]
 
-	fmla	v20.4s, v0.4s, v9.s[0]
-	fmla	v21.4s, v1.4s, v9.s[0]
+	ldp	q0, q1, [pA], #32
+	add	pA, pA, #16
 
-	ldp	s12, s13, [pB], #8
-
-	fmla	v22.4s, v2.4s, v9.s[0]
-	fmla	v23.4s, v3.4s, v9.s[0]
-
-	ldp	s14, s15, [pB], #8
-
-	fmla	v24.4s, v0.4s, v10.s[0]
-	fmla	v25.4s, v1.4s, v10.s[0]
-
-	prfm	PLDL1KEEP, [pA, #A_PRE_SIZE+64]
-
-	fmla	v26.4s, v2.4s, v10.s[0]
-	fmla	v27.4s, v3.4s, v10.s[0]
-
+	fmla	v10.4s, v6.4s, v4.s[0]
+	fmla	v13.4s, v6.4s, v4.s[1]
 	prfm	PLDL1KEEP, [pA, #A_PRE_SIZE]
-
-	fmla	v28.4s, v0.4s, v11.s[0]
-	fmla	v29.4s, v1.4s, v11.s[0]
-
-	ldp	q6, q7, [pA], #32
-
-	fmla	v30.4s, v2.4s, v11.s[0]
-	fmla	v31.4s, v3.4s, v11.s[0]
+	fmla	v16.4s, v6.4s, v4.s[2]
+	fmla	v19.4s, v6.4s, v4.s[3]
+	prfm	PLDL1KEEP, [pA, #A_PRE_SIZE+64]
+	fmla	v22.4s, v6.4s, v5.s[0]
+	fmla	v25.4s, v6.4s, v5.s[1]
+	fmla	v28.4s, v6.4s, v5.s[2]
+	fmla	v31.4s, v6.4s, v5.s[3]
 .endm
 
 .macro KERNEL16x4_M2
-	fmla	v16.4s, v4.4s, v12.s[0]
-	fmla	v17.4s, v5.4s, v12.s[0]
+	fmla	v8.4s, v0.4s, v2.s[0]
+	fmla	v11.4s, v0.4s, v2.s[1]
+	ldr	q6, [pA, #32] 
+	fmla	v14.4s, v0.4s, v2.s[2]
+	fmla	v17.4s, v0.4s, v2.s[3]
+	fmla	v20.4s, v0.4s, v3.s[0]
+	fmla	v23.4s, v0.4s, v3.s[1]
+	ldp	q4, q5, [pB], #32
+	fmla	v26.4s, v0.4s, v3.s[2]
+	fmla	v29.4s, v0.4s, v3.s[3]
+
+
+	fmla	v9.4s, v1.4s, v2.s[0]
+	fmla	v12.4s, v1.4s, v2.s[1]
+	fmla	v15.4s, v1.4s, v2.s[2]
+	fmla	v18.4s, v1.4s, v2.s[3]
+	fmla	v21.4s, v1.4s, v3.s[0]
+	fmla	v24.4s, v1.4s, v3.s[1]
+	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
+	fmla	v27.4s, v1.4s, v3.s[2]
+	fmla	v30.4s, v1.4s, v3.s[3]
 
 	ldp	q0, q1, [pA], #32
+	add	pA, pA, #16
 
-	fmla	v18.4s, v6.4s, v12.s[0]
-	fmla	v19.4s, v7.4s, v12.s[0]
-
-	fmla	v20.4s, v4.4s, v13.s[0]
-	fmla	v21.4s, v5.4s, v13.s[0]
-
-	ldp	s8, s9, [pB], #8
-
-	fmla	v22.4s, v6.4s, v13.s[0]
-	fmla	v23.4s, v7.4s, v13.s[0]
-
-	ldp	s10, s11, [pB], #8
-
-	fmla	v24.4s, v4.4s, v14.s[0]
-	fmla	v25.4s, v5.4s, v14.s[0]
-
-	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
-
-	fmla	v26.4s, v6.4s, v14.s[0]
-	fmla	v27.4s, v7.4s, v14.s[0]
-
-	ldp	q2, q3, [pA], #32
-
-	fmla	v28.4s, v4.4s, v15.s[0]
-	fmla	v29.4s, v5.4s, v15.s[0]
-
-	fmla	v30.4s, v6.4s, v15.s[0]
-	fmla	v31.4s, v7.4s, v15.s[0]
+	fmla	v10.4s, v7.4s, v2.s[0]
+	fmla	v13.4s, v7.4s, v2.s[1]
+	prfm	PLDL1KEEP, [pA, #A_PRE_SIZE]
+	fmla	v16.4s, v7.4s, v2.s[2]
+	fmla	v19.4s, v7.4s, v2.s[3]
+	prfm	PLDL1KEEP, [pA, #A_PRE_SIZE+64]
+	fmla	v22.4s, v7.4s, v3.s[0]
+	fmla	v25.4s, v7.4s, v3.s[1]
+	fmla	v28.4s, v7.4s, v3.s[2]
+	fmla	v31.4s, v7.4s, v3.s[3]
 .endm
 
 .macro KERNEL16x4_E
-	fmla	v16.4s, v4.4s, v12.s[0]
-	fmla	v20.4s, v4.4s, v13.s[0]
-	fmla	v24.4s, v4.4s, v14.s[0]
-	fmla	v28.4s, v4.4s, v15.s[0]
+	fmla	v8.4s, v0.4s, v2.s[0]
+	fmla	v11.4s, v0.4s, v2.s[1]
+	fmla	v14.4s, v0.4s, v2.s[2]
+	fmla	v17.4s, v0.4s, v2.s[3]
+	fmla	v20.4s, v0.4s, v3.s[0]
+	fmla	v23.4s, v0.4s, v3.s[1]
+	fmla	v26.4s, v0.4s, v3.s[2]
+	fmla	v29.4s, v0.4s, v3.s[3]
 
-	fmla	v17.4s, v5.4s, v12.s[0]
-	fmla	v21.4s, v5.4s, v13.s[0]
-	fmla	v25.4s, v5.4s, v14.s[0]
-	fmla	v29.4s, v5.4s, v15.s[0]
 
+	fmla	v9.4s, v1.4s, v2.s[0]
+	fmla	v12.4s, v1.4s, v2.s[1]
+	fmla	v15.4s, v1.4s, v2.s[2]
+	fmla	v18.4s, v1.4s, v2.s[3]
+	fmla	v21.4s, v1.4s, v3.s[0]
+	fmla	v24.4s, v1.4s, v3.s[1]
 	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
-
-	fmla	v18.4s, v6.4s, v12.s[0]
-	fmla	v22.4s, v6.4s, v13.s[0]
-	fmla	v26.4s, v6.4s, v14.s[0]
-	fmla	v30.4s, v6.4s, v15.s[0]
-
-	fmla	v19.4s, v7.4s, v12.s[0]
-	fmla	v23.4s, v7.4s, v13.s[0]
-	fmla	v27.4s, v7.4s, v14.s[0]
-	fmla	v31.4s, v7.4s, v15.s[0]
+	fmla	v27.4s, v1.4s, v3.s[2]
+	fmla	v30.4s, v1.4s, v3.s[3]
+	fmla	v10.4s, v7.4s, v2.s[0]
+	fmla	v13.4s, v7.4s, v2.s[1]
+	fmla	v16.4s, v7.4s, v2.s[2]
+	fmla	v19.4s, v7.4s, v2.s[3]
+	fmla	v22.4s, v7.4s, v3.s[0]
+	fmla	v25.4s, v7.4s, v3.s[1]
+	fmla	v28.4s, v7.4s, v3.s[2]
+	fmla	v31.4s, v7.4s, v3.s[3]
 .endm
 
 .macro KERNEL16x4_SUB
 	ldp	q0, q1, [pA], #32
-	ldp	s8, s9, [pB], #8
+	ldp	q2, q3, [pB], #32
 
-	fmla	v16.4s, v0.4s, v8.s[0]
-	fmla	v20.4s, v0.4s, v9.s[0]
+	fmla	v8.4s, v0.4s, v2.s[0]
+	fmla	v11.4s, v0.4s, v2.s[1]
+	fmla	v14.4s, v0.4s, v2.s[2]
+	fmla	v17.4s, v0.4s, v2.s[3]
+	fmla	v20.4s, v0.4s, v3.s[0]
+	fmla	v23.4s, v0.4s, v3.s[1]
+	fmla	v26.4s, v0.4s, v3.s[2]
+	fmla	v29.4s, v0.4s, v3.s[3]
 
-	ldp	s10, s11, [pB], #8
+	ldr	q6, [pA]
+	add	pA, pA, #16
 
-	fmla	v24.4s, v0.4s, v10.s[0]
-	fmla	v28.4s, v0.4s, v11.s[0]
 
-	ldp	q2, q3, [pA], #32
-
-	fmla	v17.4s, v1.4s, v8.s[0]
-	fmla	v21.4s, v1.4s, v9.s[0]
-
-	fmla	v25.4s, v1.4s, v10.s[0]
-	fmla	v29.4s, v1.4s, v11.s[0]
-
-	fmla	v18.4s, v2.4s, v8.s[0]
-	fmla	v22.4s, v2.4s, v9.s[0]
-
-	prfm	PLDL1KEEP, [pA, #A_PRE_SIZE]
-
-	fmla	v19.4s, v3.4s, v8.s[0]
-	fmla	v23.4s, v3.4s, v9.s[0]
-
-	fmla	v26.4s, v2.4s, v10.s[0]
-	fmla	v30.4s, v2.4s, v11.s[0]
-
+	fmla	v9.4s, v1.4s, v2.s[0]
+	fmla	v12.4s, v1.4s, v2.s[1]
+	fmla	v15.4s, v1.4s, v2.s[2]
+	fmla	v18.4s, v1.4s, v2.s[3]
+	fmla	v21.4s, v1.4s, v3.s[0]
+	fmla	v24.4s, v1.4s, v3.s[1]
 	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
-
-	fmla	v27.4s, v3.4s, v10.s[0]
-	fmla	v31.4s, v3.4s, v11.s[0]
+	fmla	v27.4s, v1.4s, v3.s[2]
+	fmla	v30.4s, v1.4s, v3.s[3]
+	fmla	v10.4s, v6.4s, v2.s[0]
+	fmla	v13.4s, v6.4s, v2.s[1]
+	fmla	v16.4s, v6.4s, v2.s[2]
+	fmla	v19.4s, v6.4s, v2.s[3]
+	fmla	v22.4s, v6.4s, v3.s[0]
+	fmla	v25.4s, v6.4s, v3.s[1]
+	fmla	v28.4s, v6.4s, v3.s[2]
+	fmla	v31.4s, v6.4s, v3.s[3]
+	prfm	PLDL1KEEP, [pA, #A_PRE_SIZE]
 .endm
 
 .macro SAVE16x4
@@ -334,63 +350,95 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	prfm	PLDL2KEEP, [pCRow0, #C_PRE_SIZE]
 
 	ldp	q0, q1, [pCRow0]
-	fmla	v0.4s, v16.4s, alphaV0
-	fmla	v1.4s, v17.4s, alphaV0
+	ldr	q2, [pCRow0, #32]
+	fmla	v0.4s, v8.4s, alphaV0
+	fmla	v1.4s, v16.4s, alphaV0
+	fmla	v2.4s, v24.4s, alphaV0
 	stp 	q0, q1, [pCRow0]
+	str	q2, [pCRow0, #32]
+	add	pCRow0, pCRow0, #48
 
-	add	pCRow0, pCRow0, #32
-
-	ldp	q2, q3, [pCRow0]
-	fmla	v2.4s, v18.4s, alphaV0
-	fmla	v3.4s, v19.4s, alphaV0
-	stp 	q2, q3, [pCRow0]
-
-	add	pCRow0, pCRow0, #32
 	prfm	PLDL2KEEP, [pCRow1, #C_PRE_SIZE]
+	ldp	q3, q4, [pCRow1]
+	ldr	q5, [pCRow1, #32] 
+	fmla	v3.4s, v9.4s, alphaV0
+	fmla	v4.4s, v17.4s, alphaV0
+	fmla	v5.4s, v25.4s, alphaV0
+	stp 	q3, q4, [pCRow1]
+	str	q5, [pCRow1, #32]
+	
+	add	pCRow1, pCRow1, #48
 
-	ldp	q4, q5, [pCRow1]
-	fmla	v4.4s, v20.4s, alphaV0
-	fmla	v5.4s, v21.4s, alphaV0
-	stp 	q4, q5, [pCRow1]
-
-	add	pCRow1, pCRow1, #32
-
-	ldp	q6, q7, [pCRow1]
-	fmla	v6.4s, v22.4s, alphaV0
-	fmla	v7.4s, v23.4s, alphaV0
-	stp 	q6, q7, [pCRow1]
-
-	add	pCRow1, pCRow1, #32
 	prfm	PLDL2KEEP, [pCRow2, #C_PRE_SIZE]
 
-	ldp	q0, q1, [pCRow2]
-	fmla	v0.4s, v24.4s, alphaV0
-	fmla	v1.4s, v25.4s, alphaV0
-	stp 	q0, q1, [pCRow2]
+	ldp	q6, q7, [pCRow2]
+	ldr	q0, [pCRow2, #32]
+	fmla	v6.4s, v10.4s, alphaV0
+	fmla	v7.4s, v18.4s, alphaV0
+	fmla	v0.4s, v26.4s, alphaV0
+	stp 	q6, q7, [pCRow2]
+	str	q0, [pCRow2, #32]
 
-	add	pCRow2, pCRow2, #32
+	add	pCRow2, pCRow2, #48
 
-	ldp	q2, q3, [pCRow2]
-	fmla	v2.4s, v26.4s, alphaV0
-	fmla	v3.4s, v27.4s, alphaV0
-	stp 	q2, q3, [pCRow2]
-
-	add	pCRow2, pCRow2, #32
 	prfm	PLDL2KEEP, [pCRow3, #C_PRE_SIZE]
 
-	ldp	q4, q5, [pCRow3]
-	fmla	v4.4s, v28.4s, alphaV0
-	fmla	v5.4s, v29.4s, alphaV0
-	stp 	q4, q5, [pCRow3]
+	ldp	q1, q2, [pCRow3]
+	ldr	q3, [pCRow3, #32]
+	fmla	v1.4s, v11.4s, alphaV0
+	fmla	v2.4s, v19.4s, alphaV0
+	fmla	v3.4s, v27.4s, alphaV0
+	stp 	q1, q2, [pCRow3]
+	str	q3, [pCRow3, #32]
 
-	add	pCRow3, pCRow3, #32
+	add	pCRow3, pCRow3, #48
 
-	ldp	q6, q7, [pCRow3]
-	fmla	v6.4s, v30.4s, alphaV0
-	fmla	v7.4s, v31.4s, alphaV0
-	stp 	q6, q7, [pCRow3]
+	prfm	PLDL2KEEP, [pCRow4, #C_PRE_SIZE]
 
-	add	pCRow3, pCRow3, #32
+	ldp	q4, q5, [pCRow4]
+	ldr	q6, [pCRow4, #32]
+	fmla	v4.4s, v12.4s, alphaV0
+	fmla	v5.4s, v20.4s, alphaV0
+	fmla	v6.4s, v28.4s, alphaV0
+	stp 	q4, q5, [pCRow4]
+	str	q6, [pCRow4, #32]
+	add	pCRow4, pCRow4, #48
+
+	prfm	PLDL2KEEP, [pCRow5, #C_PRE_SIZE]
+	ldp	q0, q1, [pCRow5]
+	ldr	q7, [pCRow5, #32] 
+	fmla	v0.4s, v13.4s, alphaV0
+	fmla	v1.4s, v21.4s, alphaV0
+	fmla	v7.4s, v29.4s, alphaV0
+	stp 	q0, q1, [pCRow5]
+	str	q7, [pCRow5, #32]
+	
+	add	pCRow5, pCRow5, #48
+
+	prfm	PLDL2KEEP, [pCRow6, #C_PRE_SIZE]
+
+	ldp	q2, q3, [pCRow6]
+	ldr	q4, [pCRow6, #32]
+	fmla	v2.4s, v14.4s, alphaV0
+	fmla	v3.4s, v22.4s, alphaV0
+	fmla	v4.4s, v30.4s, alphaV0
+	stp 	q2, q3, [pCRow6]
+	str	q4, [pCRow6, #32]
+
+	add	pCRow6, pCRow6, #48
+
+	prfm	PLDL2KEEP, [pCRow7, #C_PRE_SIZE]
+
+	ldp	q5, q6, [pCRow7]
+	ldr	q7, [pCRow7, #32]
+	fmla	v5.4s, v11.4s, alphaV0
+	fmla	v6.4s, v19.4s, alphaV0
+	fmla	v7.4s, v27.4s, alphaV0
+	stp 	q5, q6, [pCRow7]
+	str	q7, [pCRow7, #32]
+
+	add	pCRow7, pCRow7, #48
+
 .endm
 
 /******************************************************************************/

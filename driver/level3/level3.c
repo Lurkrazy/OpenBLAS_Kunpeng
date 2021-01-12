@@ -169,6 +169,9 @@
 #define STOP_RPCC(COUNTER)
 #endif
 
+#define GEMM_UNROLL_M1 12
+#define GEMM_UNROLL_N1 8
+
 int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 		  XFLOAT *sa, XFLOAT *sb, BLASLONG dummy){
   BLASLONG k, lda, ldb, ldc;
@@ -297,10 +300,17 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 	min_l  = GEMM_Q;
       } else {
 	if (min_l > GEMM_Q) {
+<<<<<<< HEAD
 	  min_l = ((min_l / 2 + GEMM_UNROLL_M - 1)/GEMM_UNROLL_M) * GEMM_UNROLL_M;
 	}
 	gemm_p = ((l2size / min_l + GEMM_UNROLL_M - 1)/GEMM_UNROLL_M) * GEMM_UNROLL_M;
 	while (gemm_p * min_l > l2size) gemm_p -= GEMM_UNROLL_M;
+=======
+	  min_l = ((min_l / 2 + GEMM_UNROLL_M1 - 1)/GEMM_UNROLL_M1) * GEMM_UNROLL_M1;
+	}
+	gemm_p = ((l2size / min_l + GEMM_UNROLL_M1 - 1)/GEMM_UNROLL_M1) * GEMM_UNROLL_M1;
+	while (gemm_p * min_l > l2size) gemm_p -= GEMM_UNROLL_M1;
+>>>>>>> init
       }
 
       /* First, we have to move data A to L2 cache */
@@ -311,7 +321,11 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 	min_i = GEMM_P;
       } else {
 	if (min_i > GEMM_P) {
+<<<<<<< HEAD
 	  min_i = ((min_i / 2 + GEMM_UNROLL_M - 1)/GEMM_UNROLL_M) * GEMM_UNROLL_M;
+=======
+	  min_i = ((min_i / 2 + GEMM_UNROLL_M1 - 1)/GEMM_UNROLL_M1) * GEMM_UNROLL_M1;
+>>>>>>> init
 	} else {
 	  l1stride = 0;
 	}
@@ -333,11 +347,19 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
       for(jjs = js; jjs < js + min_j; jjs += min_jj){
 	min_jj = min_j + js - jjs;
 
+<<<<<<< HEAD
         if (min_jj >= 3*GEMM_UNROLL_N) min_jj = 3*GEMM_UNROLL_N;
         else
         	if (min_jj >= 2*GEMM_UNROLL_N) min_jj = 2*GEMM_UNROLL_N;
         	else
           		if (min_jj > GEMM_UNROLL_N) min_jj = GEMM_UNROLL_N;
+=======
+        if (min_jj >= 3*GEMM_UNROLL_N1) min_jj = 3*GEMM_UNROLL_N1;
+        else
+        	if (min_jj >= 2*GEMM_UNROLL_N1) min_jj = 2*GEMM_UNROLL_N1;
+        	else
+          		if (min_jj > GEMM_UNROLL_N1) min_jj = GEMM_UNROLL_N1;
+>>>>>>> init
 
 
 
@@ -369,7 +391,11 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 	  min_i = GEMM_P;
 	} else
 	  if (min_i > GEMM_P) {
+<<<<<<< HEAD
 	    min_i = ((min_i / 2 + GEMM_UNROLL_M - 1)/GEMM_UNROLL_M) * GEMM_UNROLL_M;
+=======
+	    min_i = ((min_i / 2 + GEMM_UNROLL_M1 - 1)/GEMM_UNROLL_M1) * GEMM_UNROLL_M1;
+>>>>>>> init
 	  }
 
 	START_RPCC();

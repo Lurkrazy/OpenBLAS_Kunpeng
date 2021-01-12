@@ -173,11 +173,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro KERNEL8x4_I
-	ldp     q8, q9, [pB], #32
+	ld2	{v8.2s, v9.2s}, [pB]
+	add	pB, pB, #16
 
-	ldp     q0, q1, [pA], #32
-
-	ldp	q2, q3, [pA], #32
+	ld2	{v0.4s, v1.4s}, [pA]
+	add	pA, pA, #32
+	ld2	{v2.4s, v3.4s}, [pA]
+	add	pA, pA, #32
 
 	fmul	v16.4s, v0.4s, v8.s[0]
 	OP_ii	v16.4s, v1.4s, v9.s[0]
@@ -190,6 +192,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 	OP_ir	v17.4s, v1.4s, v8.s[0]
 
+	ld2	{v10.2s, v11.2s}, [pB]
+	add	pB, pB, #16
+
 	fmul	v18.4s, v2.4s, v8.s[0]
 	OP_ii	v18.4s, v3.4s, v9.s[0]
 #if defined(NR) || defined(NC) || defined(TR) || defined(TC) || \
@@ -201,8 +206,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 	OP_ir	v19.4s, v3.4s, v8.s[0]
 
-	ldp     q12, q13, [pB], #32
-
+	ld2	{v12.2s, v13.2s}, [pB]
+	add	pB, pB, #16
 
 	fmul	v20.4s, v0.4s, v8.s[1]
 	OP_ii	v20.4s, v1.4s, v9.s[1]
@@ -215,6 +220,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 	OP_ir	v21.4s, v1.4s, v8.s[1]
 
+	ld2	{v14.2s, v15.2s}, [pB]
+	add	pB, pB, #16
 
 	fmul	v22.4s, v2.4s, v8.s[1]
 	OP_ii	v22.4s, v3.4s, v9.s[1]
@@ -227,65 +234,59 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 	OP_ir	v23.4s, v3.4s, v8.s[1]
 
+	ld2	{v4.4s, v5.4s}, [pA]
+	add	pA, pA, #32
 
-	ldp     q4, q5, [pA], #32
-
-
-	fmul	v24.4s, v0.4s, v8.s[2]
-	OP_ii	v24.4s, v1.4s, v9.s[2]
+	fmul	v24.4s, v0.4s, v10.s[0]
+	OP_ii	v24.4s, v1.4s, v11.s[0]
 #if defined(NR) || defined(NC) || defined(TR) || defined(TC) || \
     defined(RR) || defined(RC) || defined(CR) || defined(CC)
 	eor	v25.16b, v25.16b, v25.16b
-	fmls	v25.4s, v0.4s, v9.s[2]
+	fmls	v25.4s, v0.4s, v11.s[0]
 #else
-	fmul	v25.4s, v0.4s, v9.s[2]
+	fmul	v25.4s, v0.4s, v11.s[0]
 #endif
-	OP_ir	v25.4s, v1.4s, v8.s[2]
+	OP_ir	v25.4s, v1.4s, v10.s[0]
 
+	ld2	{v6.4s, v7.4s}, [pA]
+	add	pA, pA, #32
 
-	ldp     q6, q7, [pA], #32
-
-
-	fmul	v26.4s, v2.4s, v8.s[2]
-	OP_ii	v26.4s, v3.4s, v9.s[2]
+	fmul	v26.4s, v2.4s, v10.s[0]
+	OP_ii	v26.4s, v3.4s, v11.s[0]
 #if defined(NR) || defined(NC) || defined(TR) || defined(TC) || \
     defined(RR) || defined(RC) || defined(CR) || defined(CC)
 	eor	v27.16b, v27.16b, v27.16b
-	fmls	v27.4s, v2.4s, v9.s[2]
+	fmls	v27.4s, v2.4s, v11.s[0]
 #else
-	fmul	v27.4s, v2.4s, v9.s[2]
+	fmul	v27.4s, v2.4s, v11.s[0]
 #endif
-	OP_ir	v27.4s, v3.4s, v8.s[2]
-
+	OP_ir	v27.4s, v3.4s, v10.s[0]
 
 	prfm	PLDL1KEEP, [pA, #A_PRE_SIZE]
 
-
-	fmul	v28.4s, v0.4s, v8.s[3]
-	OP_ii	v28.4s, v1.4s, v9.s[3]
+	fmul	v28.4s, v0.4s, v10.s[1]
+	OP_ii	v28.4s, v1.4s, v11.s[1]
 #if defined(NR) || defined(NC) || defined(TR) || defined(TC) || \
     defined(RR) || defined(RC) || defined(CR) || defined(CC)
 	eor	v29.16b, v29.16b, v29.16b
-	fmls	v29.4s, v0.4s, v9.s[3]
+	fmls	v29.4s, v0.4s, v11.s[1]
 #else
-	fmul	v29.4s, v0.4s, v9.s[3]
+	fmul	v29.4s, v0.4s, v11.s[1]
 #endif
-	OP_ir	v29.4s, v1.4s, v8.s[3]
-
+	OP_ir	v29.4s, v1.4s, v10.s[1]
 
 	prfm	PLDL1KEEP, [pA, #A_PRE_SIZE+64]
 
-
-	fmul	v30.4s, v2.4s, v8.s[3]
-	OP_ii	v30.4s, v3.4s, v9.s[3]
+	fmul	v30.4s, v2.4s, v10.s[1]
+	OP_ii	v30.4s, v3.4s, v11.s[1]
 #if defined(NR) || defined(NC) || defined(TR) || defined(TC) || \
     defined(RR) || defined(RC) || defined(CR) || defined(CC)
 	eor	v31.16b, v31.16b, v31.16b
-	fmls	v31.4s, v2.4s, v9.s[3]
+	fmls	v31.4s, v2.4s, v11.s[1]
 #else
-	fmul	v31.4s, v2.4s, v9.s[3]
+	fmul	v31.4s, v2.4s, v11.s[1]
 #endif
-	OP_ir	v31.4s, v3.4s, v8.s[3]
+	OP_ir	v31.4s, v3.4s, v10.s[1]
 .endm
 
 .macro KERNEL8x4_M1
@@ -294,60 +295,56 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	OP_rr	v18.4s, v2.4s, v8.s[0]
 	OP_ri	v19.4s, v2.4s, v9.s[0]
 
-	//ld2	{v12.2s, v13.2s}, [pB]
-	//add	pB, pB, #16
-	ldp     q12, q13, [pB], #32
+	ld2	{v12.2s, v13.2s}, [pB]
+	add	pB, pB, #16
 
 	OP_ii	v16.4s, v1.4s, v9.s[0]
 	OP_ir	v17.4s, v1.4s, v8.s[0]
 	OP_ii	v18.4s, v3.4s, v9.s[0]
 	OP_ir	v19.4s, v3.4s, v8.s[0]
 
-	//ld2	{v4.4s, v5.4s}, [pA]
-	//add	pA, pA, #32
-	ldp     q4, q5, [pA], #32
+	ld2	{v4.4s, v5.4s}, [pA]
+	add	pA, pA, #32
 
 	OP_rr	v20.4s, v0.4s, v8.s[1]
 	OP_ri	v21.4s, v0.4s, v9.s[1]
 	OP_rr	v22.4s, v2.4s, v8.s[1]
 	OP_ri	v23.4s, v2.4s, v9.s[1]
 
-	//ld2	{v6.4s, v7.4s}, [pA]
-	//add	pA, pA, #32
-	ldp     q6, q7, [pA], #32
+	ld2	{v6.4s, v7.4s}, [pA]
+	add	pA, pA, #32
 
 	OP_ii	v20.4s, v1.4s, v9.s[1]
 	OP_ir	v21.4s, v1.4s, v8.s[1]
 	OP_ii	v22.4s, v3.4s, v9.s[1]
 	OP_ir	v23.4s, v3.4s, v8.s[1]
 
-	//ld2	{v14.2s, v15.2s}, [pB]
-	//add	pB, pB, #16
-	//ldp     d14, d15, [pB], #16
+	ld2	{v14.2s, v15.2s}, [pB]
+	add	pB, pB, #16
 
-	OP_rr	v24.4s, v0.4s, v8.s[2]
-	OP_ri	v25.4s, v0.4s, v9.s[2]
-	OP_rr	v26.4s, v2.4s, v8.s[2]
-	OP_ri	v27.4s, v2.4s, v9.s[2]
+	OP_rr	v24.4s, v0.4s, v10.s[0]
+	OP_ri	v25.4s, v0.4s, v11.s[0]
+	OP_rr	v26.4s, v2.4s, v10.s[0]
+	OP_ri	v27.4s, v2.4s, v11.s[0]
 
 	prfm	PLDL1KEEP, [pA, #A_PRE_SIZE]
 
-	OP_ii	v24.4s, v1.4s, v9.s[2]
-	OP_ir	v25.4s, v1.4s, v8.s[2]
-	OP_ii	v26.4s, v3.4s, v9.s[2]
-	OP_ir	v27.4s, v3.4s, v8.s[2]
+	OP_ii	v24.4s, v1.4s, v11.s[0]
+	OP_ir	v25.4s, v1.4s, v10.s[0]
+	OP_ii	v26.4s, v3.4s, v11.s[0]
+	OP_ir	v27.4s, v3.4s, v10.s[0]
 
 	prfm	PLDL1KEEP, [pA, #A_PRE_SIZE+64]
 
-	OP_rr	v28.4s, v0.4s, v8.s[3]
-	OP_ri	v29.4s, v0.4s, v9.s[3]
-	OP_rr	v30.4s, v2.4s, v8.s[3]
-	OP_ri	v31.4s, v2.4s, v9.s[3]
+	OP_rr	v28.4s, v0.4s, v10.s[1]
+	OP_ri	v29.4s, v0.4s, v11.s[1]
+	OP_rr	v30.4s, v2.4s, v10.s[1]
+	OP_ri	v31.4s, v2.4s, v11.s[1]
 
-	OP_ii	v28.4s, v1.4s, v9.s[3]
-	OP_ir	v29.4s, v1.4s, v8.s[3]
-	OP_ii	v30.4s, v3.4s, v9.s[3]
-	OP_ir	v31.4s, v3.4s, v8.s[3]
+	OP_ii	v28.4s, v1.4s, v11.s[1]
+	OP_ir	v29.4s, v1.4s, v10.s[1]
+	OP_ii	v30.4s, v3.4s, v11.s[1]
+	OP_ir	v31.4s, v3.4s, v10.s[1]
 .endm
 
 .macro KERNEL8x4_M2
@@ -356,58 +353,54 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	OP_rr	v18.4s, v6.4s, v12.s[0]
 	OP_ri	v19.4s, v6.4s, v13.s[0]
 
-	//ld2	{v8.2s, v9.2s}, [pB]
-	//add	pB, pB, #16
-	ldp     q8, q9, [pB], #32
+	ld2	{v8.2s, v9.2s}, [pB]
+	add	pB, pB, #16
 
 	OP_ii	v16.4s, v5.4s, v13.s[0]
 	OP_ir	v17.4s, v5.4s, v12.s[0]
 	OP_ii	v18.4s, v7.4s, v13.s[0]
 	OP_ir	v19.4s, v7.4s, v12.s[0]
 
-	//ld2	{v0.4s, v1.4s}, [pA]
-	//add	pA, pA, #32
-	ldp     q0, q1, [pA], #32
+	ld2	{v0.4s, v1.4s}, [pA]
+	add	pA, pA, #32
 
 	OP_rr	v20.4s, v4.4s, v12.s[1]
 	OP_ri	v21.4s, v4.4s, v13.s[1]
 	OP_rr	v22.4s, v6.4s, v12.s[1]
 	OP_ri	v23.4s, v6.4s, v13.s[1]
 
-	//ld2	{v2.4s, v3.4s}, [pA]
-	//add	pA, pA, #32
-	ldp     q2, q3, [pA], #32
+	ld2	{v2.4s, v3.4s}, [pA]
+	add	pA, pA, #32
 
 	OP_ii	v20.4s, v5.4s, v13.s[1]
 	OP_ir	v21.4s, v5.4s, v12.s[1]
 	OP_ii	v22.4s, v7.4s, v13.s[1]
 	OP_ir	v23.4s, v7.4s, v12.s[1]
 
-	//ld2	{v10.2s, v11.2s}, [pB]
-	//add	pB, pB, #16
-	//ldp     d10, d11, [pB], #16
+	ld2	{v10.2s, v11.2s}, [pB]
+	add	pB, pB, #16
 
-	OP_rr	v24.4s, v4.4s, v12.s[2]
-	OP_ri	v25.4s, v4.4s, v13.s[2]
-	OP_rr	v26.4s, v6.4s, v12.s[2]
-	OP_ri	v27.4s, v6.4s, v13.s[2]
+	OP_rr	v24.4s, v4.4s, v14.s[0]
+	OP_ri	v25.4s, v4.4s, v15.s[0]
+	OP_rr	v26.4s, v6.4s, v14.s[0]
+	OP_ri	v27.4s, v6.4s, v15.s[0]
 
 	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
 
-	OP_ii	v24.4s, v5.4s, v13.s[2]
-	OP_ir	v25.4s, v5.4s, v12.s[2]
-	OP_ii	v26.4s, v7.4s, v13.s[2]
-	OP_ir	v27.4s, v7.4s, v12.s[2]
+	OP_ii	v24.4s, v5.4s, v15.s[0]
+	OP_ir	v25.4s, v5.4s, v14.s[0]
+	OP_ii	v26.4s, v7.4s, v15.s[0]
+	OP_ir	v27.4s, v7.4s, v14.s[0]
 
-	OP_rr	v28.4s, v4.4s, v12.s[3]
-	OP_ri	v29.4s, v4.4s, v13.s[3]
-	OP_rr	v30.4s, v6.4s, v12.s[3]
-	OP_ri	v31.4s, v6.4s, v13.s[3]
+	OP_rr	v28.4s, v4.4s, v14.s[1]
+	OP_ri	v29.4s, v4.4s, v15.s[1]
+	OP_rr	v30.4s, v6.4s, v14.s[1]
+	OP_ri	v31.4s, v6.4s, v15.s[1]
 
-	OP_ii	v28.4s, v5.4s, v13.s[3]
-	OP_ir	v29.4s, v5.4s, v12.s[3]
-	OP_ii	v30.4s, v7.4s, v13.s[3]
-	OP_ir	v31.4s, v7.4s, v12.s[3]
+	OP_ii	v28.4s, v5.4s, v15.s[1]
+	OP_ir	v29.4s, v5.4s, v14.s[1]
+	OP_ii	v30.4s, v7.4s, v15.s[1]
+	OP_ir	v31.4s, v7.4s, v14.s[1]
 .endm
 
 .macro KERNEL8x4_E
@@ -433,43 +426,49 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	OP_ri	v23.4s, v6.4s, v13.s[1]
 	OP_ir	v23.4s, v7.4s, v12.s[1]
 
-	OP_rr	v24.4s, v4.4s, v12.s[2]
-	OP_ii	v24.4s, v5.4s, v13.s[2]
-	OP_ri	v25.4s, v4.4s, v13.s[2]
-	OP_ir	v25.4s, v5.4s, v12.s[2]
+	OP_rr	v24.4s, v4.4s, v14.s[0]
+	OP_ii	v24.4s, v5.4s, v15.s[0]
+	OP_ri	v25.4s, v4.4s, v15.s[0]
+	OP_ir	v25.4s, v5.4s, v14.s[0]
 
-	OP_rr	v26.4s, v6.4s, v12.s[2]
-	OP_ii	v26.4s, v7.4s, v13.s[2]
-	OP_ri	v27.4s, v6.4s, v13.s[2]
-	OP_ir	v27.4s, v7.4s, v12.s[2]
+	OP_rr	v26.4s, v6.4s, v14.s[0]
+	OP_ii	v26.4s, v7.4s, v15.s[0]
+	OP_ri	v27.4s, v6.4s, v15.s[0]
+	OP_ir	v27.4s, v7.4s, v14.s[0]
 
-	OP_rr	v28.4s, v4.4s, v12.s[3]
-	OP_ii	v28.4s, v5.4s, v13.s[3]
-	OP_ri	v29.4s, v4.4s, v13.s[3]
-	OP_ir	v29.4s, v5.4s, v12.s[3]
+	OP_rr	v28.4s, v4.4s, v14.s[1]
+	OP_ii	v28.4s, v5.4s, v15.s[1]
+	OP_ri	v29.4s, v4.4s, v15.s[1]
+	OP_ir	v29.4s, v5.4s, v14.s[1]
 
-	OP_rr	v30.4s, v6.4s, v12.s[3]
-	OP_ii	v30.4s, v7.4s, v13.s[3]
-	OP_ri	v31.4s, v6.4s, v13.s[3]
-	OP_ir	v31.4s, v7.4s, v12.s[3]
+	OP_rr	v30.4s, v6.4s, v14.s[1]
+	OP_ii	v30.4s, v7.4s, v15.s[1]
+	OP_ri	v31.4s, v6.4s, v15.s[1]
+	OP_ir	v31.4s, v7.4s, v14.s[1]
 .endm
 
 .macro KERNEL8x4_SUB
-	ldp     q8, q9, [pB], #32
+	ld2	{v8.2s, v9.2s}, [pB]
+	add	pB, pB, #16
 
-	ldp     q0, q1, [pA], #32
+	ld2	{v0.4s, v1.4s}, [pA]
+	add	pA, pA, #32
 
 	OP_rr	v16.4s, v0.4s, v8.s[0]
 	OP_ii	v16.4s, v1.4s, v9.s[0]
 	OP_ri	v17.4s, v0.4s, v9.s[0]
 	OP_ir	v17.4s, v1.4s, v8.s[0]
 
-	ldp	q2, q3, [pA], #32
+	ld2	{v2.4s, v3.4s}, [pA]
+	add	pA, pA, #32
 
 	OP_rr	v20.4s, v0.4s, v8.s[1]
 	OP_ii	v20.4s, v1.4s, v9.s[1]
 	OP_ri	v21.4s, v0.4s, v9.s[1]
 	OP_ir	v21.4s, v1.4s, v8.s[1]
+
+	ld2	{v10.2s, v11.2s}, [pB]
+	add	pB, pB, #16
 
 	OP_rr	v18.4s, v2.4s, v8.s[0]
 	OP_ii	v18.4s, v3.4s, v9.s[0]
@@ -485,27 +484,27 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	prfm	PLDL1KEEP, [pA, #A_PRE_SIZE+64]
 
-	OP_rr	v24.4s, v0.4s, v8.s[2]
-	OP_ii	v24.4s, v1.4s, v9.s[2]
-	OP_ri	v25.4s, v0.4s, v9.s[2]
-	OP_ir	v25.4s, v1.4s, v8.s[2]
+	OP_rr	v24.4s, v0.4s, v10.s[0]
+	OP_ii	v24.4s, v1.4s, v11.s[0]
+	OP_ri	v25.4s, v0.4s, v11.s[0]
+	OP_ir	v25.4s, v1.4s, v10.s[0]
 
 	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
 
-	OP_rr	v26.4s, v2.4s, v8.s[2]
-	OP_ii	v26.4s, v3.4s, v9.s[2]
-	OP_ri	v27.4s, v2.4s, v9.s[2]
-	OP_ir	v27.4s, v3.4s, v8.s[2]
+	OP_rr	v26.4s, v2.4s, v10.s[0]
+	OP_ii	v26.4s, v3.4s, v11.s[0]
+	OP_ri	v27.4s, v2.4s, v11.s[0]
+	OP_ir	v27.4s, v3.4s, v10.s[0]
 
-	OP_rr	v28.4s, v0.4s, v8.s[3]
-	OP_ii	v28.4s, v1.4s, v9.s[3]
-	OP_ri	v29.4s, v0.4s, v9.s[3]
-	OP_ir	v29.4s, v1.4s, v8.s[3]
+	OP_rr	v28.4s, v0.4s, v10.s[1]
+	OP_ii	v28.4s, v1.4s, v11.s[1]
+	OP_ri	v29.4s, v0.4s, v11.s[1]
+	OP_ir	v29.4s, v1.4s, v10.s[1]
 
-	OP_rr	v30.4s, v2.4s, v8.s[3]
-	OP_ii	v30.4s, v3.4s, v9.s[3]
-	OP_ri	v31.4s, v2.4s, v9.s[3]
-	OP_ir	v31.4s, v3.4s, v8.s[3]
+	OP_rr	v30.4s, v2.4s, v10.s[1]
+	OP_ii	v30.4s, v3.4s, v11.s[1]
+	OP_ri	v31.4s, v2.4s, v11.s[1]
+	OP_ir	v31.4s, v3.4s, v10.s[1]
 .endm
 
 .macro SAVE8x4
@@ -604,13 +603,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro KERNEL4x4_I
-	//ld2	{v8.4s, v9.4s}, [pB]
-	//add	pB, pB, #32
-	ldp     q8, q9, [pB], #32
-
-	//ld2	{v0.4s, v1.4s}, [pA]
-	//add	pA, pA, #32
-	ldp     q0, q1, [pA], #32
+	ld2	{v8.4s, v9.4s}, [pB]
+	add	pB, pB, #32
+	ld2	{v0.4s, v1.4s}, [pA]
+	add	pA, pA, #32
 
 	fmul	v16.4s, v0.4s, v8.s[0]
 	OP_ii	v16.4s, v1.4s, v9.s[0]
@@ -656,13 +652,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 	OP_ir	v29.4s, v1.4s, v8.s[3]
 
-	//ld2	{v12.4s, v13.4s}, [pB]
-	//add	pB, pB, #32
-	ldp     q12, q13, [pB], #32
-
-	//ld2	{v4.4s, v5.4s}, [pA]
-	//add	pA, pA, #32
-	ldp     q4, q5, [pA], #32
+	ld2	{v12.4s, v13.4s}, [pB]
+	add	pB, pB, #32
+	ld2	{v4.4s, v5.4s}, [pA]
+	add	pA, pA, #32
 .endm
 
 .macro KERNEL4x4_M1
@@ -671,18 +664,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	OP_ri	v17.4s, v0.4s, v9.s[0]
 	OP_ir	v17.4s, v1.4s, v8.s[0]
 
-	//ld2	{v12.4s, v13.4s}, [pB]		// For next round
-	//add	pB, pB, #32
-	ldp     q12, q13, [pB], #32
+	ld2	{v12.4s, v13.4s}, [pB]		// For next round
+	add	pB, pB, #32
 
 	OP_rr	v20.4s, v0.4s, v8.s[1]
 	OP_ii	v20.4s, v1.4s, v9.s[1]
 	OP_ri	v21.4s, v0.4s, v9.s[1]
 	OP_ir	v21.4s, v1.4s, v8.s[1]
 
-	//ld2	{v4.4s, v5.4s}, [pA]		// For next round
-	//add	pA, pA, #32
-	ldp     q4, q5, [pA], #32
+	ld2	{v4.4s, v5.4s}, [pA]		// For next round
+	add	pA, pA, #32
 
 	OP_rr	v24.4s, v0.4s, v8.s[2]
 	OP_ii	v24.4s, v1.4s, v9.s[2]
@@ -703,18 +694,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	OP_ri	v17.4s, v4.4s, v13.s[0]
 	OP_ir	v17.4s, v5.4s, v12.s[0]
 
-	//ld2	{v8.4s, v9.4s}, [pB]		// For next round
-	//add	pB, pB, #32
-	ldp     q8, q9, [pB], #32
+	ld2	{v8.4s, v9.4s}, [pB]		// For next round
+	add	pB, pB, #32
 
 	OP_rr	v20.4s, v4.4s, v12.s[1]
 	OP_ii	v20.4s, v5.4s, v13.s[1]
 	OP_ri	v21.4s, v4.4s, v13.s[1]
 	OP_ir	v21.4s, v5.4s, v12.s[1]
 
-	//ld2	{v0.4s, v1.4s}, [pA]		// For next round
-	//add	pA, pA, #32
-	ldp     q0, q1, [pA], #32
+	ld2	{v0.4s, v1.4s}, [pA]		// For next round
+	add	pA, pA, #32
 
 	OP_rr	v24.4s, v4.4s, v12.s[2]
 	OP_ii	v24.4s, v5.4s, v13.s[2]
@@ -752,13 +741,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro KERNEL4x4_SUB
-	//ld2	{v8.4s, v9.4s}, [pB]
-	//add	pB, pB, #32
-	ldp     q8, q9, [pB], #32
-
-	//ld2	{v0.4s, v1.4s}, [pA]
-	//add	pA, pA, #32
-	ldp     q0, q1, [pA], #32
+	ld2	{v8.4s, v9.4s}, [pB]
+	add	pB, pB, #32
+	ld2	{v0.4s, v1.4s}, [pA]
+	add	pA, pA, #32
 
 	OP_rr	v16.4s, v0.4s, v8.s[0]
 	OP_ii	v16.4s, v1.4s, v9.s[0]
@@ -838,13 +824,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro KERNEL2x4_SUB
-	//ld2	{v8.4s, v9.4s}, [pB]
-	//add	pB, pB, #32
-	ldp     q8, q9, [pB], #32
-
-	//ld2	{v0.2s, v1.2s}, [pA]
-	//add	pA, pA, #16
-	ldp     d0, d1, [pA], #16
+	ld2	{v8.4s, v9.4s}, [pB]
+	add	pB, pB, #32
+	ld2	{v0.2s, v1.2s}, [pA]
+	add	pA, pA, #16
 
 	OP_rr	v16.2s, v0.2s, v8.s[0]
 	OP_ii	v16.2s, v1.2s, v9.s[0]
@@ -924,13 +907,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro KERNEL1x4_SUB
-	//ld2	{v8.4s, v9.4s}, [pB]
-	//add	pB, pB, #32
-	ldp	q8, q9, [pB], #32
-
-	//ld2	{v0.s, v1.s}[0], [pA]
-	//add	pA, pA, #8
-	ldp	s0, s1, [pA], #8
+	ld2	{v8.4s, v9.4s}, [pB]
+	add	pB, pB, #32
+	ld2	{v0.s, v1.s}[0], [pA]
+	add	pA, pA, #8
 
 	OP_rr	s16, s0, v8.s[0]
 	OP_ii	s16, s1, v9.s[0]
@@ -1010,17 +990,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro KERNEL8x2_SUB
-	//ld2	{v8.2s, v9.2s}, [pB]
-	//add	pB, pB, #16
-	ldp	d8, d9, [pB], #16
-
-	//ld2	{v0.4s, v1.4s}, [pA]
-	//add	pA, pA, #32
-	ldp	q0, q1, [pA], #32
-
-	//ld2	{v2.4s, v3.4s}, [pA]
-	//add	pA, pA, #32
-	ldp	q2, q3, [pA], #32
+	ld2	{v8.2s, v9.2s}, [pB]
+	add	pB, pB, #16
+	ld2	{v0.4s, v1.4s}, [pA]
+	add	pA, pA, #32
+	ld2	{v2.4s, v3.4s}, [pA]
+	add	pA, pA, #32
 
 	OP_rr	v16.4s, v0.4s, v8.s[0]
 	OP_ii	v16.4s, v1.4s, v9.s[0]
@@ -1096,13 +1071,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro KERNEL4x2_SUB
-	//ld2	{v8.2s, v9.2s}, [pB]
-	//add	pB, pB, #16
-	ldp	d8, d9, [pB], #16
-
-	//ld2	{v0.4s, v1.4s}, [pA]
-	//add	pA, pA, #32
-	ldp	q0, q1, [pA], #32
+	ld2	{v8.2s, v9.2s}, [pB]
+	add	pB, pB, #16
+	ld2	{v0.4s, v1.4s}, [pA]
+	add	pA, pA, #32
 
 	OP_rr	v16.4s, v0.4s, v8.s[0]
 	OP_ii	v16.4s, v1.4s, v9.s[0]
@@ -1150,13 +1122,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro KERNEL2x2_SUB
-	//ld2	{v8.2s, v9.2s}, [pB]
-	//add	pB, pB, #16
-	ldp	d8, d9, [pB], #16
-
-	//ld2	{v0.2s, v1.2s}, [pA]
-	//add	pA, pA, #16
-	ldp	d0, d1, [pA], #16
+	ld2	{v8.2s, v9.2s}, [pB]
+	add	pB, pB, #16
+	ld2	{v0.2s, v1.2s}, [pA]
+	add	pA, pA, #16
 
 	OP_rr	v16.2s, v0.2s, v8.s[0]
 	OP_ii	v16.2s, v1.2s, v9.s[0]
@@ -1204,13 +1173,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro KERNEL1x2_SUB
-	//ld2	{v8.2s, v9.2s}, [pB]
-	//add	pB, pB, #16
-	ldp	d8, d9, [pB], #16
-
-	//ld2	{v0.s, v1.s}[0], [pA]
-	//add	pA, pA, #8
-	ldp	s0, s1, [pA], #8
+	ld2	{v8.2s, v9.2s}, [pB]
+	add	pB, pB, #16
+	ld2	{v0.s, v1.s}[0], [pA]
+	add	pA, pA, #8
 
 	OP_rr	s16, s0, v8.s[0]
 	OP_ii	s16, s1, v9.s[0]
@@ -1260,14 +1226,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro KERNEL8x1_SUB
 	ld1	{v8.2s}, [pB]
 	add	pB, pB, #8
-
-	//ld2	{v0.4s, v1.4s}, [pA]
-	//add	pA, pA, #32
-	ldp	q0, q1, [pA], #32
-
-	//ld2	{v2.4s, v3.4s}, [pA]
-	//add	pA, pA, #32
-	ldp	q2, q3, [pA], #32
+	ld2	{v0.4s, v1.4s}, [pA]
+	add	pA, pA, #32
+	ld2	{v2.4s, v3.4s}, [pA]
+	add	pA, pA, #32
 
 	OP_rr	v16.4s, v0.4s, v8.s[0]
 	OP_ii	v16.4s, v1.4s, v8.s[1]
@@ -1316,10 +1278,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro KERNEL4x1_SUB
 	ld2	{v8.s, v9.s}[0], [pB]
 	add	pB, pB, #8
-
-	//ld2	{v0.4s, v1.4s}, [pA]
-	//add	pA, pA, #32
-	ldp	q0, q1, [pA], #32
+	ld2	{v0.4s, v1.4s}, [pA]
+	add	pA, pA, #32
 
 	OP_rr	v16.4s, v0.4s, v8.s[0]
 	OP_ii	v16.4s, v1.4s, v9.s[0]
@@ -1353,10 +1313,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro KERNEL2x1_SUB
 	ld2	{v8.s, v9.s}[0], [pB]
 	add	pB, pB, #8
-
-	//ld2	{v0.2s, v1.2s}, [pA]
-	//add	pA, pA, #16
-	ldp	d0, d1, [pA], #16
+	ld2	{v0.2s, v1.2s}, [pA]
+	add	pA, pA, #16
 
 	OP_rr	v16.2s, v0.2s, v8.s[0]
 	OP_ii	v16.2s, v1.2s, v9.s[0]
@@ -1488,15 +1446,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL8x4_M1
 	KERNEL8x4_M2
 
- 	//KERNEL8x4_SUB
-        //KERNEL8x4_SUB
-        //KERNEL8x4_SUB
-        //KERNEL8x4_SUB
-        //KERNEL8x4_SUB
-        //KERNEL8x4_SUB
-        //KERNEL8x4_SUB
-        //KERNEL8x4_SUB
-
 	subs	counterL, counterL, #2		// subtract 2
 	ble	.Lcgemm_kernel_L4_M8_22a
 
@@ -1512,15 +1461,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL8x4_M1
 	KERNEL8x4_M2
 
- 	//KERNEL8x4_SUB
-        //KERNEL8x4_SUB
-        //KERNEL8x4_SUB
-        //KERNEL8x4_SUB
-        //KERNEL8x4_SUB
-        //KERNEL8x4_SUB
-        //KERNEL8x4_SUB
-        //KERNEL8x4_SUB
-
 	subs	counterL, counterL, #1
 	bgt	.Lcgemm_kernel_L4_M8_22
 
@@ -1535,16 +1475,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL8x4_M2
 	KERNEL8x4_M1
 	KERNEL8x4_E
-
-
- 	//KERNEL8x4_SUB
-        //KERNEL8x4_SUB
-        //KERNEL8x4_SUB
-        //KERNEL8x4_SUB
-        //KERNEL8x4_SUB
-        //KERNEL8x4_SUB
-        //KERNEL8x4_SUB
-        //KERNEL8x4_SUB
 
 	b	 .Lcgemm_kernel_L4_M8_44
 
@@ -1562,16 +1492,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNEL8x4_M2
 	KERNEL8x4_M1
 	KERNEL8x4_E
-
-
-        //KERNEL8x4_SUB
-        //KERNEL8x4_SUB
-        //KERNEL8x4_SUB
-        //KERNEL8x4_SUB
-        //KERNEL8x4_SUB
-        //KERNEL8x4_SUB
-        //KERNEL8x4_SUB
-        //KERNEL8x4_SUB
 
 	b	.Lcgemm_kernel_L4_M8_44
 

@@ -60,6 +60,7 @@ else
 include $(TOPDIR)/$(MAKEFILE_RULE)
 endif
 
+
 #
 #  Beginning of system configuration
 #
@@ -1347,7 +1348,9 @@ export TARGET_CORE
 export NO_AVX512
 
 export SGEMM_UNROLL_M
+export SGEMM_UNROLL_M1
 export SGEMM_UNROLL_N
+export SGEMM_UNROLL_N1
 export DGEMM_UNROLL_M
 export DGEMM_UNROLL_N
 export QGEMM_UNROLL_M

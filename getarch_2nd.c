@@ -10,7 +10,10 @@ int main(int argc, char **argv) {
 
   if ( (argc <= 1) || ((argc >= 2) && (*argv[1] == '0'))) {
     printf("SGEMM_UNROLL_M=%d\n", SGEMM_DEFAULT_UNROLL_M);
+    printf("SGEMM_UNROLL_M1=%d\n", SGEMM_DEFAULT_UNROLL_M1);
     printf("SGEMM_UNROLL_N=%d\n", SGEMM_DEFAULT_UNROLL_N);
+    printf("SGEMM_UNROLL_N1=%d\n", SGEMM_DEFAULT_UNROLL_N1);
+
     printf("DGEMM_UNROLL_M=%d\n", DGEMM_DEFAULT_UNROLL_M);
     printf("DGEMM_UNROLL_N=%d\n", DGEMM_DEFAULT_UNROLL_N);
     printf("QGEMM_UNROLL_M=%d\n", QGEMM_DEFAULT_UNROLL_M);
