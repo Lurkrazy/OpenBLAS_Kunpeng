@@ -1,0 +1,3 @@
+[submodule "BLAS-Tester-master/BLAS-Tester"]
+	path = BLAS-Tester-master/BLAS-Tester
+	url = https://gitee.com/chendi_li/blas_tester_Kunpeng.git
