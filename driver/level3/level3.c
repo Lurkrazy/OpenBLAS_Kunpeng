@@ -62,18 +62,18 @@
 #ifndef ICOPY_OPERATION
 #if defined(NN) || defined(NT) || defined(NC) || defined(NR) || \
     defined(RN) || defined(RT) || defined(RC) || defined(RR)
-#define ICOPY_OPERATION(M, N, A, LDA, X, Y, BUFFER) GEMM_ITCOPY(M, N, (FLOAT *)(A) + ((Y) + (X) * (LDA)) * COMPSIZE, LDA, BUFFER);
+#define ICOPY_OPERATION(M, N, A, LDA, X, Y, BUFFER) GEMM_ITCOPY(M, N, (IFLOAT *)(A) + ((Y) + (X) * (LDA)) * COMPSIZE, LDA, BUFFER);
 #else
-#define ICOPY_OPERATION(M, N, A, LDA, X, Y, BUFFER) GEMM_INCOPY(M, N, (FLOAT *)(A) + ((X) + (Y) * (LDA)) * COMPSIZE, LDA, BUFFER);
+#define ICOPY_OPERATION(M, N, A, LDA, X, Y, BUFFER) GEMM_INCOPY(M, N, (IFLOAT *)(A) + ((X) + (Y) * (LDA)) * COMPSIZE, LDA, BUFFER);
 #endif
 #endif
 
 #ifndef OCOPY_OPERATION
 #if defined(NN) || defined(TN) || defined(CN) || defined(RN) || \
     defined(NR) || defined(TR) || defined(CR) || defined(RR)
-#define OCOPY_OPERATION(M, N, A, LDA, X, Y, BUFFER) GEMM_ONCOPY(M, N, (FLOAT *)(A) + ((X) + (Y) * (LDA)) * COMPSIZE, LDA, BUFFER);
+#define OCOPY_OPERATION(M, N, A, LDA, X, Y, BUFFER) GEMM_ONCOPY(M, N, (IFLOAT *)(A) + ((X) + (Y) * (LDA)) * COMPSIZE, LDA, BUFFER);
 #else
-#define OCOPY_OPERATION(M, N, A, LDA, X, Y, BUFFER) GEMM_OTCOPY(M, N, (FLOAT *)(A) + ((Y) + (X) * (LDA)) * COMPSIZE, LDA, BUFFER);
+#define OCOPY_OPERATION(M, N, A, LDA, X, Y, BUFFER) GEMM_OTCOPY(M, N, (IFLOAT *)(A) + ((Y) + (X) * (LDA)) * COMPSIZE, LDA, BUFFER);
 #endif
 #endif
 
@@ -176,7 +176,8 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 		  XFLOAT *sa, XFLOAT *sb, BLASLONG dummy){
   BLASLONG k, lda, ldb, ldc;
   FLOAT *alpha, *beta;
-  FLOAT *a, *b, *c;
+  IFLOAT *a, *b;
+  FLOAT *c;
   BLASLONG m_from, m_to, n_from, n_to;
 
   BLASLONG ls, is, js;
@@ -201,8 +202,8 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 
   k = K;
 
-  a = (FLOAT *)A;
-  b = (FLOAT *)B;
+  a = (IFLOAT *)A;
+  b = (IFLOAT *)B;
   c = (FLOAT *)C;
 
   lda = LDA;
@@ -300,17 +301,10 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 	min_l  = GEMM_Q;
       } else {
 	if (min_l > GEMM_Q) {
-<<<<<<< HEAD
-	  min_l = ((min_l / 2 + GEMM_UNROLL_M - 1)/GEMM_UNROLL_M) * GEMM_UNROLL_M;
-	}
-	gemm_p = ((l2size / min_l + GEMM_UNROLL_M - 1)/GEMM_UNROLL_M) * GEMM_UNROLL_M;
-	while (gemm_p * min_l > l2size) gemm_p -= GEMM_UNROLL_M;
-=======
 	  min_l = ((min_l / 2 + GEMM_UNROLL_M1 - 1)/GEMM_UNROLL_M1) * GEMM_UNROLL_M1;
 	}
 	gemm_p = ((l2size / min_l + GEMM_UNROLL_M1 - 1)/GEMM_UNROLL_M1) * GEMM_UNROLL_M1;
 	while (gemm_p * min_l > l2size) gemm_p -= GEMM_UNROLL_M1;
->>>>>>> init
       }
 
       /* First, we have to move data A to L2 cache */
@@ -321,11 +315,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 	min_i = GEMM_P;
       } else {
 	if (min_i > GEMM_P) {
-<<<<<<< HEAD
-	  min_i = ((min_i / 2 + GEMM_UNROLL_M - 1)/GEMM_UNROLL_M) * GEMM_UNROLL_M;
-=======
 	  min_i = ((min_i / 2 + GEMM_UNROLL_M1 - 1)/GEMM_UNROLL_M1) * GEMM_UNROLL_M1;
->>>>>>> init
 	} else {
 	  l1stride = 0;
 	}
@@ -346,22 +336,17 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 #else
       for(jjs = js; jjs < js + min_j; jjs += min_jj){
 	min_jj = min_j + js - jjs;
-
-<<<<<<< HEAD
-        if (min_jj >= 3*GEMM_UNROLL_N) min_jj = 3*GEMM_UNROLL_N;
-        else
-        	if (min_jj >= 2*GEMM_UNROLL_N) min_jj = 2*GEMM_UNROLL_N;
-        	else
-          		if (min_jj > GEMM_UNROLL_N) min_jj = GEMM_UNROLL_N;
-=======
+#if defined(SKYLAKEX) || defined(COOPERLAKE)
+	/* the current AVX512 s/d/c/z GEMM kernel requires n>=6*GEMM_UNROLL_N to achieve best performance */
+	if (min_jj >= 6*GEMM_UNROLL_N) min_jj = 6*GEMM_UNROLL_N;
+#else
         if (min_jj >= 3*GEMM_UNROLL_N1) min_jj = 3*GEMM_UNROLL_N1;
         else
         	if (min_jj >= 2*GEMM_UNROLL_N1) min_jj = 2*GEMM_UNROLL_N1;
         	else
           		if (min_jj > GEMM_UNROLL_N1) min_jj = GEMM_UNROLL_N1;
->>>>>>> init
 
-
+#endif
 
 	START_RPCC();
 
@@ -391,11 +376,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 	  min_i = GEMM_P;
 	} else
 	  if (min_i > GEMM_P) {
-<<<<<<< HEAD
-	    min_i = ((min_i / 2 + GEMM_UNROLL_M - 1)/GEMM_UNROLL_M) * GEMM_UNROLL_M;
-=======
 	    min_i = ((min_i / 2 + GEMM_UNROLL_M1 - 1)/GEMM_UNROLL_M1) * GEMM_UNROLL_M1;
->>>>>>> init
 	  }
 
 	START_RPCC();
