@@ -1,8 +1,17 @@
 # Fake_OpenBLAS
 
-## This is a fake OpenBLAS. We are going to add some BLAS-like extension to it.
+### Changelog
 
-Origin README is below.
+* 21.01.13
+
+merged to 0.3.13dev, added gemm_pack and gemm_compute interface.
+
+
+
+
+
+
+## Origin README is below.
 
 
 [![Join the chat at https://gitter.im/xianyi/OpenBLAS](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/xianyi/OpenBLAS?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
