@@ -99,6 +99,16 @@ int zgemm_itcopy(BLASLONG m, BLASLONG n, double *a, BLASLONG lda, double *b);
 int zgemm_oncopy(BLASLONG m, BLASLONG n, double *a, BLASLONG lda, double *b);
 int zgemm_otcopy(BLASLONG m, BLASLONG n, double *a, BLASLONG lda, double *b);
 
+
+int sgemm_incopy_pack(BLASLONG m, BLASLONG n, float *a, BLASLONG lda, float *b, float alpha);
+int sgemm_itcopy_pack(BLASLONG m, BLASLONG n, float *a, BLASLONG lda, float *b, float alpha);
+int sgemm_oncopy_pack(BLASLONG m, BLASLONG n, float *a, BLASLONG lda, float *b, float alpha);
+int sgemm_otcopy_pack(BLASLONG m, BLASLONG n, float *a, BLASLONG lda, float *b, float alpha);
+int dgemm_incopy_pack(BLASLONG m, BLASLONG n, double *a, BLASLONG lda, double *b, double alpha);
+int dgemm_itcopy_pack(BLASLONG m, BLASLONG n, double *a, BLASLONG lda, double *b, double alpha);
+int dgemm_oncopy_pack(BLASLONG m, BLASLONG n, double *a, BLASLONG lda, double *b, double alpha);
+int dgemm_otcopy_pack(BLASLONG m, BLASLONG n, double *a, BLASLONG lda, double *b, double alpha);
+
 #ifdef QUAD_PRECISION
 int qgemm_incopy(BLASLONG m, BLASLONG n, xdouble *a, BLASLONG lda, xidouble *b);
 int qgemm_itcopy(BLASLONG m, BLASLONG n, xdouble *a, BLASLONG lda, xidouble *b);
@@ -549,6 +559,36 @@ int dgemm_nt(blas_arg_t *, BLASLONG *, BLASLONG *, double *, double *, BLASLONG)
 int dgemm_tn(blas_arg_t *, BLASLONG *, BLASLONG *, double *, double *, BLASLONG);
 int dgemm_tt(blas_arg_t *, BLASLONG *, BLASLONG *, double *, double *, BLASLONG);
 
+int sgemm_compute_nn(blas_arg_t *, BLASLONG *, BLASLONG *, float *, float *, BLASLONG);
+int sgemm_compute_tn(blas_arg_t *, BLASLONG *, BLASLONG *, float *, float *, BLASLONG);
+int sgemm_compute_pn(blas_arg_t *, BLASLONG *, BLASLONG *, float *, float *, BLASLONG);
+int sgemm_compute_nt(blas_arg_t *, BLASLONG *, BLASLONG *, float *, float *, BLASLONG);
+int sgemm_compute_tt(blas_arg_t *, BLASLONG *, BLASLONG *, float *, float *, BLASLONG);
+int sgemm_compute_pt(blas_arg_t *, BLASLONG *, BLASLONG *, float *, float *, BLASLONG);
+int sgemm_compute_np(blas_arg_t *, BLASLONG *, BLASLONG *, float *, float *, BLASLONG);
+int sgemm_compute_tp(blas_arg_t *, BLASLONG *, BLASLONG *, float *, float *, BLASLONG);
+int sgemm_compute_pp(blas_arg_t *, BLASLONG *, BLASLONG *, float *, float *, BLASLONG);
+
+int dgemm_compute_nn(blas_arg_t *, BLASLONG *, BLASLONG *, double *, double *, BLASLONG);
+int dgemm_compute_tn(blas_arg_t *, BLASLONG *, BLASLONG *, double *, double *, BLASLONG);
+int dgemm_compute_pn(blas_arg_t *, BLASLONG *, BLASLONG *, double *, double *, BLASLONG);
+int dgemm_compute_nt(blas_arg_t *, BLASLONG *, BLASLONG *, double *, double *, BLASLONG);
+int dgemm_compute_tt(blas_arg_t *, BLASLONG *, BLASLONG *, double *, double *, BLASLONG);
+int dgemm_compute_pt(blas_arg_t *, BLASLONG *, BLASLONG *, double *, double *, BLASLONG);
+int dgemm_compute_np(blas_arg_t *, BLASLONG *, BLASLONG *, double *, double *, BLASLONG);
+int dgemm_compute_tp(blas_arg_t *, BLASLONG *, BLASLONG *, double *, double *, BLASLONG);
+int dgemm_compute_pp(blas_arg_t *, BLASLONG *, BLASLONG *, double *, double *, BLASLONG);
+
+int sgemm_an_pack(blas_arg_t *, BLASLONG *, BLASLONG *, float *, float *, BLASLONG);
+int sgemm_at_pack(blas_arg_t *, BLASLONG *, BLASLONG *, float *, float *, BLASLONG);
+int sgemm_bn_pack(blas_arg_t *, BLASLONG *, BLASLONG *, float *, float *, BLASLONG);
+int sgemm_bt_pack(blas_arg_t *, BLASLONG *, BLASLONG *, float *, float *, BLASLONG);
+
+int dgemm_an_pack(blas_arg_t *, BLASLONG *, BLASLONG *, double *, double *, BLASLONG);
+int dgemm_at_pack(blas_arg_t *, BLASLONG *, BLASLONG *, double *, double *, BLASLONG);
+int dgemm_bn_pack(blas_arg_t *, BLASLONG *, BLASLONG *, double *, double *, BLASLONG);
+int dgemm_bt_pack(blas_arg_t *, BLASLONG *, BLASLONG *, double *, double *, BLASLONG);
+
 #ifdef QUAD_PRECISION
 int qgemm_nn(blas_arg_t *, BLASLONG *, BLASLONG *, xidouble *, xidouble *, BLASLONG);
 int qgemm_nt(blas_arg_t *, BLASLONG *, BLASLONG *, xidouble *, xidouble *, BLASLONG);
@@ -645,6 +685,26 @@ int dgemm_thread_nn(blas_arg_t *, BLASLONG *, BLASLONG *, double *, double *, BL
 int dgemm_thread_nt(blas_arg_t *, BLASLONG *, BLASLONG *, double *, double *, BLASLONG);
 int dgemm_thread_tn(blas_arg_t *, BLASLONG *, BLASLONG *, double *, double *, BLASLONG);
 int dgemm_thread_tt(blas_arg_t *, BLASLONG *, BLASLONG *, double *, double *, BLASLONG);
+
+//int sgemm_thread_compute_nn(blas_arg_t *, BLASLONG *, BLASLONG *, float *, float *, BLASLONG);
+//int sgemm_thread_compute_nt(blas_arg_t *, BLASLONG *, BLASLONG *, float *, float *, BLASLONG);
+//int sgemm_thread_compute_np(blas_arg_t *, BLASLONG *, BLASLONG *, float *, float *, BLASLONG);
+//int sgemm_thread_compute_tn(blas_arg_t *, BLASLONG *, BLASLONG *, float *, float *, BLASLONG);
+//int sgemm_thread_compute_tt(blas_arg_t *, BLASLONG *, BLASLONG *, float *, float *, BLASLONG);
+//int sgemm_thread_compute_tp(blas_arg_t *, BLASLONG *, BLASLONG *, float *, float *, BLASLONG);
+//int sgemm_thread_compute_pn(blas_arg_t *, BLASLONG *, BLASLONG *, float *, float *, BLASLONG);
+//int sgemm_thread_compute_pt(blas_arg_t *, BLASLONG *, BLASLONG *, float *, float *, BLASLONG);
+//int sgemm_thread_compute_pp(blas_arg_t *, BLASLONG *, BLASLONG *, float *, float *, BLASLONG);
+//
+//int dgemm_thread_compute_nn(blas_arg_t *, BLASLONG *, BLASLONG *, double *, double *, BLASLONG);
+//int dgemm_thread_compute_nt(blas_arg_t *, BLASLONG *, BLASLONG *, double *, double *, BLASLONG);
+//int dgemm_thread_compute_np(blas_arg_t *, BLASLONG *, BLASLONG *, double *, double *, BLASLONG);
+//int dgemm_thread_compute_tn(blas_arg_t *, BLASLONG *, BLASLONG *, double *, double *, BLASLONG);
+//int dgemm_thread_compute_tt(blas_arg_t *, BLASLONG *, BLASLONG *, double *, double *, BLASLONG);
+//int dgemm_thread_compute_tp(blas_arg_t *, BLASLONG *, BLASLONG *, double *, double *, BLASLONG);
+//int dgemm_thread_compute_pn(blas_arg_t *, BLASLONG *, BLASLONG *, double *, double *, BLASLONG);
+//int dgemm_thread_compute_pt(blas_arg_t *, BLASLONG *, BLASLONG *, double *, double *, BLASLONG);
+//int dgemm_thread_compute_pp(blas_arg_t *, BLASLONG *, BLASLONG *, double *, double *, BLASLONG);
 
 #ifdef QUAD_PRECISION
 int qgemm_thread_nn(blas_arg_t *, BLASLONG *, BLASLONG *, xidouble *, xidouble *, BLASLONG);

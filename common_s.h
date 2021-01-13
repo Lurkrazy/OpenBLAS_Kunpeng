@@ -52,12 +52,31 @@
 #define	SGEMM_ONCOPY		sgemm_oncopy
 #define	SGEMM_OTCOPY		sgemm_otcopy
 
+#define	SGEMM_ONCOPY_PACK		sgemm_oncopy_pack
+#define	SGEMM_OTCOPY_PACK		sgemm_otcopy_pack
+
 #if SGEMM_DEFAULT_UNROLL_M1 == SGEMM_DEFAULT_UNROLL_N1
 #define	SGEMM_INCOPY		sgemm_oncopy
 #define	SGEMM_ITCOPY		sgemm_otcopy
 #else
 #define	SGEMM_INCOPY		sgemm_incopy
 #define	SGEMM_ITCOPY		sgemm_itcopy
+#endif
+
+#if SGEMM_DEFAULT_UNROLL_M == SGEMM_DEFAULT_UNROLL_N
+#define	SGEMM_INCOPY		sgemm_oncopy
+#define	SGEMM_ITCOPY		sgemm_otcopy
+#else
+#define	SGEMM_INCOPY		sgemm_incopy
+#define	SGEMM_ITCOPY		sgemm_itcopy
+#endif
+
+#if SGEMM_DEFAULT_UNROLL_M == SGEMM_DEFAULT_UNROLL_N
+#define	SGEMM_INCOPY_PACK		sgemm_oncopy_pack
+#define	SGEMM_ITCOPY_PACK		sgemm_otcopy_pack
+#else
+#define	SGEMM_INCOPY_PACK		sgemm_incopy_pack
+#define	SGEMM_ITCOPY_PACK		sgemm_itcopy_pack
 #endif
 
 #define	STRMM_OUNUCOPY		strmm_ounucopy
@@ -221,6 +240,11 @@
 #define	SGEMM_INCOPY		gotoblas -> sgemm_incopy
 #define	SGEMM_ITCOPY		gotoblas -> sgemm_itcopy
 
+#define	SGEMM_ONCOPY_PACK		gotoblas -> sgemm_oncopy_pack
+#define	SGEMM_OTCOPY_PACK		gotoblas -> sgemm_otcopy_pack
+#define	SGEMM_INCOPY_PACK		gotoblas -> sgemm_incopy_pack
+#define	SGEMM_ITCOPY_PACK		gotoblas -> sgemm_itcopy_pack
+
 #define	STRMM_OUNUCOPY		gotoblas -> strmm_ounucopy
 #define	STRMM_OUTUCOPY		gotoblas -> strmm_outucopy
 #define	STRMM_OLNUCOPY		gotoblas -> strmm_olnucopy
@@ -317,6 +341,21 @@
 #define	SGEMM_RT		sgemm_nt
 #define	SGEMM_RC		sgemm_nt
 #define	SGEMM_RR		sgemm_nn
+
+#define SGEMM_AN_BN     sgemm_compute_nn
+#define SGEMM_AT_BN     sgemm_compute_tn
+#define SGEMM_AP_BN     sgemm_compute_pn
+#define SGEMM_AN_BT     sgemm_compute_nt
+#define SGEMM_AT_BT     sgemm_compute_tt
+#define SGEMM_AP_BT     sgemm_compute_pt
+#define SGEMM_AN_BP     sgemm_compute_np
+#define SGEMM_AT_BP     sgemm_compute_tp
+#define SGEMM_AP_BP     sgemm_compute_pp
+
+#define SGEMM_AN_PACK   sgemm_an_pack
+#define SGEMM_AT_PACK   sgemm_at_pack
+#define SGEMM_BN_PACK   sgemm_bn_pack
+#define SGEMM_BT_PACK   sgemm_bt_pack
 
 #define	SSYMM_LU		ssymm_LU
 #define	SSYMM_LL		ssymm_LL
@@ -444,6 +483,16 @@
 #define	SGEMM_THREAD_RT		sgemm_thread_nt
 #define	SGEMM_THREAD_RC		sgemm_thread_nt
 #define	SGEMM_THREAD_RR		sgemm_thread_nn
+
+#define	SGEMM_THREAD_COMPUTE_NN		sgemm_thread_compute_nn
+#define	SGEMM_THREAD_COMPUTE_NT		sgemm_thread_compute_nt
+#define	SGEMM_THREAD_COMPUTE_NP		sgemm_thread_compute_np
+#define	SGEMM_THREAD_COMPUTE_TN		sgemm_thread_compute_tn
+#define	SGEMM_THREAD_COMPUTE_TT		sgemm_thread_compute_tt
+#define	SGEMM_THREAD_COMPUTE_TP		sgemm_thread_compute_tp
+#define	SGEMM_THREAD_COMPUTE_PN		sgemm_thread_compute_pn
+#define	SGEMM_THREAD_COMPUTE_PT		sgemm_thread_compute_pt
+#define	SGEMM_THREAD_COMPUTE_PP		sgemm_thread_compute_pp
 
 #define	SSYMM_THREAD_LU		ssymm_thread_LU
 #define	SSYMM_THREAD_LL		ssymm_thread_LL
