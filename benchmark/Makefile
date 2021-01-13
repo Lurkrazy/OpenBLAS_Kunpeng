@@ -10,6 +10,7 @@ include $(TOPDIR)/Makefile.system
 #LIBACML = -fopenmp $(ACML)/libacml_mp.a -lgfortran -lm
 
 # ACML 6.1 custom
+<<<<<<< HEAD
 ACML=/home/saar/acml6.1/gfortran64_mp/lib
 LIBACML = -fopenmp $(ACML)/libacml_mp.so -lgfortran -lm
 
@@ -21,13 +22,30 @@ LIBACML = -fopenmp $(ACML)/libacml_mp.so -lgfortran -lm
 # Atlas RHEL and Fedora
 ATLAS=/usr/lib64/atlas
 LIBATLAS = -fopenmp $(ATLAS)/liblapack.a  $(ATLAS)/libptcblas.a  $(ATLAS)/libptf77blas.a  $(ATLAS)/libatlas.a -lgfortran -lm
+=======
+# ACML=/home/saar/acml6.1/gfortran64_mp/lib
+# LIBACML = -fopenmp $(ACML)/libacml_mp.so -lgfortran -lm
+
+
+# Atlas Ubuntu
+# ATLAS=/usr/lib/atlas-base
+# LIBATLAS = -fopenmp $(ATLAS)/liblapack_atlas.a  $(ATLAS)/libptcblas.a  $(ATLAS)/libptf77blas.a  $(ATLAS)/libatlas.a -lgfortran -lm
+
+# Atlas RHEL and Fedora
+# ATLAS=/usr/lib64/atlas
+# LIBATLAS = -fopenmp $(ATLAS)/liblapack.a  $(ATLAS)/libptcblas.a  $(ATLAS)/libptf77blas.a  $(ATLAS)/libatlas.a -lgfortran -lm
+>>>>>>> 1c8711f8a344c033e022f248a6b3df4dffe13a16
 
 # Intel standard
 # MKL=/opt/intel/mkl/lib/intel64
 # LIBMKL = -L$(MKL) -lmkl_intel_lp64 -lmkl_gnu_thread -lmkl_core -lgomp -lpthread -lm
 
 # Intel custom
+<<<<<<< HEAD
 MKL=/home/saar/intel_mkl
+=======
+MKL=/opt/intel/compilers_and_libraries_2018.3.222/linux/mkl/lib/intel64
+>>>>>>> 1c8711f8a344c033e022f248a6b3df4dffe13a16
 LIBMKL = -L$(MKL) -lmkl_intel_lp64 -lmkl_gnu_thread -lmkl_core -lgomp -lpthread -lm
 
 # Apple vecLib
@@ -59,7 +77,11 @@ ifeq ($(OSNAME), WINNT)
 
 goto :: slinpack.goto dlinpack.goto clinpack.goto zlinpack.goto \
        scholesky.goto dcholesky.goto ccholesky.goto zcholesky.goto \
+<<<<<<< HEAD
        sgemm.goto dgemm.goto cgemm.goto zgemm.goto \
+=======
+       sgemm_compute.goto dgemm_compute.goto sgemm.goto dgemm.goto cgemm.goto zgemm.goto \
+>>>>>>> 1c8711f8a344c033e022f248a6b3df4dffe13a16
        strmm.goto dtrmm.goto ctrmm.goto ztrmm.goto \
        strsm.goto dtrsm.goto ctrsm.goto ztrsm.goto \
        sspr.goto dspr.goto \
@@ -226,7 +248,11 @@ mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
 
 else
 
+<<<<<<< HEAD
 goto :: sgemm.goto dgemm.goto cgemm.goto zgemm.goto \
+=======
+goto :: sgemm_compute.goto dgemm_compute.goto sgemm.goto dgemm.goto cgemm.goto zgemm.goto \
+>>>>>>> 1c8711f8a344c033e022f248a6b3df4dffe13a16
        strmm.goto dtrmm.goto ctrmm.goto ztrmm.goto \
        strsm.goto dtrsm.goto ctrsm.goto ztrsm.goto \
        sspr.goto dspr.goto \
@@ -625,6 +651,12 @@ sbgemm.goto : sbgemm.$(SUFFIX) ../$(LIBNAME)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 endif
 
+<<<<<<< HEAD
+=======
+sgemm_compute.goto : sgemm_compute.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+>>>>>>> 1c8711f8a344c033e022f248a6b3df4dffe13a16
 sgemm.goto : sgemm.$(SUFFIX) ../$(LIBNAME)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
@@ -644,6 +676,12 @@ sgemm.essl : sgemm.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBESSL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Dgemm ####################################################
+<<<<<<< HEAD
+=======
+dgemm_compute.goto : dgemm_compute.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+>>>>>>> 1c8711f8a344c033e022f248a6b3df4dffe13a16
 dgemm.goto : dgemm.$(SUFFIX) ../$(LIBNAME)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
@@ -2932,6 +2970,15 @@ sbgemm.$(SUFFIX) : gemm.c
 	$(CC) $(CFLAGS) -c -DHALF -UCOMPLEX -UDOUBLE -o $(@F) $^
 endif
 
+<<<<<<< HEAD
+=======
+sgemm_compute.$(SUFFIX) : gemm_compute.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -UDOUBLE -o $(@F) $^
+
+dgemm_compute.$(SUFFIX) : gemm_compute.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -DDOUBLE -o $(@F) $^
+
+>>>>>>> 1c8711f8a344c033e022f248a6b3df4dffe13a16
 sgemm.$(SUFFIX) : gemm.c
 	$(CC) $(CFLAGS) -c -UCOMPLEX -UDOUBLE -o $(@F) $^
 

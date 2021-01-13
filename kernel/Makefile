@@ -91,6 +91,8 @@ HPLOBJS = \
 	dgemm_kernel.$(SUFFIX) \
 	$(DGEMMINCOPYOBJ) $(DGEMMITCOPYOBJ) \
 	$(DGEMMONCOPYOBJ) $(DGEMMOTCOPYOBJ) \
+	$(DGEMMINCOPYPACKOBJ) $(DGEMMITCOPYPACKOBJ) \
+	$(DGEMMONCOPYPACKOBJ) $(DGEMMOTCOPYPACKOBJ) \
 	dtrsm_kernel_LN.$(SUFFIX) dtrsm_kernel_LT.$(SUFFIX) \
 	dtrsm_kernel_RN.$(SUFFIX) dtrsm_kernel_RT.$(SUFFIX) \
 	daxpy_k.$(SUFFIX) dcopy_k.$(SUFFIX) ddot_k.$(SUFFIX) \

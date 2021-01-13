@@ -1,4 +1,9 @@
-# OpenBLAS
+# Fake_OpenBLAS
+
+## This is a fake OpenBLAS. We are going to add some BLAS-like extension to it.
+
+Origin README is below.
+
 
 [![Join the chat at https://gitter.im/xianyi/OpenBLAS](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/xianyi/OpenBLAS?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 

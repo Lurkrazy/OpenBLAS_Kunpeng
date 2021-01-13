@@ -46,12 +46,23 @@
 #define	DGEMM_ONCOPY		dgemm_oncopy
 #define	DGEMM_OTCOPY		dgemm_otcopy
 
+#define	DGEMM_ONCOPY_PACK		dgemm_oncopy_pack
+#define	DGEMM_OTCOPY_PACK		dgemm_otcopy_pack
+
 #if DGEMM_DEFAULT_UNROLL_M == DGEMM_DEFAULT_UNROLL_N
 #define	DGEMM_INCOPY		dgemm_oncopy
 #define	DGEMM_ITCOPY		dgemm_otcopy
 #else
 #define	DGEMM_INCOPY		dgemm_incopy
 #define	DGEMM_ITCOPY		dgemm_itcopy
+#endif
+
+#if DGEMM_DEFAULT_UNROLL_M == DGEMM_DEFAULT_UNROLL_N
+#define	DGEMM_INCOPY_PACK		dgemm_oncopy_pack
+#define	DGEMM_ITCOPY_PACK		dgemm_otcopy_pack
+#else
+#define	DGEMM_INCOPY_PACK		dgemm_incopy_pack
+#define	DGEMM_ITCOPY_PACK		dgemm_itcopy_pack
 #endif
 
 #define	DTRMM_OUNUCOPY		dtrmm_ounucopy
@@ -204,6 +215,11 @@
 #define	DGEMM_INCOPY		gotoblas -> dgemm_incopy
 #define	DGEMM_ITCOPY		gotoblas -> dgemm_itcopy
 
+#define	DGEMM_ONCOPY_PACK		gotoblas -> dgemm_oncopy_pack
+#define	DGEMM_OTCOPY_PACK		gotoblas -> dgemm_otcopy_pack
+#define	DGEMM_INCOPY_PACK		gotoblas -> dgemm_incopy_pack
+#define	DGEMM_ITCOPY_PACK		gotoblas -> dgemm_itcopy_pack
+
 #define	DTRMM_OUNUCOPY		gotoblas -> dtrmm_ounucopy
 #define	DTRMM_OUTUCOPY		gotoblas -> dtrmm_outucopy
 #define	DTRMM_OLNUCOPY		gotoblas -> dtrmm_olnucopy
@@ -299,6 +315,21 @@
 #define	DGEMM_RT		dgemm_nt
 #define	DGEMM_RC		dgemm_nt
 #define	DGEMM_RR		dgemm_nn
+
+#define DGEMM_AN_BN     dgemm_compute_nn
+#define DGEMM_AT_BN     dgemm_compute_tn
+#define DGEMM_AP_BN     dgemm_compute_pn
+#define DGEMM_AN_BT     dgemm_compute_nt
+#define DGEMM_AT_BT     dgemm_compute_tt
+#define DGEMM_AP_BT     dgemm_compute_pt
+#define DGEMM_AN_BP     dgemm_compute_np
+#define DGEMM_AT_BP     dgemm_compute_tp
+#define DGEMM_AP_BP     dgemm_compute_pp
+
+#define DGEMM_AN_PACK   dgemm_an_pack
+#define DGEMM_AT_PACK   dgemm_at_pack
+#define DGEMM_BN_PACK   dgemm_bn_pack
+#define DGEMM_BT_PACK   dgemm_bt_pack
 
 #define	DSYMM_LU		dsymm_LU
 #define	DSYMM_LL		dsymm_LL
@@ -426,6 +457,16 @@
 #define	DGEMM_THREAD_RT		dgemm_thread_nt
 #define	DGEMM_THREAD_RC		dgemm_thread_nt
 #define	DGEMM_THREAD_RR		dgemm_thread_nn
+
+#define	DGEMM_THREAD_COMPUTE_NN		dgemm_thread_compute_nn
+#define	DGEMM_THREAD_COMPUTE_NT		dgemm_thread_compute_nt
+#define	DGEMM_THREAD_COMPUTE_NP		dgemm_thread_compute_np
+#define	DGEMM_THREAD_COMPUTE_TN		dgemm_thread_compute_tn
+#define	DGEMM_THREAD_COMPUTE_TT		dgemm_thread_compute_tt
+#define	DGEMM_THREAD_COMPUTE_TP		dgemm_thread_compute_tp
+#define	DGEMM_THREAD_COMPUTE_PN		dgemm_thread_compute_pn
+#define	DGEMM_THREAD_COMPUTE_PT		dgemm_thread_compute_pt
+#define	DGEMM_THREAD_COMPUTE_PP		dgemm_thread_compute_pp
 
 #define	DSYMM_THREAD_LU		dsymm_thread_LU
 #define	DSYMM_THREAD_LL		dsymm_thread_LL
